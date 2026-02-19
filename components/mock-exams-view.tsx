@@ -173,7 +173,7 @@ export function MockExamsView({ mockExams, onUpdateMockExams }: MockExamsViewPro
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
           {showForm ? t("mockExams.form.cancel") : t("mockExams.form.addResult")}
@@ -420,7 +420,7 @@ export function MockExamsView({ mockExams, onUpdateMockExams }: MockExamsViewPro
             <button
               onClick={handleSubmit}
               disabled={formTotal === 0 || !formSource}
-              className="px-5 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t("mockExams.form.submit")}
             </button>
