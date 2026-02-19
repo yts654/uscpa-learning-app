@@ -5,6 +5,7 @@ import { Filter, Brain, AlertTriangle, Clock, CalendarCheck, Shield, BookOpen, C
 import { cn } from "@/lib/utils"
 import { SECTION_INFO, type ExamSection, type Chapter, type RecallRating } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import {
   type ChapterRetention,
   getMasteryLevelInfo,
@@ -48,8 +49,21 @@ const RECALL_BG_COLORS: Record<RecallRating, string> = {
   3: "hsl(145, 45%, 95%)",
 }
 
+// Brighten an HSL color for dark mode by increasing lightness
+function brightenForDark(hslColor: string, isDark: boolean): string {
+  if (!isDark) return hslColor
+  // Match both "hsl(225, 50%, 22%)" and "hsl(225 50% 22%)" formats
+  const match = hslColor.match(/hsl\((\d+)[,\s]+(\d+)%?[,\s]+(\d+)%?\)/)
+  if (!match) return hslColor
+  const [, h, s, l] = match
+  const newL = Math.min(75, parseInt(l) + 35)
+  return `hsl(${h}, ${s}%, ${newL}%)`
+}
+
 export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onViewChange, onRecallRating }: ReviewViewProps) {
   const { t } = useLanguage()
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null)
   const [criteriaOpen, setCriteriaOpen] = useState(false)
@@ -411,25 +425,25 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={curveData} margin={{ top: 8, right: 8, bottom: 0, left: -10 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(230, 12%, 90%)" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "hsl(230, 15%, 25%)" : "hsl(230, 12%, 90%)"} />
                     <XAxis
                       dataKey="day"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(230, 8%, 46%)" }}
-                      label={{ value: t("review.chart.xLabel"), position: "insideBottomRight", offset: -4, fontSize: 10, fill: "hsl(230, 8%, 46%)" }}
+                      tick={{ fontSize: 11, fill: isDark ? "hsl(230, 15%, 65%)" : "hsl(230, 8%, 46%)" }}
+                      label={{ value: t("review.chart.xLabel"), position: "insideBottomRight", offset: -4, fontSize: 10, fill: isDark ? "hsl(230, 15%, 65%)" : "hsl(230, 8%, 46%)" }}
                     />
                     <YAxis
                       domain={[0, 100]}
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(230, 8%, 46%)" }}
+                      tick={{ fontSize: 11, fill: isDark ? "hsl(230, 15%, 65%)" : "hsl(230, 8%, 46%)" }}
                       unit="%"
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "hsl(232, 47%, 8%)",
-                        border: "none",
+                        backgroundColor: isDark ? "hsl(232, 30%, 15%)" : "hsl(232, 47%, 8%)",
+                        border: isDark ? "1px solid hsl(232, 20%, 30%)" : "none",
                         borderRadius: "8px",
                         color: "white",
                         fontSize: "12px",
@@ -448,25 +462,25 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                         <Line
                           type="monotone"
                           dataKey="retention"
-                          stroke={SECTION_INFO[selected.section].color}
+                          stroke={brightenForDark(SECTION_INFO[selected.section].color, isDark)}
                           strokeWidth={2.5}
                           dot={false}
                         />
                         <Line
                           type="monotone"
                           dataKey="nextRetention"
-                          stroke={SECTION_INFO[selected.section].color}
+                          stroke={brightenForDark(SECTION_INFO[selected.section].color, isDark)}
                           strokeWidth={1.5}
                           strokeDasharray="6 3"
                           dot={false}
-                          opacity={0.4}
+                          opacity={isDark ? 0.6 : 0.4}
                         />
                         <ReferenceDot
                           x={selected.daysSinceLastStudy}
                           y={selected.retention}
                           r={7}
-                          fill={selected.isOverdue ? "hsl(0,65%,45%)" : SECTION_INFO[selected.section].color}
-                          stroke="white"
+                          fill={selected.isOverdue ? (isDark ? "hsl(0, 65%, 60%)" : "hsl(0,65%,45%)") : brightenForDark(SECTION_INFO[selected.section].color, isDark)}
+                          stroke={isDark ? "hsl(230, 15%, 20%)" : "white"}
                           strokeWidth={2}
                         />
                       </>
@@ -476,10 +490,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                           key={ch.chapterId}
                           type="monotone"
                           dataKey={ch.chapterId}
-                          stroke={SECTION_INFO[ch.section].color}
+                          stroke={brightenForDark(SECTION_INFO[ch.section].color, isDark)}
                           strokeWidth={1.5}
                           dot={false}
-                          opacity={0.6}
+                          opacity={isDark ? 0.8 : 0.6}
                         />
                       ))
                     )}
@@ -514,15 +528,15 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                 {/* Legend for selected view */}
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-5 h-0.5 rounded-full" style={{ backgroundColor: SECTION_INFO[selected.section].color }} />
+                    <div className="w-5 h-0.5 rounded-full" style={{ backgroundColor: brightenForDark(SECTION_INFO[selected.section].color, isDark) }} />
                     <span className="text-xs text-muted-foreground">{t("review.chart.currentCurve")}（{selected.reviewCount}{t("review.detail.reviewsSuffix")}）</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-5 h-0.5 rounded-full opacity-40" style={{ backgroundColor: SECTION_INFO[selected.section].color, borderTop: "2px dashed" }} />
+                    <div className="w-5 h-0.5 rounded-full opacity-40" style={{ backgroundColor: brightenForDark(SECTION_INFO[selected.section].color, isDark), borderTop: "2px dashed" }} />
                     <span className="text-xs text-muted-foreground">{t("review.chart.nextCurve")}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: selected.isOverdue ? "hsl(0,65%,45%)" : SECTION_INFO[selected.section].color, border: "2px solid white" }} />
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: selected.isOverdue ? (isDark ? "hsl(0, 65%, 60%)" : "hsl(0,65%,45%)") : brightenForDark(SECTION_INFO[selected.section].color, isDark), border: isDark ? "2px solid hsl(230, 15%, 20%)" : "2px solid white" }} />
                     <span className="text-xs text-muted-foreground">{t("review.chart.currentPosition")}</span>
                   </div>
                 </div>

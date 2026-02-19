@@ -214,7 +214,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <div className="grid grid-cols-2 gap-3">
             {([
               { value: "en" as Locale, label: "English", icon: Languages },
-              { value: "ja" as Locale, label: "日本語", icon: Languages },
+              { value: "es" as Locale, label: "Español", icon: Languages },
             ]).map((opt) => {
               const Icon = opt.icon
               const isActive = locale === opt.value
@@ -287,7 +287,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                       disabled={isCompleted}
                       className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <option value="">{locale === "ja" ? "年" : "Year"}</option>
+                      <option value="">{locale === "es" ? "Año" : "Year"}</option>
                       {Array.from({ length: 7 }, (_, i) => 2025 + i).map(y => (
                         <option key={y} value={y}>{y}</option>
                       ))}
@@ -298,11 +298,11 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                       disabled={isCompleted}
                       className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <option value="">{locale === "ja" ? "月" : "Mon"}</option>
+                      <option value="">{locale === "es" ? "Mes" : "Mon"}</option>
                       {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
                         <option key={m} value={m}>
-                          {locale === "ja"
-                            ? `${m}月`
+                          {locale === "es"
+                            ? new Date(2025, m - 1).toLocaleString("es", { month: "short" })
                             : new Date(2025, m - 1).toLocaleString("en", { month: "short" })}
                         </option>
                       ))}
@@ -313,7 +313,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                       disabled={isCompleted}
                       className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <option value="">{locale === "ja" ? "日" : "Day"}</option>
+                      <option value="">{locale === "es" ? "Día" : "Day"}</option>
                       {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
                         <option key={d} value={d}>{d}</option>
                       ))}

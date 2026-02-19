@@ -34,7 +34,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSi
     .toUpperCase()
     .slice(0, 2)
 
-  const toggleLocale = () => setLocale(locale === "ja" ? "en" : "ja")
+  const toggleLocale = () => setLocale(locale === "es" ? "en" : "es")
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark")
 
   return (
@@ -53,9 +53,9 @@ export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSi
           <button
             onClick={toggleLocale}
             className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
-            title={locale === "ja" ? "Switch to English" : "日本語に切替"}
+            title={locale === "es" ? "Switch to English" : "Switch to Spanish"}
           >
-            <span className="text-[9px] font-bold text-[hsl(230_15%_72%)]">{locale === "ja" ? "EN" : "JA"}</span>
+            <span className="text-[9px] font-bold text-[hsl(230_15%_72%)]">{locale === "es" ? "EN" : "ES"}</span>
           </button>
           <button
             onClick={toggleTheme}

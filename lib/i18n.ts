@@ -3,584 +3,584 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
 import React from "react"
 
-export type Locale = "en" | "ja"
+export type Locale = "en" | "es"
 
 const translations = {
   // Nav descriptions
   "nav.dashboard.desc": {
     en: "Overview of your study progress",
-    ja: "全体の進捗を確認",
+    es: "Resumen de tu progreso de estudio",
   },
   "nav.chapters.desc": {
     en: "Select a chapter to start studying",
-    ja: "チャプターを選んで学習開始",
+    es: "Selecciona un capítulo para empezar a estudiar",
   },
   "nav.studyLog.desc": {
     en: "View and add study records",
-    ja: "学習記録の一覧・追加",
+    es: "Ver y agregar registros de estudio",
   },
   "nav.review.desc": {
     en: "Spaced repetition review schedule",
-    ja: "忘却曲線に基づく復習管理",
+    es: "Calendario de repaso con repetición espaciada",
   },
   "nav.analytics.desc": {
     en: "Performance analysis and trends",
-    ja: "成績の分析・推移",
+    es: "Análisis de rendimiento y tendencias",
   },
   "nav.settings.desc": {
     en: "Profile and configuration",
-    ja: "プロフィール・設定",
+    es: "Perfil y configuración",
   },
 
   // Dashboard guide
   "guide.title": {
     en: "How to use",
-    ja: "使い方ガイド",
+    es: "Cómo usar",
   },
   "guide.step1.title": {
     en: "Select a chapter in Chapters",
-    ja: "Chapters でチャプターを選ぶ",
+    es: "Selecciona un capítulo en Chapters",
   },
   "guide.step1.desc": {
     en: "Choose a chapter to study",
-    ja: "学習する章を選択",
+    es: "Elige un capítulo para estudiar",
   },
   "guide.step2.title": {
     en: "Record your Study Log",
-    ja: "Study Log を記録する",
+    es: "Registra tu Study Log",
   },
   "guide.step2.desc": {
     en: "Add study records from the chapter detail page",
-    ja: "チャプター詳細画面で学習記録を追加",
+    es: "Agrega registros de estudio desde la página de detalle del capítulo",
   },
   "guide.step3.title": {
     en: "Check your Review schedule",
-    ja: "Review で復習スケジュールを確認",
+    es: "Consulta tu calendario de Review",
   },
   "guide.step3.desc": {
     en: "Optimal review timing based on the forgetting curve",
-    ja: "忘却曲線に基づいた最適な復習タイミング",
+    es: "Momento óptimo de repaso basado en la curva del olvido",
   },
   "guide.openChapters": {
     en: "Open Chapters",
-    ja: "Chapters を開く",
+    es: "Abrir Chapters",
   },
 
   // Dashboard empty state
   "dashboard.empty.noSessions": {
     en: "No study sessions recorded yet.",
-    ja: "学習記録がまだありません。",
+    es: "Aún no hay sesiones de estudio registradas.",
   },
   "dashboard.empty.startStudying": {
     en: "Select a chapter from Chapters to start your first study session.",
-    ja: "Chapters からチャプターを選んで最初の学習を記録しましょう",
+    es: "Selecciona un capítulo en Chapters para comenzar tu primera sesión de estudio.",
   },
   "dashboard.empty.openChapters": {
     en: "Open Chapters",
-    ja: "Chapters を開く",
+    es: "Abrir Chapters",
   },
   "dashboard.section.noSessions": {
     en: "No study sessions yet for this section.",
-    ja: "このセクションの学習記録はまだありません。",
+    es: "Aún no hay sesiones de estudio para esta sección.",
   },
   "dashboard.section.startStudying": {
     en: "Open a chapter in this section to start studying.",
-    ja: "このセクションのチャプターを開いて学習を始めましょう",
+    es: "Abre un capítulo en esta sección para empezar a estudiar.",
   },
   "dashboard.section.openChapters": {
     en: "Open chapters",
-    ja: "チャプター一覧",
+    es: "Abrir capítulos",
   },
 
   // Review criteria panel
   "review.criteria.title": {
     en: "Review Schedule Criteria",
-    ja: "復習スケジュールの基準",
+    es: "Criterios del calendario de repaso",
   },
   "review.criteria.intervals.title": {
     en: "Review Intervals",
-    ja: "復習間隔",
+    es: "Intervalos de repaso",
   },
   "review.criteria.intervals.desc": {
     en: "The interval until the next review increases with each review",
-    ja: "復習回数に応じて次回復習までの間隔が広がります",
+    es: "El intervalo hasta el próximo repaso aumenta con cada repaso",
   },
-  "review.criteria.intervals.1st": { en: "1st", ja: "1回目" },
-  "review.criteria.intervals.2nd": { en: "2nd", ja: "2回目" },
-  "review.criteria.intervals.3rd": { en: "3rd", ja: "3回目" },
-  "review.criteria.intervals.4th": { en: "4th", ja: "4回目" },
-  "review.criteria.intervals.5th": { en: "5th+", ja: "5回目〜" },
-  "review.criteria.intervals.1d": { en: "after 1 day", ja: "1日後" },
-  "review.criteria.intervals.3d": { en: "after 3 days", ja: "3日後" },
-  "review.criteria.intervals.7d": { en: "after 7 days", ja: "7日後" },
-  "review.criteria.intervals.14d": { en: "after 14 days", ja: "14日後" },
-  "review.criteria.intervals.30d": { en: "after 30 days+", ja: "30日後〜" },
+  "review.criteria.intervals.1st": { en: "1st", es: "1.°" },
+  "review.criteria.intervals.2nd": { en: "2nd", es: "2.°" },
+  "review.criteria.intervals.3rd": { en: "3rd", es: "3.°" },
+  "review.criteria.intervals.4th": { en: "4th", es: "4.°" },
+  "review.criteria.intervals.5th": { en: "5th+", es: "5.°+" },
+  "review.criteria.intervals.1d": { en: "after 1 day", es: "después de 1 día" },
+  "review.criteria.intervals.3d": { en: "after 3 days", es: "después de 3 días" },
+  "review.criteria.intervals.7d": { en: "after 7 days", es: "después de 7 días" },
+  "review.criteria.intervals.14d": { en: "after 14 days", es: "después de 14 días" },
+  "review.criteria.intervals.30d": { en: "after 30 days+", es: "después de 30 días+" },
 
   // Alert criteria
   "review.criteria.alerts.title": {
     en: "Alert Criteria",
-    ja: "アラート基準",
+    es: "Criterios de alerta",
   },
   "review.criteria.alerts.desc": {
     en: "Retention is calculated automatically from review count and elapsed days",
-    ja: "保持率は復習回数と経過日数から自動計算されます",
+    es: "La retención se calcula automáticamente a partir del número de repasos y los días transcurridos",
   },
   "review.criteria.alerts.overdue.label": {
     en: "Overdue — Retention below 30%",
-    ja: "期限切れ — 保持率 30%未満",
+    es: "Vencido — Retención por debajo del 30%",
   },
   "review.criteria.alerts.overdue.desc": {
     en: "Memory has significantly faded. Review immediately.",
-    ja: "記憶がかなり薄れています。すぐに復習しましょう",
+    es: "La memoria se ha debilitado significativamente. Repasa de inmediato.",
   },
   "review.criteria.alerts.dueToday.label": {
     en: "Due Today — Next review date is today or earlier",
-    ja: "今日が期限 — 次回復習日が今日以前",
+    es: "Para hoy — La próxima fecha de repaso es hoy o anterior",
   },
   "review.criteria.alerts.dueToday.desc": {
     en: "Scheduled review timing has arrived.",
-    ja: "スケジュール通りの復習タイミングです",
+    es: "Ha llegado el momento programado de repaso.",
   },
   "review.criteria.alerts.comingUp.label": {
     en: "Coming Up — Review due within 7 days",
-    ja: "もうすぐ — 7日以内に復習予定",
+    es: "Próximamente — Repaso dentro de 7 días",
   },
   "review.criteria.alerts.comingUp.desc": {
     en: "Review timing is approaching soon.",
-    ja: "近日中に復習タイミングが来ます",
+    es: "El momento de repaso se acerca pronto.",
   },
 
   // Mastery levels
   "review.criteria.mastery.title": {
     en: "Mastery Levels",
-    ja: "習熟度レベル",
+    es: "Niveles de dominio",
   },
-  "review.criteria.mastery.new": { en: "Not studied", ja: "未学習" },
-  "review.criteria.mastery.learning": { en: "1-2 reviews", ja: "復習 1〜2回" },
+  "review.criteria.mastery.new": { en: "Not studied", es: "No estudiado" },
+  "review.criteria.mastery.learning": { en: "1-2 reviews", es: "1-2 repasos" },
   "review.criteria.mastery.reviewing": {
     en: "3-4 reviews or 5+ with retention ≤50%",
-    ja: "復習 3〜4回 or 5回以上で保持率≤50%",
+    es: "3-4 repasos o 5+ con retención ≤50%",
   },
   "review.criteria.mastery.mastered": {
     en: "5+ reviews and retention >50%",
-    ja: "復習 5回以上 かつ 保持率 >50%",
+    es: "5+ repasos y retención >50%",
   },
 
   // Retention colors
   "review.criteria.retention.title": {
     en: "Retention Color Scale",
-    ja: "保持率の色分け",
+    es: "Escala de colores de retención",
   },
-  "review.criteria.retention.stable": { en: "Stable", ja: "安定" },
-  "review.criteria.retention.good": { en: "Good", ja: "良好" },
-  "review.criteria.retention.caution": { en: "Caution", ja: "注意" },
-  "review.criteria.retention.needsReview": { en: "Needs review", ja: "要復習" },
+  "review.criteria.retention.stable": { en: "Stable", es: "Estable" },
+  "review.criteria.retention.good": { en: "Good", es: "Bueno" },
+  "review.criteria.retention.caution": { en: "Caution", es: "Precaución" },
+  "review.criteria.retention.needsReview": { en: "Needs review", es: "Necesita repaso" },
 
   // Review alerts
   "review.alert.title": {
     en: "Review Alert",
-    ja: "復習アラート",
+    es: "Alerta de repaso",
   },
   "review.alert.retention": {
     en: "Retention",
-    ja: "保持率",
+    es: "Retención",
   },
   "review.alert.daysAgo": {
     en: "days ago",
-    ja: "日前に学習",
+    es: "días atrás",
   },
   "review.alert.overdue": {
     en: "Needs review",
-    ja: "要復習",
+    es: "Necesita repaso",
   },
   "review.alert.dueToday": {
     en: "Review today",
-    ja: "今日が復習日",
+    es: "Repasar hoy",
   },
 
   // Review chart
   "review.chart.title": {
     en: "Forgetting Curve — Per Chapter",
-    ja: "忘却曲線 — チャプター別",
+    es: "Curva del olvido — Por capítulo",
   },
   "review.chart.selectedDesc": {
     en: "'s forgetting curve",
-    ja: " の忘却曲線",
+    es: " — curva del olvido",
   },
   "review.chart.defaultDesc": {
     en: "Select a chapter to view its individual curve",
-    ja: "チャプターを選択すると個別の曲線を表示します",
+    es: "Selecciona un capítulo para ver su curva individual",
   },
   "review.chart.xLabel": {
     en: "Days elapsed",
-    ja: "経過日数",
+    es: "Días transcurridos",
   },
   "review.chart.currentCurve": {
     en: "Current curve",
-    ja: "現在の曲線",
+    es: "Curva actual",
   },
   "review.chart.nextCurve": {
     en: "Predicted after next review",
-    ja: "次回復習後の予測曲線",
+    es: "Predicción después del próximo repaso",
   },
   "review.chart.daysSuffix": {
     en: " days elapsed",
-    ja: "日経過",
+    es: " días transcurridos",
   },
   "review.chart.currentPosition": {
     en: "Current position",
-    ja: "現在位置",
+    es: "Posición actual",
   },
 
   // Review detail labels
   "review.detail.retention": {
     en: "Retention",
-    ja: "保持率",
+    es: "Retención",
   },
   "review.detail.reviewCount": {
     en: "Review Count",
-    ja: "復習回数",
+    es: "Número de repasos",
   },
   "review.detail.reviewCountUnit": {
     en: "times",
-    ja: "回",
+    es: "veces",
   },
   "review.detail.lastStudied": {
     en: "Last Studied",
-    ja: "最終学習",
+    es: "Último estudio",
   },
   "review.detail.daysAgoUnit": {
     en: " days ago",
-    ja: "日前",
+    es: " días atrás",
   },
   "review.detail.nextReview": {
     en: "Next Review",
-    ja: "次回復習",
+    es: "Próximo repaso",
   },
   "review.detail.reviewsSuffix": {
     en: " reviews",
-    ja: "回復習",
+    es: " repasos",
   },
 
   // Review header
   "review.header.desc": {
     en: "Based on the Ebbinghaus forgetting curve. Chapters are ranked by memory retention — review overdue items first to maximize long-term recall.",
-    ja: "エビングハウスの忘却曲線に基づいています。記憶保持率の低いチャプターから優先的に復習しましょう。",
+    es: "Basado en la curva del olvido de Ebbinghaus. Los capítulos se ordenan por retención de memoria — repasa primero los vencidos para maximizar la retención a largo plazo.",
   },
 
   // Review urgency groups
   "review.group.overdue.desc": {
     en: "Retention below 30% — review immediately",
-    ja: "保持率30%未満 — すぐに復習しましょう",
+    es: "Retención por debajo del 30% — repasa de inmediato",
   },
   "review.group.dueToday.desc": {
     en: "Scheduled for review today",
-    ja: "今日が復習予定日です",
+    es: "Programado para repasar hoy",
   },
   "review.group.comingUp.desc": {
     en: "Due within the next 7 days",
-    ja: "7日以内に復習予定",
+    es: "Pendiente en los próximos 7 días",
   },
   "review.group.wellRetained.desc": {
     en: "Retention above 70% — no rush",
-    ja: "保持率70%以上 — 急ぐ必要はありません",
+    es: "Retención por encima del 70% — sin prisa",
   },
   "review.group.notStudied.desc": {
     en: "Start studying to begin tracking retention",
-    ja: "学習を開始すると保持率の追跡が始まります",
+    es: "Comienza a estudiar para empezar a rastrear la retención",
   },
 
   // Mock Exams — nav
   "nav.mockExams.desc": {
     en: "Track mock exam scores by section",
-    ja: "模試の結果を科目別に記録",
+    es: "Registra las puntuaciones de simulacros por sección",
   },
 
   // Mock Exams — header
   "mockExams.title": {
     en: "Mock Exams",
-    ja: "模試結果",
+    es: "Simulacros",
   },
   "mockExams.subtitle": {
     en: "Track your mock exam results across all sections",
-    ja: "各科目の模試スコアを記録・追跡",
+    es: "Registra los resultados de tus simulacros en todas las secciones",
   },
 
   // Mock Exams — form
   "mockExams.form.addResult": {
     en: "Add Result",
-    ja: "結果を追加",
+    es: "Agregar resultado",
   },
   "mockExams.form.date": {
     en: "Date",
-    ja: "受験日",
+    es: "Fecha",
   },
   "mockExams.form.section": {
     en: "Section",
-    ja: "科目",
+    es: "Sección",
   },
   "mockExams.form.source": {
     en: "Source",
-    ja: "出典",
+    es: "Fuente",
   },
   "mockExams.form.sourcePlaceholder": {
     en: "e.g. Becker, Wiley, Roger CPA...",
-    ja: "例: Becker, Wiley, TAC...",
+    es: "ej. Becker, Wiley, Roger CPA...",
   },
   "mockExams.form.mcQuestions": {
     en: "MC Questions",
-    ja: "MC問題数",
+    es: "Preguntas MC",
   },
   "mockExams.form.mcCorrect": {
     en: "MC Correct",
-    ja: "MC正解数",
+    es: "MC correctas",
   },
   "mockExams.form.tbsQuestions": {
     en: "TBS Questions",
-    ja: "TBS問題数",
+    es: "Preguntas TBS",
   },
   "mockExams.form.tbsCorrect": {
     en: "TBS Correct",
-    ja: "TBS正解数",
+    es: "TBS correctas",
   },
   "mockExams.form.total": {
     en: "Total",
-    ja: "合計",
+    es: "Total",
   },
   "mockExams.form.accuracy": {
     en: "Accuracy",
-    ja: "正答率",
+    es: "Precisión",
   },
   "mockExams.form.memo": {
     en: "Memo",
-    ja: "メモ",
+    es: "Notas",
   },
   "mockExams.form.memoPlaceholder": {
     en: "Notes about this exam...",
-    ja: "この模試についてのメモ...",
+    es: "Notas sobre este examen...",
   },
   "mockExams.form.submit": {
     en: "Save Result",
-    ja: "結果を保存",
+    es: "Guardar resultado",
   },
   "mockExams.form.cancel": {
     en: "Cancel",
-    ja: "キャンセル",
+    es: "Cancelar",
   },
   "mockExams.form.validationError": {
     en: "Correct answers cannot exceed total questions",
-    ja: "正解数は問題数を超えられません",
+    es: "Las respuestas correctas no pueden superar el total de preguntas",
   },
 
   // Mock Exams — summary cards
   "mockExams.summary.bestScore": {
     en: "Best Score",
-    ja: "最高スコア",
+    es: "Mejor puntuación",
   },
   "mockExams.summary.latestScore": {
     en: "Latest Score",
-    ja: "最新スコア",
+    es: "Última puntuación",
   },
   "mockExams.summary.attempts": {
     en: "Attempts",
-    ja: "受験回数",
+    es: "Intentos",
   },
   "mockExams.summary.noData": {
     en: "No data",
-    ja: "データなし",
+    es: "Sin datos",
   },
 
   // Mock Exams — chart
   "mockExams.chart.title": {
     en: "Score Trend",
-    ja: "スコア推移",
+    es: "Tendencia de puntuación",
   },
   "mockExams.chart.accuracy": {
     en: "Accuracy (%)",
-    ja: "正答率 (%)",
+    es: "Precisión (%)",
   },
   "mockExams.chart.noData": {
     en: "No chart data yet. Add mock exam results to see trends.",
-    ja: "チャートデータがありません。模試結果を追加すると推移が表示されます。",
+    es: "Aún no hay datos del gráfico. Agrega resultados de simulacros para ver tendencias.",
   },
 
   // Mock Exams — results
   "mockExams.results.title": {
     en: "Results",
-    ja: "結果一覧",
+    es: "Resultados",
   },
   "mockExams.results.empty": {
     en: "No mock exam results yet. Click \"Add Result\" to record your first exam.",
-    ja: "模試結果がまだありません。「結果を追加」から最初の結果を記録しましょう。",
+    es: "Aún no hay resultados de simulacros. Haz clic en \"Agregar resultado\" para registrar tu primer examen.",
   },
   "mockExams.results.delete": {
     en: "Delete",
-    ja: "削除",
+    es: "Eliminar",
   },
   "mockExams.results.mc": {
     en: "MC",
-    ja: "MC",
+    es: "MC",
   },
   "mockExams.results.tbs": {
     en: "TBS",
-    ja: "TBS",
+    es: "TBS",
   },
 
   // Mock Exams — filter
   "mockExams.filter.all": {
     en: "All",
-    ja: "すべて",
+    es: "Todos",
   },
 
   // Review — summary strip labels
-  "review.summary.studied": { en: "Studied", ja: "学習済み" },
-  "review.summary.overdue": { en: "Overdue", ja: "期限切れ" },
-  "review.summary.avgRetention": { en: "Avg Retention", ja: "平均保持率" },
-  "review.summary.mastered": { en: "Mastered", ja: "習得済み" },
+  "review.summary.studied": { en: "Studied", es: "Estudiado" },
+  "review.summary.overdue": { en: "Overdue", es: "Vencido" },
+  "review.summary.avgRetention": { en: "Avg Retention", es: "Retención prom." },
+  "review.summary.mastered": { en: "Mastered", es: "Dominado" },
 
   // Review — urgency group labels
-  "review.group.overdue.label": { en: "Overdue", ja: "期限切れ" },
-  "review.group.dueToday.label": { en: "Due Today", ja: "今日が復習日" },
-  "review.group.comingUp.label": { en: "Coming Up", ja: "もうすぐ" },
-  "review.group.wellRetained.label": { en: "Well Retained", ja: "定着済み" },
-  "review.group.notStudied.label": { en: "Not Yet Studied", ja: "未学習" },
+  "review.group.overdue.label": { en: "Overdue", es: "Vencido" },
+  "review.group.dueToday.label": { en: "Due Today", es: "Para hoy" },
+  "review.group.comingUp.label": { en: "Coming Up", es: "Próximamente" },
+  "review.group.wellRetained.label": { en: "Well Retained", es: "Bien retenido" },
+  "review.group.notStudied.label": { en: "Not Yet Studied", es: "Aún no estudiado" },
 
   // Review — alert section
-  "review.alert.needsReview": { en: "Needs review", ja: "要復習" },
-  "review.alert.reviewToday": { en: "Review today", ja: "今日が復習日" },
+  "review.alert.needsReview": { en: "Needs review", es: "Necesita repaso" },
+  "review.alert.reviewToday": { en: "Review today", es: "Repasar hoy" },
 
   // Dashboard — review queue
-  "dashboard.reviewQueue.title": { en: "Review Queue", ja: "復習キュー" },
+  "dashboard.reviewQueue.title": { en: "Review Queue", es: "Cola de repaso" },
   "dashboard.reviewQueue.desc": {
     en: "Chapters needing review based on forgetting curve",
-    ja: "忘却曲線に基づく復習が必要なチャプター",
+    es: "Capítulos que necesitan repaso según la curva del olvido",
   },
-  "dashboard.reviewQueue.viewSchedule": { en: "View Schedule", ja: "スケジュールを見る" },
+  "dashboard.reviewQueue.viewSchedule": { en: "View Schedule", es: "Ver calendario" },
 
   // Dashboard — sections
-  "dashboard.sections.title": { en: "Exam Sections", ja: "試験セクション" },
-  "dashboard.sections.viewAll": { en: "View All Chapters", ja: "全チャプターを見る" },
-  "dashboard.recentActivity.title": { en: "Recent Activity", ja: "最近のアクティビティ" },
-  "dashboard.recentActivity.viewLog": { en: "View Study Log", ja: "学習記録を見る" },
+  "dashboard.sections.title": { en: "Exam Sections", es: "Secciones del examen" },
+  "dashboard.sections.viewAll": { en: "View All Chapters", es: "Ver todos los capítulos" },
+  "dashboard.recentActivity.title": { en: "Recent Activity", es: "Actividad reciente" },
+  "dashboard.recentActivity.viewLog": { en: "View Study Log", es: "Ver registro de estudio" },
 
   // Settings language
   "settings.language": {
     en: "Language",
-    ja: "言語",
+    es: "Idioma",
   },
 
   // ── Analytics ─────────────────────────────────────────────────
-  "analytics.title": { en: "Analytics", ja: "Analytics" },
+  "analytics.title": { en: "Analytics", es: "Analíticas" },
   "analytics.subtitle": {
     en: "Strategic insights to guide your study decisions.",
-    ja: "学習の意思決定を支える戦略的インサイト",
+    es: "Información estratégica para guiar tus decisiones de estudio.",
   },
 
   // Pace Engine
-  "analytics.pace.title": { en: "Goal Pace", ja: "ゴール進捗" },
+  "analytics.pace.title": { en: "Goal Pace", es: "Ritmo del objetivo" },
   "analytics.pace.subtitle": {
     en: "Required vs actual weekly pace toward your exam date",
-    ja: "試験日に向けた必要ペース vs 実績ペース",
+    es: "Ritmo semanal requerido vs real hacia tu fecha de examen",
   },
-  "analytics.pace.remaining": { en: "Remaining", ja: "残り" },
-  "analytics.pace.chapters": { en: "chapters", ja: "チャプター" },
-  "analytics.pace.estimatedHours": { en: "Est. hours left", ja: "推定残時間" },
-  "analytics.pace.weeklyRequired": { en: "Weekly required", ja: "必要週次時間" },
-  "analytics.pace.weeklyActual": { en: "Weekly actual", ja: "実績週次時間" },
-  "analytics.pace.eta": { en: "ETA", ja: "完了予定" },
-  "analytics.pace.delay": { en: "Delay", ja: "遅延" },
-  "analytics.pace.onTrack": { en: "On track", ja: "順調" },
-  "analytics.pace.ahead": { en: "Ahead of schedule", ja: "予定より先行" },
-  "analytics.pace.behind": { en: "Behind schedule", ja: "遅延中" },
+  "analytics.pace.remaining": { en: "Remaining", es: "Restante" },
+  "analytics.pace.chapters": { en: "chapters", es: "capítulos" },
+  "analytics.pace.estimatedHours": { en: "Est. hours left", es: "Horas est. restantes" },
+  "analytics.pace.weeklyRequired": { en: "Weekly required", es: "Requerido semanal" },
+  "analytics.pace.weeklyActual": { en: "Weekly actual", es: "Real semanal" },
+  "analytics.pace.eta": { en: "ETA", es: "Fecha est." },
+  "analytics.pace.delay": { en: "Delay", es: "Retraso" },
+  "analytics.pace.onTrack": { en: "On track", es: "En camino" },
+  "analytics.pace.ahead": { en: "Ahead of schedule", es: "Adelantado" },
+  "analytics.pace.behind": { en: "Behind schedule", es: "Atrasado" },
   "analytics.pace.noGoal": {
     en: "Set an exam date in Settings to see pace analysis.",
-    ja: "Settings で試験日を設定するとペース分析が表示されます。",
+    es: "Establece una fecha de examen en Settings para ver el análisis de ritmo.",
   },
-  "analytics.pace.hPerWeek": { en: "h/week", ja: "h/週" },
-  "analytics.pace.days": { en: "days", ja: "日" },
-  "analytics.pace.weeksLeft": { en: "weeks left", ja: "週間残り" },
+  "analytics.pace.hPerWeek": { en: "h/week", es: "h/semana" },
+  "analytics.pace.days": { en: "days", es: "días" },
+  "analytics.pace.weeksLeft": { en: "weeks left", es: "semanas restantes" },
 
   // Risk Radar
-  "analytics.risk.title": { en: "Risk Radar", ja: "リスク検知" },
+  "analytics.risk.title": { en: "Risk Radar", es: "Radar de riesgos" },
   "analytics.risk.subtitle": {
     en: "Potential issues that may affect your progress",
-    ja: "進捗に影響する可能性のあるリスク",
+    es: "Problemas potenciales que pueden afectar tu progreso",
   },
   "analytics.risk.noRisks": {
     en: "No risks detected. Keep up the good work!",
-    ja: "リスクは検出されませんでした。この調子で頑張りましょう！",
+    es: "No se detectaron riesgos. ¡Sigue así!",
   },
-  "analytics.risk.critical": { en: "Critical", ja: "重大" },
-  "analytics.risk.warning": { en: "Warning", ja: "注意" },
-  "analytics.risk.info": { en: "Info", ja: "情報" },
-  "analytics.risk.reviewDebt": { en: "Review Debt", ja: "復習滞留" },
-  "analytics.risk.cramming": { en: "Cramming Risk", ja: "詰め込みリスク" },
-  "analytics.risk.stagnation": { en: "Stagnation", ja: "停滞" },
-  "analytics.risk.untouched": { en: "Untouched Chapters", ja: "未着手チャプター" },
-  "analytics.risk.variance": { en: "Study Variance", ja: "学習量のばらつき" },
+  "analytics.risk.critical": { en: "Critical", es: "Crítico" },
+  "analytics.risk.warning": { en: "Warning", es: "Advertencia" },
+  "analytics.risk.info": { en: "Info", es: "Info" },
+  "analytics.risk.reviewDebt": { en: "Review Debt", es: "Deuda de repaso" },
+  "analytics.risk.cramming": { en: "Cramming Risk", es: "Riesgo de atracón" },
+  "analytics.risk.stagnation": { en: "Stagnation", es: "Estancamiento" },
+  "analytics.risk.untouched": { en: "Untouched Chapters", es: "Capítulos sin tocar" },
+  "analytics.risk.variance": { en: "Study Variance", es: "Variación de estudio" },
 
   // Retention Calibration
-  "analytics.retention.title": { en: "Retention Calibration", ja: "定着度キャリブレーション" },
+  "analytics.retention.title": { en: "Retention Calibration", es: "Calibración de retención" },
   "analytics.retention.subtitle": {
     en: "Predicted vs actual recall — calibrate your review intervals",
-    ja: "予測保持率 vs 実測想起率 — 復習間隔を最適化",
+    es: "Recuerdo predicho vs real — calibra tus intervalos de repaso",
   },
-  "analytics.retention.predicted": { en: "Predicted", ja: "予測" },
-  "analytics.retention.actual": { en: "Actual", ja: "実測" },
-  "analytics.retention.gap": { en: "Gap", ja: "乖離" },
-  "analytics.retention.action": { en: "Action", ja: "推奨" },
-  "analytics.retention.shortenInterval": { en: "Shorten interval", ja: "間隔短縮" },
-  "analytics.retention.extendInterval": { en: "Extend interval", ja: "間隔延長" },
-  "analytics.retention.onTrack": { en: "On track", ja: "順調" },
+  "analytics.retention.predicted": { en: "Predicted", es: "Predicho" },
+  "analytics.retention.actual": { en: "Actual", es: "Real" },
+  "analytics.retention.gap": { en: "Gap", es: "Brecha" },
+  "analytics.retention.action": { en: "Action", es: "Acción" },
+  "analytics.retention.shortenInterval": { en: "Shorten interval", es: "Acortar intervalo" },
+  "analytics.retention.extendInterval": { en: "Extend interval", es: "Extender intervalo" },
+  "analytics.retention.onTrack": { en: "On track", es: "En camino" },
   "analytics.retention.noData": {
     en: "Rate your recall in the Review tab to see calibration data.",
-    ja: "Review タブで想起評価を入力するとキャリブレーションデータが表示されます。",
+    es: "Califica tu recuerdo en la pestaña Review para ver datos de calibración.",
   },
 
   // Allocation Optimizer
-  "analytics.allocation.title": { en: "Weekly Strategy", ja: "今週の戦略" },
+  "analytics.allocation.title": { en: "Weekly Strategy", es: "Estrategia semanal" },
   "analytics.allocation.subtitle": {
     en: "Recommended time allocation adjustments",
-    ja: "推奨される時間配分の調整",
+    es: "Ajustes recomendados de distribución de tiempo",
   },
-  "analytics.allocation.section": { en: "Section", ja: "セクション" },
-  "analytics.allocation.current": { en: "Current", ja: "現在" },
-  "analytics.allocation.recommended": { en: "Recommended", ja: "推奨" },
-  "analytics.allocation.change": { en: "Change", ja: "変更" },
-  "analytics.allocation.reason": { en: "Reason", ja: "理由" },
-  "analytics.allocation.increase": { en: "Increase", ja: "増加" },
-  "analytics.allocation.decrease": { en: "Decrease", ja: "減少" },
-  "analytics.allocation.maintain": { en: "Maintain", ja: "維持" },
+  "analytics.allocation.section": { en: "Section", es: "Sección" },
+  "analytics.allocation.current": { en: "Current", es: "Actual" },
+  "analytics.allocation.recommended": { en: "Recommended", es: "Recomendado" },
+  "analytics.allocation.change": { en: "Change", es: "Cambio" },
+  "analytics.allocation.reason": { en: "Reason", es: "Razón" },
+  "analytics.allocation.increase": { en: "Increase", es: "Aumentar" },
+  "analytics.allocation.decrease": { en: "Decrease", es: "Disminuir" },
+  "analytics.allocation.maintain": { en: "Maintain", es: "Mantener" },
 
   // Coverage
-  "analytics.coverage.title": { en: "Coverage Gaps", ja: "カバレッジ" },
+  "analytics.coverage.title": { en: "Coverage Gaps", es: "Brechas de cobertura" },
   "analytics.coverage.subtitle": {
     en: "Untouched and fragile chapters requiring attention",
-    ja: "未着手・脆弱なチャプターの一覧",
+    es: "Capítulos sin tocar y frágiles que requieren atención",
   },
-  "analytics.coverage.untouched": { en: "Untouched", ja: "未着手" },
-  "analytics.coverage.fragile": { en: "Fragile", ja: "脆弱" },
-  "analytics.coverage.urgent": { en: "Urgent", ja: "緊急" },
-  "analytics.coverage.normal": { en: "Normal", ja: "通常" },
+  "analytics.coverage.untouched": { en: "Untouched", es: "Sin tocar" },
+  "analytics.coverage.fragile": { en: "Fragile", es: "Frágil" },
+  "analytics.coverage.urgent": { en: "Urgent", es: "Urgente" },
+  "analytics.coverage.normal": { en: "Normal", es: "Normal" },
   "analytics.coverage.noCoverage": {
     en: "All chapters are covered. Great job!",
-    ja: "全チャプターがカバーされています。素晴らしい！",
+    es: "Todos los capítulos están cubiertos. ¡Excelente trabajo!",
   },
 
   // Drill-Down
-  "analytics.drilldown.title": { en: "Chapter Detail", ja: "チャプター詳細" },
+  "analytics.drilldown.title": { en: "Chapter Detail", es: "Detalle del capítulo" },
   "analytics.drilldown.subtitle": {
     en: "Accuracy trend per chapter over time",
-    ja: "チャプター別の正答率推移",
+    es: "Tendencia de precisión por capítulo a lo largo del tiempo",
   },
 
   // ── Review Recall Rating ──────────────────────────────────────
-  "review.recall.title": { en: "How well did you recall?", ja: "どのくらい思い出せた？" },
-  "review.recall.0": { en: "Forgot", ja: "忘れた" },
-  "review.recall.1": { en: "Hard", ja: "難しい" },
-  "review.recall.2": { en: "OK", ja: "OK" },
-  "review.recall.3": { en: "Easy", ja: "簡単" },
-  "review.recall.rated": { en: "Rated", ja: "評価済み" },
+  "review.recall.title": { en: "How well did you recall?", es: "¿Qué tan bien recordaste?" },
+  "review.recall.0": { en: "Forgot", es: "Olvidé" },
+  "review.recall.1": { en: "Hard", es: "Difícil" },
+  "review.recall.2": { en: "OK", es: "OK" },
+  "review.recall.3": { en: "Easy", es: "Fácil" },
+  "review.recall.rated": { en: "Rated", es: "Calificado" },
 } as const
 
 export type TranslationKey = keyof typeof translations
@@ -594,12 +594,12 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | null>(null)
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("ja")
+  const [locale, setLocaleState] = useState<Locale>("en")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem("app-locale") as Locale | null
-    if (saved === "en" || saved === "ja") {
+    if (saved === "en" || saved === "es") {
       setLocaleState(saved)
     }
     setMounted(true)
@@ -628,13 +628,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Avoid hydration mismatch by rendering with default locale until mounted
   const contextValue = {
-    locale: mounted ? locale : "ja",
+    locale: mounted ? locale : "en",
     setLocale,
     t: mounted
       ? t
       : (key: TranslationKey) => {
           const entry = translations[key]
-          return entry ? entry.ja : key
+          return entry ? entry.en : key
         },
   }
 
