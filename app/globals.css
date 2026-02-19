@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 230 15% 96%;
+    --foreground: 230 25% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 230 25% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 25% 8%;
+    --primary: 232 47% 15%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 230 12% 92%;
+    --secondary-foreground: 230 25% 8%;
+    --muted: 230 10% 91%;
+    --muted-foreground: 230 8% 46%;
+    --accent: 230 35% 25%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 230 12% 86%;
+    --input: 230 12% 86%;
+    --ring: 232 47% 15%;
+    --chart-1: 225 50% 22%;
+    --chart-2: 175 45% 28%;
+    --chart-3: 25 55% 35%;
+    --chart-4: 345 40% 32%;
+    --chart-5: 230 18% 50%;
+    --radius: 0.5rem;
+    --sidebar-background: 232 47% 8%;
+    --sidebar-foreground: 230 15% 82%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 232 47% 8%;
+    --sidebar-accent: 232 40% 14%;
+    --sidebar-accent-foreground: 230 15% 90%;
+    --sidebar-border: 232 35% 16%;
+    --sidebar-ring: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 232 30% 6%;
+    --foreground: 230 15% 92%;
+    --card: 232 25% 10%;
+    --card-foreground: 230 15% 92%;
+    --popover: 232 25% 10%;
+    --popover-foreground: 230 15% 92%;
+    --primary: 230 40% 65%;
+    --primary-foreground: 232 30% 6%;
+    --secondary: 232 20% 16%;
+    --secondary-foreground: 230 15% 92%;
+    --muted: 232 18% 16%;
+    --muted-foreground: 230 10% 55%;
+    --accent: 230 35% 30%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 232 18% 18%;
+    --input: 232 18% 18%;
+    --ring: 230 40% 65%;
+    --chart-1: 225 50% 45%;
+    --chart-2: 175 45% 40%;
+    --chart-3: 25 55% 50%;
+    --chart-4: 345 40% 45%;
+    --chart-5: 230 18% 55%;
+    --sidebar-background: 232 35% 5%;
+    --sidebar-foreground: 230 15% 82%;
+    --sidebar-primary: 230 40% 65%;
+    --sidebar-primary-foreground: 232 30% 6%;
+    --sidebar-accent: 232 30% 12%;
+    --sidebar-accent-foreground: 230 15% 90%;
+    --sidebar-border: 232 25% 14%;
+    --sidebar-ring: 230 40% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Flashcard 3D flip */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Custom scrollbar for the app */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(230, 12%, 80%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(230, 12%, 65%);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(230, 12%, 25%);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(230, 12%, 35%);
+}

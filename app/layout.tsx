@@ -1,0 +1,29 @@
+import type { Metadata, Viewport } from 'next'
+import { ThemeProvider } from 'next-themes'
+
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: 'CPA Mastery | USCPA Study Platform',
+  description: 'A premium study tool for the US CPA examination. Track progress, practice MCQs, and master all four exam sections.',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#151933',
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className="font-sans antialiased">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}
