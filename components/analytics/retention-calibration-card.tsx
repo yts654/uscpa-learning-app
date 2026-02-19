@@ -30,7 +30,7 @@ export function RetentionCalibrationCard({ entries }: RetentionCalibrationCardPr
         <div className="space-y-0">
           {/* Table header */}
           <div className="hidden sm:grid grid-cols-6 gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border">
-            <div className="col-span-2">Chapter</div>
+            <div className="col-span-2">{t("analytics.retention.chapter")}</div>
             <div className="text-center">{t("analytics.retention.predicted")}</div>
             <div className="text-center">{t("analytics.retention.actual")}</div>
             <div className="text-center">{t("analytics.retention.gap")}</div>

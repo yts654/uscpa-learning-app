@@ -164,7 +164,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">Review Schedule</h2>
+        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">{t("review.title")}</h2>
         <p className="text-muted-foreground mt-1">
           {t("review.header.desc")}
         </p>
@@ -521,7 +521,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                   <div className="bg-muted/30 rounded-lg p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.nextReview")}</p>
                     <p className="text-lg font-bold mt-0.5" style={{ color: selected.isOverdue || selected.isDueToday ? "hsl(0,65%,45%)" : "hsl(225,50%,35%)" }}>
-                      {formatNextDate(selected.nextReviewDate)}
+                      {formatNextDate(selected.nextReviewDate, t)}
                     </p>
                   </div>
                 </div>
@@ -558,7 +558,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
               : "bg-muted text-muted-foreground hover:bg-border"
           )}
         >
-          All Sections
+          {t("review.allSections")}
         </button>
         {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map((section) => (
           <button
@@ -650,10 +650,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                         {/* Extra stats */}
                         <div className="flex items-center gap-2 sm:gap-3 text-xs text-muted-foreground flex-wrap">
                           {item.daysSinceLastStudy >= 0 && (
-                            <span>{item.daysSinceLastStudy}d ago</span>
+                            <span>{item.daysSinceLastStudy}{t("review.dAgo")}</span>
                           )}
-                          <span className="hidden sm:inline">Next: {formatNextDate(item.nextReviewDate)}</span>
-                          <span className="hidden sm:inline">{item.reviewCount} reviews</span>
+                          <span className="hidden sm:inline">{t("review.next")}: {formatNextDate(item.nextReviewDate, t)}</span>
+                          <span className="hidden sm:inline">{item.reviewCount} {t("review.reviews")}</span>
                         </div>
                       </div>
                     </div>
@@ -708,12 +708,12 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
   )
 }
 
-function formatNextDate(dateStr: string): string {
+function formatNextDate(dateStr: string, t?: (key: string) => string): string {
   const d = new Date(dateStr + "T00:00:00")
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const diff = Math.floor((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-  if (diff <= 0) return "Today"
-  if (diff === 1) return "Tomorrow"
+  if (diff <= 0) return t ? t("review.today") : "Today"
+  if (diff === 1) return t ? t("review.tomorrow") : "Tomorrow"
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
 }

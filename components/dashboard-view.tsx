@@ -22,7 +22,7 @@ interface DashboardViewProps {
 }
 
 export function DashboardView({ chapters, onViewChange, completedSections = [], studyLogs, essenceNotes, streak, chapterRetentions }: DashboardViewProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
   const [openSection, setOpenSection] = useState<ExamSection | null>(null)
   const [guideHidden, setGuideHidden] = useState(true)
 
@@ -48,7 +48,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
 
   // Weekly study hours chart — derive from studyLogs (last 7 days)
   const weeklyData = (() => {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    const days = [t("day.sun"), t("day.mon"), t("day.tue"), t("day.wed"), t("day.thu"), t("day.fri"), t("day.sat")]
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const result: { day: string; date: string; hours: number }[] = []
@@ -105,17 +105,17 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const diff = Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24))
-    if (diff === 0) return "Today"
-    if (diff === 1) return "Yesterday"
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    if (diff === 0) return t("dashboard.today")
+    if (diff === 1) return t("dashboard.yesterday")
+    return d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" })
   }
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">Study Overview</h2>
-        <p className="text-muted-foreground mt-1">Track your USCPA exam preparation progress across all sections.</p>
+        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">{t("dashboard.title")}</h2>
+        <p className="text-muted-foreground mt-1">{t("dashboard.subtitle")}</p>
       </div>
 
       {/* Getting Started Guide */}
@@ -174,9 +174,9 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
           <div className="absolute top-0 left-0 w-1 h-full rounded-r" style={{ backgroundColor: "hsl(225, 50%, 22%)" }} />
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Total Study Hours</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{t("dashboard.totalStudyHours")}</p>
               <p className="text-3xl font-bold text-card-foreground mt-1">{totalHours.toFixed(1)}<span className="text-sm font-normal text-muted-foreground ml-1">h</span></p>
-              <p className="text-xs text-muted-foreground mt-1">{activeDays} days active</p>
+              <p className="text-xs text-muted-foreground mt-1">{activeDays} {t("dashboard.daysActive")}</p>
             </div>
             <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: "hsl(225, 50%, 96%)" }}>
               <Clock className="w-5 h-5" style={{ color: "hsl(225, 50%, 22%)" }} />
@@ -205,9 +205,9 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
           <div className="absolute top-0 left-0 w-1 h-full rounded-r" style={{ backgroundColor: "hsl(25, 55%, 35%)" }} />
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Study Streak</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{t("dashboard.studyStreak")}</p>
               <p className="text-3xl font-bold text-card-foreground mt-1">{streak}</p>
-              <p className="text-xs text-muted-foreground mt-1">{streak === 1 ? "day in a row" : "days in a row"}</p>
+              <p className="text-xs text-muted-foreground mt-1">{streak === 1 ? t("dashboard.dayInARow") : t("dashboard.daysInARow")}</p>
             </div>
             <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: "hsl(25, 55%, 95%)" }}>
               <Flame className="w-5 h-5" style={{ color: "hsl(25, 55%, 35%)" }} />
@@ -215,7 +215,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
           </div>
           {/* Last 14 days activity grid */}
           <div className="mt-4">
-            <p className="text-xs text-muted-foreground mb-2">Last 14 days</p>
+            <p className="text-xs text-muted-foreground mb-2">{t("dashboard.last14Days")}</p>
             <div className="flex gap-1.5 flex-wrap">
               {(() => {
                 const studyDates = new Set(studyLogs.map(l => l.date))
@@ -229,7 +229,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                   const dayHours = studyLogs.filter(l => l.date === dateStr).reduce((a, b) => a + b.studyHours, 0)
                   days.push({
                     date: dateStr,
-                    label: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+                    label: d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" }),
                     hasStudy: studyDates.has(dateStr),
                     hours: dayHours,
                   })
@@ -257,14 +257,14 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="font-semibold text-card-foreground">Weekly Study Hours</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">Hours studied per day (last 7 days)</p>
+            <h3 className="font-semibold text-card-foreground">{t("dashboard.weeklyStudyHours")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("dashboard.weeklySubtitle")}</p>
           </div>
           <button
             onClick={() => onViewChange("analytics")}
             className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            View Details <ArrowUpRight className="w-3 h-3" />
+            {t("dashboard.viewDetails")} <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
         <div className="h-52">
@@ -281,7 +281,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                   color: "white",
                   fontSize: "12px",
                 }}
-                formatter={(value: number) => [`${value}h`, "Study Hours"]}
+                formatter={(value: number) => [`${value}h`, t("dashboard.studyHours")]}
                 cursor={{ fill: "hsl(230, 10%, 93%, 0.7)" }}
               />
               <Bar dataKey="hours" radius={[4, 4, 0, 0]} fill="hsl(225, 50%, 22%)" />
@@ -339,7 +339,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                         {masteryInfo.label}
                       </span>
                       {item.daysSinceLastStudy >= 0 && (
-                        <span className="text-xs text-muted-foreground">{item.daysSinceLastStudy}d ago</span>
+                        <span className="text-xs text-muted-foreground">{item.daysSinceLastStudy}{t("dashboard.dAgo")}</span>
                       )}
                     </div>
                   </div>
@@ -397,7 +397,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                               style={{ width: `${progress}%`, backgroundColor: data.info.color }}
                             />
                           </div>
-                          <span className="text-xs text-muted-foreground">{data.chaptersStudied}/{data.totalChapters} chapters studied</span>
+                          <span className="text-xs text-muted-foreground">{data.chaptersStudied}/{data.totalChapters} {t("dashboard.chaptersStudied")}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 sm:gap-4 text-xs text-muted-foreground flex-shrink-0">
@@ -414,7 +414,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Recent study logs */}
                       <div>
-                        <h5 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Recent Study Sessions</h5>
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">{t("dashboard.recentStudySessions")}</h5>
                         {data.sectionLogs.length === 0 ? (
                           <div>
                             <p className="text-xs text-muted-foreground">{t("dashboard.section.noSessions")}</p>
@@ -452,14 +452,14 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                           className="mt-3 text-xs font-medium hover:underline transition-colors"
                           style={{ color: data.info.color }}
                         >
-                          View all study logs →
+                          {t("dashboard.viewAllLogs")} →
                         </button>
                       </div>
                       {/* Recent essence note insights */}
                       <div>
-                        <h5 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Recent Insights</h5>
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">{t("dashboard.recentInsights")}</h5>
                         {data.sectionNotes.length === 0 ? (
-                          <p className="text-xs text-muted-foreground">No essence notes yet for this section.</p>
+                          <p className="text-xs text-muted-foreground">{t("dashboard.noEssenceNotes")}</p>
                         ) : (
                           <div className="space-y-2">
                             {data.sectionNotes
@@ -481,7 +481,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                           className="mt-3 text-xs font-medium hover:underline transition-colors"
                           style={{ color: data.info.color }}
                         >
-                          View chapters →
+                          {t("dashboard.viewChapters")} →
                         </button>
                       </div>
                     </div>

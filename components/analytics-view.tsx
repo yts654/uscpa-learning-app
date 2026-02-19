@@ -47,8 +47,8 @@ export function AnalyticsView({
   )
 
   const risks = useMemo(
-    () => detectAllRisks(chapters, studyLogs, chapterRetentions, studyGoals),
-    [chapters, studyLogs, chapterRetentions, studyGoals]
+    () => detectAllRisks(chapters, studyLogs, chapterRetentions, studyGoals, t),
+    [chapters, studyLogs, chapterRetentions, studyGoals, t]
   )
 
   const calibration = useMemo(
@@ -57,8 +57,8 @@ export function AnalyticsView({
   )
 
   const allocations = useMemo(
-    () => generateAllocations(paces, risks, studyLogs, chapterRetentions, studyGoals),
-    [paces, risks, studyLogs, chapterRetentions, studyGoals]
+    () => generateAllocations(paces, risks, studyLogs, chapterRetentions, studyGoals, t),
+    [paces, risks, studyLogs, chapterRetentions, studyGoals, t]
   )
 
   const coverage = useMemo(

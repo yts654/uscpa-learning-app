@@ -14,14 +14,14 @@ interface AppSidebarProps {
   profile: { name: string; photoUrl: string | null }
 }
 
-const NAV_ITEMS: { id: View; label: string; icon: React.ElementType; descKey: TranslationKey }[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, descKey: "nav.dashboard.desc" },
-  { id: "chapters", label: "Chapters", icon: BookMarked, descKey: "nav.chapters.desc" },
-  { id: "study-log", label: "Study Log", icon: ClipboardList, descKey: "nav.studyLog.desc" },
-  { id: "mock-exams", label: "Mock Exams", icon: FileText, descKey: "nav.mockExams.desc" },
-  { id: "review", label: "Review", icon: RefreshCw, descKey: "nav.review.desc" },
-  { id: "analytics", label: "Analytics", icon: BarChart3, descKey: "nav.analytics.desc" },
-  { id: "settings", label: "Settings", icon: Settings, descKey: "nav.settings.desc" },
+const NAV_ITEMS: { id: View; labelKey: TranslationKey; icon: React.ElementType; descKey: TranslationKey }[] = [
+  { id: "dashboard", labelKey: "nav.dashboard", icon: LayoutDashboard, descKey: "nav.dashboard.desc" },
+  { id: "chapters", labelKey: "nav.chapters", icon: BookMarked, descKey: "nav.chapters.desc" },
+  { id: "study-log", labelKey: "nav.studyLog", icon: ClipboardList, descKey: "nav.studyLog.desc" },
+  { id: "mock-exams", labelKey: "nav.mockExams", icon: FileText, descKey: "nav.mockExams.desc" },
+  { id: "review", labelKey: "nav.review", icon: RefreshCw, descKey: "nav.review.desc" },
+  { id: "analytics", labelKey: "nav.analytics", icon: BarChart3, descKey: "nav.analytics.desc" },
+  { id: "settings", labelKey: "nav.settings", icon: Settings, descKey: "nav.settings.desc" },
 ]
 
 export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSidebarProps) {
@@ -46,21 +46,21 @@ export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSi
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-serif text-lg text-[hsl(0_0%_100%)] leading-tight">CPA Mastery</h1>
-          <p className="text-xs text-[hsl(230_15%_50%)] tracking-wide uppercase">Study Platform</p>
+          <p className="text-xs text-[hsl(230_15%_50%)] tracking-wide uppercase">{t("sidebar.studyPlatform")}</p>
         </div>
         {/* Quick toggles */}
         <div className="flex flex-col gap-1.5 flex-shrink-0">
           <button
             onClick={toggleLocale}
             className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
-            title={locale === "es" ? "Switch to English" : "Switch to Spanish"}
+            title={locale === "es" ? t("sidebar.switchToEnglish") : t("sidebar.switchToSpanish")}
           >
             <span className="text-[9px] font-bold text-[hsl(230_15%_72%)]">{locale === "es" ? "EN" : "ES"}</span>
           </button>
           <button
             onClick={toggleTheme}
             className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
-            title={theme === "dark" ? "Light mode" : "Dark mode"}
+            title={theme === "dark" ? t("sidebar.lightMode") : t("sidebar.darkMode")}
           >
             {theme === "dark" ? (
               <Sun className="w-3.5 h-3.5 text-[hsl(40_80%_60%)]" />
@@ -75,14 +75,14 @@ export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSi
       <div className="mx-4 mt-5 mb-2 p-3 rounded-lg bg-gradient-to-r from-[hsl(225,50%,18%)] to-[hsl(175,45%,20%)] border border-[hsl(225,50%,24%)]">
         <div className="flex items-center gap-2">
           <Flame className="w-4 h-4 text-[hsl(25,55%,50%)]" />
-          <span className="text-xs font-medium text-[hsl(230_15%_60%)] uppercase tracking-wider">Study Streak</span>
+          <span className="text-xs font-medium text-[hsl(230_15%_60%)] uppercase tracking-wider">{t("sidebar.studyStreak")}</span>
         </div>
-        <p className="text-2xl font-bold text-[hsl(0_0%_100%)] mt-1">{streak} <span className="text-sm font-normal text-[hsl(230_15%_50%)]">days</span></p>
+        <p className="text-2xl font-bold text-[hsl(0_0%_100%)] mt-1">{streak} <span className="text-sm font-normal text-[hsl(230_15%_50%)]">{t("sidebar.days")}</span></p>
       </div>
 
       {/* Navigation */}
       <nav className="flex flex-col gap-1 px-3 mt-4 flex-1">
-        <p className="text-[10px] uppercase tracking-widest text-[hsl(230_15%_40%)] font-medium px-3 mb-2">Navigation</p>
+        <p className="text-[10px] uppercase tracking-widest text-[hsl(230_15%_40%)] font-medium px-3 mb-2">{t("sidebar.navigation")}</p>
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon
           const isActive = currentView === item.id
@@ -99,7 +99,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSi
             >
               <Icon className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <div>
-                {item.label}
+                {t(item.labelKey)}
                 <p className={cn(
                   "text-[10px] font-normal leading-tight mt-0.5",
                   isActive ? "text-[hsl(232_47%_8%)]/60" : "text-[hsl(230_15%_40%)]"

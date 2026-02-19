@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react"
 import { BookOpen, LayoutDashboard, BookMarked, ClipboardList, BarChart3, RefreshCw, Settings, FileText, Sun, Moon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useLanguage } from "@/lib/i18n"
+import { useLanguage, type TranslationKey } from "@/lib/i18n"
 import { useTheme } from "next-themes"
 
 type View = "dashboard" | "chapters" | "study-log" | "mock-exams" | "analytics" | "settings" | "review"
@@ -13,20 +13,20 @@ interface MobileHeaderProps {
   onViewChange: (view: View) => void
 }
 
-const NAV_ITEMS: { id: View; label: string; icon: React.ElementType }[] = [
-  { id: "dashboard", label: "Home", icon: LayoutDashboard },
-  { id: "chapters", label: "Chapters", icon: BookMarked },
-  { id: "study-log", label: "Log", icon: ClipboardList },
-  { id: "mock-exams", label: "Mock", icon: FileText },
-  { id: "review", label: "Review", icon: RefreshCw },
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
-  { id: "settings", label: "Settings", icon: Settings },
+const NAV_ITEMS: { id: View; labelKey: TranslationKey; icon: React.ElementType }[] = [
+  { id: "dashboard", labelKey: "nav.home", icon: LayoutDashboard },
+  { id: "chapters", labelKey: "nav.chapters", icon: BookMarked },
+  { id: "study-log", labelKey: "nav.log", icon: ClipboardList },
+  { id: "mock-exams", labelKey: "nav.mock", icon: FileText },
+  { id: "review", labelKey: "nav.review", icon: RefreshCw },
+  { id: "analytics", labelKey: "nav.analytics", icon: BarChart3 },
+  { id: "settings", labelKey: "nav.settings", icon: Settings },
 ]
 
 export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef<HTMLButtonElement>(null)
-  const { locale, setLocale } = useLanguage()
+  const { locale, setLocale, t } = useLanguage()
   const { theme, setTheme } = useTheme()
 
   const toggleLocale = () => setLocale(locale === "es" ? "en" : "es")
@@ -95,7 +95,7 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
               )}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
-              {item.label}
+              {t(item.labelKey)}
             </button>
           )
         })}

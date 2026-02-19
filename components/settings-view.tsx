@@ -99,15 +99,15 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
     <div className="space-y-8 max-w-2xl">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl font-bold text-foreground">Settings</h2>
-        <p className="text-muted-foreground mt-1">Configure your study preferences and exam targets.</p>
+        <h2 className="font-serif text-3xl font-bold text-foreground">{t("settings.title")}</h2>
+        <p className="text-muted-foreground mt-1">{t("settings.subtitle")}</p>
       </div>
 
       {/* Profile */}
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center gap-3 mb-5">
           <User className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Profile</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.profile")}</h3>
         </div>
 
         {/* Photo + Name/Email layout */}
@@ -145,7 +145,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                 onClick={handleRemovePhoto}
                 className="text-xs text-muted-foreground hover:text-destructive transition-colors"
               >
-                Remove photo
+                {t("settings.removePhoto")}
               </button>
             )}
           </div>
@@ -153,22 +153,22 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           {/* Name & Email fields */}
           <div className="flex-1 space-y-4">
             <div>
-              <label className="text-sm font-medium text-card-foreground block mb-1.5">Full Name</label>
+              <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.fullName")}</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your full name"
+                placeholder={t("settings.fullNamePlaceholder")}
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-card-foreground block mb-1.5">Email Address</label>
+              <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.email")}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder={t("settings.emailPlaceholder")}
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
@@ -180,15 +180,15 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center gap-3 mb-5">
           <Sun className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Appearance</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.appearance")}</h3>
         </div>
         <div>
-          <label className="text-sm font-medium text-card-foreground block mb-3">Theme</label>
+          <label className="text-sm font-medium text-card-foreground block mb-3">{t("settings.theme")}</label>
           <div className="grid grid-cols-3 gap-3">
             {([
-              { value: "light", label: "Light", icon: Sun },
-              { value: "dark", label: "Dark", icon: Moon },
-              { value: "system", label: "System", icon: Monitor },
+              { value: "light", labelKey: "settings.light" as const, icon: Sun },
+              { value: "dark", labelKey: "settings.dark" as const, icon: Moon },
+              { value: "system", labelKey: "settings.system" as const, icon: Monitor },
             ] as const).map((opt) => {
               const Icon = opt.icon
               const isActive = theme === opt.value
@@ -203,7 +203,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                   }`}
                 >
                   <Icon className="w-5 h-5" />
-                  {opt.label}
+                  {t(opt.labelKey)}
                 </button>
               )
             })}
@@ -241,7 +241,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
       <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border flex items-center gap-3">
           <Target className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Exam Target by Section</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.examTarget")}</h3>
         </div>
 
         {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map((section) => {
@@ -274,12 +274,12 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                   }`}
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  {isCompleted ? "Completed" : "Mark Complete"}
+                  {isCompleted ? t("settings.completed") : t("settings.markComplete")}
                 </button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Exam Date</label>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">{t("settings.examDate")}</label>
                   <div className="grid grid-cols-3 gap-2">
                     <select
                       value={dateParts.year}
@@ -321,14 +321,14 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Target Score</label>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">{t("settings.targetScore")}</label>
                   <select
                     value={studyGoals.sections[section].targetScore}
                     onChange={(e) => updateTargetScore(section, parseInt(e.target.value))}
                     disabled={isCompleted}
                     className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <option value="75">75 (Passing)</option>
+                    <option value="75">75 ({t("settings.passing")})</option>
                     <option value="80">80</option>
                     <option value="85">85</option>
                     <option value="90">90+</option>
@@ -344,34 +344,34 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center gap-3 mb-5">
           <Calendar className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Study Preferences</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.studyPreferences")}</h3>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-card-foreground block mb-1.5">Daily Study Goal (hours)</label>
+            <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.dailyGoal")}</label>
             <select
               value={studyGoals.dailyStudyHours}
               onChange={(e) => onUpdateStudyGoals({ ...studyGoals, dailyStudyHours: parseInt(e.target.value) })}
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
             >
-              <option value="1">1 hour</option>
-              <option value="2">2 hours</option>
-              <option value="3">3 hours</option>
-              <option value="4">4 hours</option>
-              <option value="5">5+ hours</option>
+              <option value="1">1 {t("settings.hour")}</option>
+              <option value="2">2 {t("settings.hours")}</option>
+              <option value="3">3 {t("settings.hours")}</option>
+              <option value="4">4 {t("settings.hours")}</option>
+              <option value="5">5+ {t("settings.hours")}</option>
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium text-card-foreground block mb-1.5">Questions per Session</label>
+            <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.questionsPerSession")}</label>
             <select
               value={studyGoals.questionsPerSession}
               onChange={(e) => onUpdateStudyGoals({ ...studyGoals, questionsPerSession: parseInt(e.target.value) })}
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
             >
-              <option value="10">10 questions</option>
-              <option value="25">25 questions</option>
-              <option value="50">50 questions</option>
-              <option value="100">100 questions</option>
+              <option value="10">10 {t("settings.questionsUnit")}</option>
+              <option value="25">25 {t("settings.questionsUnit")}</option>
+              <option value="50">50 {t("settings.questionsUnit")}</option>
+              <option value="100">100 {t("settings.questionsUnit")}</option>
             </select>
           </div>
         </div>
@@ -381,12 +381,16 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center gap-3 mb-5">
           <Bell className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Notifications</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.notifications")}</h3>
         </div>
         <div className="space-y-3">
-          {["Daily study reminder", "Weekly progress report", "Streak notifications"].map((item) => (
-            <label key={item} className="flex items-center justify-between py-2 cursor-pointer">
-              <span className="text-sm text-card-foreground">{item}</span>
+          {([
+            { key: "settings.dailyReminder" as const },
+            { key: "settings.weeklyReport" as const },
+            { key: "settings.streakNotifications" as const },
+          ]).map((item) => (
+            <label key={item.key} className="flex items-center justify-between py-2 cursor-pointer">
+              <span className="text-sm text-card-foreground">{t(item.key)}</span>
               <div className="relative">
                 <input type="checkbox" defaultChecked className="sr-only peer" />
                 <div className="w-9 h-5 rounded-full bg-muted peer-checked:bg-primary transition-colors" />
@@ -402,7 +406,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
         onClick={handleSave}
         className="px-6 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
       >
-        {saved ? "Saved!" : "Save Changes"}
+        {saved ? t("settings.saved") : t("settings.saveChanges")}
       </button>
     </div>
   )

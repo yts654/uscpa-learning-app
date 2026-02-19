@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { Plus, Filter, Calendar, Clock, Target, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2 } from "lucide-react"
+import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/i18n"
 import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
 
 interface StudyLogViewProps {
@@ -30,15 +31,16 @@ function getMonday(d: Date): Date {
   return monday
 }
 
-function formatWeekDate(dateStr: string): string {
+function formatWeekDate(dateStr: string, locale: string): string {
   const d = new Date(dateStr + "T00:00:00")
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+  return d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" })
 }
 
 function generateWeekComments(
   sections: Record<ExamSection, { hours: number; mc: number; tbs: number }>,
   totalHours: number,
-  prevWeekHours: number
+  prevWeekHours: number,
+  t: (key: string) => string
 ): string[] {
   const comments: string[] = []
   const allSections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP"]
@@ -46,27 +48,27 @@ function generateWeekComments(
   for (const section of allSections) {
     const s = sections[section]
     if (s.hours === 0) {
-      comments.push(`${section}: No study sessions this week`)
+      comments.push(`${section}: ${t("studyLog.weekComment.noSessions")}`)
       continue
     }
     const total = s.mc + s.tbs
     if (total === 0) continue
     const mcRatio = s.mc / total
     if (mcRatio > 0.8) {
-      comments.push(`${section}: Heavy on MC (${Math.round(mcRatio * 100)}%), consider more TBS practice`)
+      comments.push(`${section}: ${t("studyLog.weekComment.heavyMC").replace("{n}", String(Math.round(mcRatio * 100)))}`)
     } else if (mcRatio < 0.2) {
-      comments.push(`${section}: Heavy on TBS (${Math.round((1 - mcRatio) * 100)}%), consider more MC practice`)
+      comments.push(`${section}: ${t("studyLog.weekComment.heavyTBS").replace("{n}", String(Math.round((1 - mcRatio) * 100)))}`)
     } else {
-      comments.push(`${section}: Good balance across MC/TBS`)
+      comments.push(`${section}: ${t("studyLog.weekComment.goodBalance")}`)
     }
   }
 
   if (prevWeekHours > 0 && totalHours > 0) {
     const change = ((totalHours - prevWeekHours) / prevWeekHours) * 100
     if (change <= -30) {
-      comments.push(`Total hours down ${Math.abs(Math.round(change))}% vs last week`)
+      comments.push(t("studyLog.weekComment.hoursDown").replace("{n}", String(Math.abs(Math.round(change)))))
     } else if (change >= 30) {
-      comments.push(`Total hours up ${Math.round(change)}% vs last week`)
+      comments.push(t("studyLog.weekComment.hoursUp").replace("{n}", String(Math.round(change))))
     }
   }
 
@@ -74,6 +76,7 @@ function generateWeekComments(
 }
 
 export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogViewProps) {
+  const { t, locale } = useLanguage()
   const logs = studyLogs
   const setLogs = onUpdateLogs
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
@@ -112,8 +115,6 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
   const totalLogs = filteredLogs.length
   const totalHours = filteredLogs.reduce((a, b) => a + b.studyHours, 0)
   const totalQuestions = filteredLogs.reduce((a, b) => a + b.questionsAnswered, 0)
-  const totalCorrect = filteredLogs.reduce((a, b) => a + b.correctAnswers, 0)
-  const accuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0
   const uniqueDays = new Set(filteredLogs.map(l => l.date)).size
 
   const availableChapters = chapters.filter(c => c.section === formSection)
@@ -158,10 +159,10 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       const prevWeekLogs = i + 1 < weekKeys.length ? weekMap.get(weekKeys[i + 1])! : []
       const prevH = prevWeekLogs.reduce((a, b) => a + b.studyHours, 0)
 
-      const comments = generateWeekComments(sections, totalH, prevH)
+      const comments = generateWeekComments(sections, totalH, prevH, t)
 
       summaries.push({
-        weekLabel: `${formatWeekDate(weekStart)} – ${formatWeekDate(endDate.toISOString().split("T")[0])}`,
+        weekLabel: `${formatWeekDate(weekStart, locale)} – ${formatWeekDate(endDate.toISOString().split("T")[0], locale)}`,
         startDate: weekStart,
         endDate: endDate.toISOString().split("T")[0],
         totalHours: totalH,
@@ -172,7 +173,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
     }
 
     return summaries
-  }, [logs])
+  }, [logs, t, locale])
 
   const handleAddLog = useCallback(() => {
     if (!formChapterId || !formDate || !formHours) return
@@ -219,17 +220,16 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const diff = Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24))
-    const formatted = d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })
-    if (diff === 0) return `Today - ${formatted}`
-    if (diff === 1) return `Yesterday - ${formatted}`
+    const formatted = d.toLocaleDateString(locale === "es" ? "es" : "en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })
+    if (diff === 0) return `${t("studyLog.today")} - ${formatted}`
+    if (diff === 1) return `${t("studyLog.yesterday")} - ${formatted}`
     return formatted
   }
 
   const summaryItems = [
-    { label: "Total Sessions", value: totalLogs.toString(), color: "hsl(225, 50%, 22%)" },
-    { label: "Study Days", value: uniqueDays.toString(), color: "hsl(175, 45%, 28%)" },
-    { label: "Total Hours", value: `${totalHours.toFixed(1)}h`, color: "hsl(25, 55%, 35%)" },
-    { label: "Accuracy", value: `${accuracy}%`, color: "hsl(345, 40%, 32%)" },
+    { label: t("studyLog.totalSessions"), value: totalLogs.toString(), color: "hsl(225, 50%, 22%)" },
+    { label: t("studyLog.studyDays"), value: uniqueDays.toString(), color: "hsl(175, 45%, 28%)" },
+    { label: t("studyLog.totalHours"), value: `${totalHours.toFixed(1)}h`, color: "hsl(25, 55%, 35%)" },
   ]
 
   return (
@@ -237,21 +237,21 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h2 className="font-serif text-3xl font-bold text-foreground">Study Log</h2>
-          <p className="text-muted-foreground mt-1">Record and track your daily study sessions by subject and chapter.</p>
+          <h2 className="font-serif text-3xl font-bold text-foreground">{t("studyLog.title")}</h2>
+          <p className="text-muted-foreground mt-1">{t("studyLog.subtitle")}</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          New Entry
+          {t("studyLog.newEntry")}
         </button>
       </div>
 
       {/* Summary Strip */}
       <div className="bg-card rounded-xl border border-border overflow-hidden">
-        <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
+        <div className="grid grid-cols-3 divide-x divide-border">
           {summaryItems.map((item) => (
             <div key={item.label} className="p-4 text-center relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full" style={{ backgroundColor: item.color }} />
@@ -266,7 +266,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       {showForm && (
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="px-5 py-4 border-b border-border bg-muted/30 flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">New Study Entry</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("studyLog.newStudyEntry")}</h3>
             <button onClick={() => setShowForm(false)} className="p-1 rounded hover:bg-muted transition-colors">
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
@@ -274,7 +274,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
           <div className="p-5 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">Date</label>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">{t("studyLog.date")}</label>
                 <input
                   type="date"
                   value={formDate}
@@ -283,7 +283,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">Section</label>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">{t("studyLog.section")}</label>
                 <select
                   value={formSection}
                   onChange={(e) => { setFormSection(e.target.value as ExamSection); setFormChapterId("") }}
@@ -296,20 +296,20 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
               </div>
             </div>
             <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">Chapter</label>
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">{t("studyLog.chapter")}</label>
               <select
                 value={formChapterId}
                 onChange={(e) => setFormChapterId(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               >
-                <option value="">Select a chapter...</option>
+                <option value="">{t("studyLog.selectChapter")}</option>
                 {availableChapters.map(c => (
                   <option key={c.id} value={c.id}>Ch.{c.number} - {c.title}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">Study Hours</label>
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">{t("studyLog.studyHours")}</label>
               <input
                 type="number"
                 step="0.5"
@@ -323,10 +323,10 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
             {/* MC / TBS split */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">MC (Multiple Choice)</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("studyLog.mc")}</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">{t("studyLog.questions")}</label>
                     <input
                       type="number"
                       min="0"
@@ -337,7 +337,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">{t("studyLog.correct")}</label>
                     <input
                       type="number"
                       min="0"
@@ -350,10 +350,10 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">TBS (Task-Based Simulations)</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("studyLog.tbs")}</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">{t("studyLog.questions")}</label>
                     <input
                       type="number"
                       min="0"
@@ -364,7 +364,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">{t("studyLog.correct")}</label>
                     <input
                       type="number"
                       min="0"
@@ -380,18 +380,18 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
             {/* Auto-computed total */}
             {formTotalQuestions > 0 && (
               <div className="flex items-center gap-4 text-xs text-muted-foreground bg-muted/30 rounded-lg px-3 py-2">
-                <span>Total: {formTotalQuestions} questions, {formTotalCorrect} correct</span>
+                <span>{t("studyLog.total")}: {formTotalQuestions} {t("studyLog.questionsTotal")}, {formTotalCorrect} {t("studyLog.correctTotal")}</span>
                 {formTotalQuestions > 0 && (
-                  <span className="font-medium">({Math.round((formTotalCorrect / formTotalQuestions) * 100)}% accuracy)</span>
+                  <span className="font-medium">({Math.round((formTotalCorrect / formTotalQuestions) * 100)}% {t("studyLog.accuracy")})</span>
                 )}
               </div>
             )}
             <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">Memo / Notes</label>
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">{t("studyLog.memoNotes")}</label>
               <textarea
                 value={formMemo}
                 onChange={(e) => setFormMemo(e.target.value)}
-                placeholder="What did you study? What needs more review?"
+                placeholder={t("studyLog.memoPlaceholder")}
                 rows={3}
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-vertical"
               />
@@ -401,7 +401,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
               disabled={!formChapterId || !formDate || !formHours}
               className="w-full px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Add Study Log Entry
+              {t("studyLog.addEntry")}
             </button>
           </div>
         </div>
@@ -419,7 +419,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
               : "bg-muted text-muted-foreground hover:bg-border"
           )}
         >
-          All Sections
+          {t("studyLog.allSections")}
         </button>
         {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section => (
           <button
@@ -441,7 +441,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       {/* Weekly Summaries */}
       {weeklySummaries.length > 0 && (
         <div className="space-y-4">
-          <h3 className="font-semibold text-foreground">Weekly Summary</h3>
+          <h3 className="font-semibold text-foreground">{t("studyLog.weeklySummary")}</h3>
           {weeklySummaries.map((week) => (
             <div key={week.startDate} className="bg-card rounded-xl border border-border overflow-hidden">
               <div className="px-5 py-4 border-b border-border bg-muted/30">
@@ -451,7 +451,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     <span className="text-sm font-semibold text-card-foreground">{week.weekLabel}</span>
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{week.totalHours.toFixed(1)}h total</span>
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{week.totalHours.toFixed(1)}{t("studyLog.hTotal")}</span>
                     {week.prevWeekHours > 0 && (
                       <span className="flex items-center gap-1">
                         {week.totalHours >= week.prevWeekHours ? (
@@ -459,7 +459,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                         ) : (
                           <TrendingDown className="w-3 h-3 text-red-500" />
                         )}
-                        vs {week.prevWeekHours.toFixed(1)}h prev
+                        vs {week.prevWeekHours.toFixed(1)}h {t("studyLog.vsPrev")}
                       </span>
                     )}
                   </div>
@@ -493,8 +493,8 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 {week.comments.length > 0 && (
                   <div className="pt-2 border-t border-border space-y-1.5">
                     {week.comments.map((comment, idx) => {
-                      const isWarning = comment.includes("No study") || comment.includes("Heavy on") || comment.includes("down")
-                      const isGood = comment.includes("Good balance") || comment.includes("up")
+                      const isWarning = comment.includes(t("studyLog.weekComment.noSessions") as string) || comment.includes("MC (") || comment.includes("TBS (") || comment.includes(t("studyLog.weekComment.hoursDown").split("{n}")[0] as string)
+                      const isGood = comment.includes(t("studyLog.weekComment.goodBalance") as string) || comment.includes(t("studyLog.weekComment.hoursUp").split("{n}")[0] as string)
                       return (
                         <div key={idx} className="flex items-start gap-2 text-xs">
                           {isWarning ? (
@@ -524,7 +524,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       {sortedDates.length === 0 && (
         <div className="text-center py-12">
           <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">No study logs yet. Click &quot;New Entry&quot; to start recording.</p>
+          <p className="text-sm text-muted-foreground">{t("studyLog.noLogs")}</p>
         </div>
       )}
 
@@ -532,8 +532,6 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
         const dayLogs = groupedLogs[date]
         const dayHours = dayLogs.reduce((a, b) => a + b.studyHours, 0)
         const dayQuestions = dayLogs.reduce((a, b) => a + b.questionsAnswered, 0)
-        const dayCorrect = dayLogs.reduce((a, b) => a + b.correctAnswers, 0)
-        const dayAccuracy = dayQuestions > 0 ? Math.round((dayCorrect / dayQuestions) * 100) : 0
         const isExpanded = expandedDate === null || expandedDate === date
 
         return (
@@ -549,14 +547,13 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-semibold text-card-foreground">{formatDate(date)}</p>
-                  <p className="text-xs text-muted-foreground">{dayLogs.length} session{dayLogs.length > 1 ? "s" : ""}</p>
+                  <p className="text-xs text-muted-foreground">{dayLogs.length} {dayLogs.length > 1 ? t("studyLog.sessions") : t("studyLog.session")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{dayHours.toFixed(1)}h</span>
                   <span className="hidden sm:flex items-center gap-1"><BookOpen className="w-3 h-3" />{dayQuestions} Q</span>
-                  <span className="flex items-center gap-1"><Target className="w-3 h-3" />{dayAccuracy}%</span>
                 </div>
                 {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
               </div>
@@ -567,8 +564,6 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
               <div className="border-t border-border">
                 {dayLogs.map((log, idx) => {
                   const info = SECTION_INFO[log.section]
-                  const logAccuracy = log.questionsAnswered > 0 ? Math.round((log.correctAnswers / log.questionsAnswered) * 100) : 0
-
                   return (
                     <div
                       key={log.id}
@@ -605,11 +600,6 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                           {log.tbsQuestions > 0 && (
                             <span className="text-xs text-muted-foreground">
                               TBS: {log.tbsCorrect}/{log.tbsQuestions}
-                            </span>
-                          )}
-                          {log.questionsAnswered > 0 && (
-                            <span className="flex items-center gap-1 text-xs" style={{ color: logAccuracy >= 75 ? info.color : logAccuracy >= 50 ? "hsl(230, 8%, 46%)" : "hsl(0, 72%, 51%)" }}>
-                              <Target className="w-3 h-3" />{logAccuracy}% accuracy
                             </span>
                           )}
                         </div>

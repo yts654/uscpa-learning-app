@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import { Filter, ChevronRight, BookOpen, Clock, Target, CheckCircle2, Circle, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/i18n"
 import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
 import { type ChapterRetention, getMasteryLevelInfo, getRetentionColor } from "@/lib/spaced-repetition"
 
@@ -22,6 +23,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
   }, [chapterRetentions])
 
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
+  const { t } = useLanguage()
 
   const filteredChapters = selectedSection === "ALL"
     ? chapters
@@ -56,18 +58,18 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
   const studiedChapters = filteredChapters.filter(c => chapterLogStats(c.id).sessions > 0).length
 
   const summaryItems = [
-    { label: "Total Chapters", value: totalChapters.toString(), color: "hsl(225, 50%, 22%)" },
-    { label: "Studied", value: studiedChapters.toString(), color: "hsl(175, 45%, 28%)" },
-    { label: "Total Study Time", value: `${totalLogHours.toFixed(1)}h`, color: "hsl(25, 55%, 35%)" },
-    { label: "Overall Accuracy", value: `${totalLogAccuracy}%`, color: "hsl(345, 40%, 32%)" },
+    { label: t("chapters.totalChapters"), value: totalChapters.toString(), color: "hsl(225, 50%, 22%)" },
+    { label: t("chapters.studied"), value: studiedChapters.toString(), color: "hsl(175, 45%, 28%)" },
+    { label: t("chapters.totalStudyTime"), value: `${totalLogHours.toFixed(1)}h`, color: "hsl(25, 55%, 35%)" },
+    { label: t("chapters.overallAccuracy"), value: `${totalLogAccuracy}%`, color: "hsl(345, 40%, 32%)" },
   ]
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">Chapters</h2>
-        <p className="text-muted-foreground mt-1">Track your study progress by chapter. Click a chapter to view details and record study sessions.</p>
+        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">{t("chapters.title")}</h2>
+        <p className="text-muted-foreground mt-1">{t("chapters.subtitle")}</p>
       </div>
 
       {/* Summary Strip */}
@@ -95,7 +97,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
               : "bg-muted text-muted-foreground hover:bg-border"
           )}
         >
-          All Sections
+          {t("chapters.allSections")}
         </button>
         {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section => (
           <button
@@ -138,12 +140,12 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
               <div className="flex-1">
                 <h3 className={cn("text-sm font-semibold", isSectionCompleted ? "text-muted-foreground line-through" : "text-foreground")}>
                   {info.fullName}
-                  {isSectionCompleted && <span className="ml-2 text-xs font-bold uppercase tracking-wider text-green-600 dark:text-green-400 no-underline inline-block">Completed</span>}
+                  {isSectionCompleted && <span className="ml-2 text-xs font-bold uppercase tracking-wider text-green-600 dark:text-green-400 no-underline inline-block">{t("chapters.completed")}</span>}
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  {sectionChapters.length} chapters
-                  {sectionHours > 0 && <span className="ml-1">/ {sectionHours.toFixed(1)}h studied</span>}
-                  {sectionQuestions > 0 && <span className="ml-1">/ Accuracy: {sectionAccuracy}%</span>}
+                  {sectionChapters.length} {t("chapters.chaptersCount")}
+                  {sectionHours > 0 && <span className="ml-1">/ {sectionHours.toFixed(1)}h {t("chapters.studiedSuffix")}</span>}
+                  {sectionQuestions > 0 && <span className="ml-1">/ {t("chapters.accuracy")}: {sectionAccuracy}%</span>}
                 </p>
               </div>
             </div>
@@ -242,7 +244,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
       {/* Bottom Summary: Study Hours by Chapter */}
       <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border bg-muted/30">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Study Hours Summary by Chapter</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("chapters.studyHoursSummary")}</h3>
         </div>
 
         {Object.entries(sectionGroups).map(([section, sectionChapters]) => {
@@ -304,7 +306,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
         {/* Grand Total */}
         {totalLogHours > 0 && (
           <div className="px-6 py-4 bg-muted/30 flex items-center justify-between border-t-2 border-foreground/10">
-            <span className="text-xs font-bold uppercase tracking-wider text-foreground">Grand Total</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-foreground">{t("chapters.grandTotal")}</span>
             <span className="text-lg font-bold text-foreground">{totalLogHours.toFixed(1)}<span className="text-xs font-normal text-muted-foreground">h</span></span>
           </div>
         )}

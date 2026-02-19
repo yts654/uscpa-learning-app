@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { ArrowLeft, Clock, Target, BookOpen, Plus, Calendar, ClipboardList } from "lucide-react"
 import { SECTION_INFO, type Chapter, type StudyLog, type EssenceNote } from "@/lib/study-data"
+import { useLanguage } from "@/lib/i18n"
 import { EssenceNotes } from "@/components/essence-notes"
 
 interface ChapterDetailViewProps {
@@ -24,6 +25,7 @@ export function ChapterDetailView({
   onAddNote,
   onRemoveNote,
 }: ChapterDetailViewProps) {
+  const { t, locale } = useLanguage()
   const [showLogForm, setShowLogForm] = useState(false)
   // Avoid hydration mismatch: initialize empty, set on client
   const [logDate, setLogDate] = useState("")
@@ -80,14 +82,14 @@ export function ChapterDetailView({
 
   function formatDate(dateStr: string) {
     const d = new Date(dateStr + "T00:00:00")
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+    return d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric", year: "numeric" })
   }
 
   const statItems = [
-    { label: "Sessions", value: chapterLogs.length.toString() },
-    { label: "Study Time", value: `${totalHours.toFixed(1)}h` },
-    { label: "Questions", value: totalQuestions.toString() },
-    { label: "Accuracy", value: `${accuracy}%`, showBar: true },
+    { label: t("chapterDetail.sessions"), value: chapterLogs.length.toString() },
+    { label: t("chapterDetail.studyTime"), value: `${totalHours.toFixed(1)}h` },
+    { label: t("chapterDetail.questions"), value: totalQuestions.toString() },
+    { label: t("chapterDetail.accuracy"), value: `${accuracy}%`, showBar: true },
   ]
 
   return (
@@ -100,7 +102,7 @@ export function ChapterDetailView({
           className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Chapters
+          {t("chapterDetail.backToChapters")}
         </button>
         <div className="flex items-start gap-4">
           <div
@@ -110,7 +112,7 @@ export function ChapterDetailView({
             {chapter.section}
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chapter {chapter.number}</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("chapterDetail.chapter")} {chapter.number}</p>
             <h2 className="font-serif text-2xl font-bold text-foreground text-balance">{chapter.title}</h2>
             <p className="text-sm text-muted-foreground mt-0.5">{info.fullName}</p>
           </div>
@@ -143,7 +145,7 @@ export function ChapterDetailView({
               <div className="w-6 h-6 rounded flex items-center justify-center" style={{ backgroundColor: `${info.color}20` }}>
                 <ClipboardList className="w-3.5 h-3.5" style={{ color: info.color }} />
               </div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Study Log</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("chapterDetail.studyLog")}</h3>
               <span className="ml-auto text-xs font-bold text-[hsl(0,0%,100%)] px-2 py-0.5 rounded-full" style={{ backgroundColor: info.color }}>
                 {chapterLogs.length}
               </span>
@@ -154,7 +156,7 @@ export function ChapterDetailView({
                 style={{ backgroundColor: info.color }}
               >
                 <Plus className="w-3 h-3" />
-                Add
+                {t("chapterDetail.add")}
               </button>
             </div>
 
@@ -162,36 +164,36 @@ export function ChapterDetailView({
               <div className="p-5 border-b border-border bg-muted/10 space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Date</label>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">{t("chapterDetail.date")}</label>
                     <input type="date" value={logDate} onChange={(e) => setLogDate(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Hours</label>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">{t("chapterDetail.hours")}</label>
                     <input type="number" step="0.5" min="0" value={logHours} onChange={(e) => setLogHours(e.target.value)} placeholder="e.g. 2.0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">MC (Multiple Choice)</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("chapterDetail.mc")}</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">{t("chapterDetail.questionsLabel")}</label>
                       <input type="number" min="0" value={logMcQuestions} onChange={(e) => setLogMcQuestions(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">{t("chapterDetail.correct")}</label>
                       <input type="number" min="0" value={logMcCorrect} onChange={(e) => setLogMcCorrect(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">TBS (Task-Based Simulations)</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("chapterDetail.tbs")}</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">{t("chapterDetail.questionsLabel")}</label>
                       <input type="number" min="0" value={logTbsQuestions} onChange={(e) => setLogTbsQuestions(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">{t("chapterDetail.correct")}</label>
                       <input type="number" min="0" value={logTbsCorrect} onChange={(e) => setLogTbsCorrect(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                   </div>
@@ -202,15 +204,15 @@ export function ChapterDetailView({
                   </div>
                 )}
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Memo</label>
-                  <textarea value={logMemo} onChange={(e) => setLogMemo(e.target.value)} placeholder="What did you study today?" rows={2} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-vertical" />
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">{t("chapterDetail.memo")}</label>
+                  <textarea value={logMemo} onChange={(e) => setLogMemo(e.target.value)} placeholder={t("chapterDetail.memoPlaceholder")} rows={2} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-vertical" />
                 </div>
                 <div className="flex gap-2">
                   <button type="button" onClick={handleAddLog} disabled={!logDate || !logHours} className="flex-1 px-3 py-2 rounded-lg text-sm font-medium text-[hsl(0,0%,100%)] hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed" style={{ backgroundColor: info.color }}>
-                    Record Session
+                    {t("chapterDetail.recordSession")}
                   </button>
                   <button type="button" onClick={() => setShowLogForm(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground border border-border hover:bg-muted transition-colors">
-                    Cancel
+                    {t("chapterDetail.cancel")}
                   </button>
                 </div>
               </div>
@@ -220,8 +222,8 @@ export function ChapterDetailView({
               {chapterLogs.length === 0 && (
                 <div className="p-8 text-center">
                   <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">No study sessions recorded yet.</p>
-                  <p className="text-xs text-muted-foreground mt-1">Click &quot;Add&quot; to record your first session.</p>
+                  <p className="text-sm text-muted-foreground">{t("chapterDetail.noSessions")}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t("chapterDetail.clickAdd")}</p>
                 </div>
               )}
               {chapterLogs

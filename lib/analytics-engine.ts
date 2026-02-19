@@ -166,26 +166,28 @@ export function calculateAllSectionPaces(
 
 export function detectReviewDebt(
   chapterRetentions: ChapterRetention[],
+  t?: (key: string) => string,
 ): RiskItem | null {
   const overdue = chapterRetentions.filter(r => r.reviewCount > 0 && r.isOverdue)
-  if (overdue.length > 5) {
+  const n = overdue.length
+  if (n > 5) {
     return {
       id: "review-debt",
       level: "critical",
       category: "analytics.risk.reviewDebt",
-      title: `${overdue.length} chapters overdue`,
-      description: `${overdue.length} chapters have retention below 30%. Memory is fading rapidly.`,
-      prescription: "Prioritize reviewing overdue chapters before studying new material.",
+      title: t ? t("risk.reviewDebt.critical.title").replace("{n}", String(n)) : `${n} chapters overdue`,
+      description: t ? t("risk.reviewDebt.critical.desc").replace("{n}", String(n)) : `${n} chapters have retention below 30%. Memory is fading rapidly.`,
+      prescription: t ? t("risk.reviewDebt.critical.rx") : "Prioritize reviewing overdue chapters before studying new material.",
     }
   }
-  if (overdue.length > 2) {
+  if (n > 2) {
     return {
       id: "review-debt",
       level: "warning",
       category: "analytics.risk.reviewDebt",
-      title: `${overdue.length} chapters overdue`,
-      description: `${overdue.length} chapters need review soon to prevent forgetting.`,
-      prescription: "Schedule 30 minutes daily for overdue reviews.",
+      title: t ? t("risk.reviewDebt.warning.title").replace("{n}", String(n)) : `${n} chapters overdue`,
+      description: t ? t("risk.reviewDebt.warning.desc").replace("{n}", String(n)) : `${n} chapters need review soon to prevent forgetting.`,
+      prescription: t ? t("risk.reviewDebt.warning.rx") : "Schedule 30 minutes daily for overdue reviews.",
     }
   }
   return null
@@ -194,13 +196,13 @@ export function detectReviewDebt(
 export function detectCrammingRisk(
   studyLogs: StudyLog[],
   days: number = 14,
+  t?: (key: string) => string,
 ): RiskItem | null {
   const cutoff = new Date()
   cutoff.setDate(cutoff.getDate() - days)
   const cutoffStr = cutoff.toISOString().split("T")[0]
   const recentLogs = studyLogs.filter(l => l.date >= cutoffStr)
 
-  // Count distinct chapters studied — if same chapter appears only once, it's "new"
   const chapterDateCount: Record<string, number> = {}
   recentLogs.forEach(l => {
     chapterDateCount[l.chapterId] = (chapterDateCount[l.chapterId] || 0) + 1
@@ -214,9 +216,9 @@ export function detectCrammingRisk(
       id: "cramming",
       level: "critical",
       category: "analytics.risk.cramming",
-      title: "All new material, no reviews",
-      description: `In the last ${days} days you studied ${newStudy} new chapters without reviewing any.`,
-      prescription: "Use the 70/30 rule: 70% new material, 30% reviews.",
+      title: t ? t("risk.cramming.allNew.title") : "All new material, no reviews",
+      description: t ? t("risk.cramming.allNew.desc").replace("{d}", String(days)).replace("{n}", String(newStudy)) : `In the last ${days} days you studied ${newStudy} new chapters without reviewing any.`,
+      prescription: t ? t("risk.cramming.allNew.rx") : "Use the 70/30 rule: 70% new material, 30% reviews.",
     }
   }
   if (newStudy > 0 && reviewStudy > 0) {
@@ -226,9 +228,9 @@ export function detectCrammingRisk(
         id: "cramming",
         level: "critical",
         category: "analytics.risk.cramming",
-        title: "New:Review ratio too high",
-        description: `Ratio is ${ratio.toFixed(1)}:1. You're learning too fast without reinforcing.`,
-        prescription: "Slow down on new chapters and catch up on reviews.",
+        title: t ? t("risk.cramming.ratio.title") : "New:Review ratio too high",
+        description: t ? t("risk.cramming.ratio.desc").replace("{r}", ratio.toFixed(1)) : `Ratio is ${ratio.toFixed(1)}:1. You're learning too fast without reinforcing.`,
+        prescription: t ? t("risk.cramming.ratio.rx") : "Slow down on new chapters and catch up on reviews.",
       }
     }
     if (ratio > 2.5) {
@@ -236,9 +238,9 @@ export function detectCrammingRisk(
         id: "cramming",
         level: "warning",
         category: "analytics.risk.cramming",
-        title: "Consider more reviews",
-        description: `New:Review ratio is ${ratio.toFixed(1)}:1 (ideal < 2.5:1).`,
-        prescription: "Add 1-2 review sessions per week to balance learning.",
+        title: t ? t("risk.cramming.consider.title") : "Consider more reviews",
+        description: t ? t("risk.cramming.consider.desc").replace("{r}", ratio.toFixed(1)) : `New:Review ratio is ${ratio.toFixed(1)}:1 (ideal < 2.5:1).`,
+        prescription: t ? t("risk.cramming.consider.rx") : "Add 1-2 review sessions per week to balance learning.",
       }
     }
   }
@@ -248,8 +250,8 @@ export function detectCrammingRisk(
 export function detectStagnationRisk(
   studyLogs: StudyLog[],
   chapterRetentions: ChapterRetention[],
+  t?: (key: string) => string,
 ): RiskItem | null {
-  // Find chapters with 3+ reviews where accuracy isn't improving
   const chapterLogs: Record<string, StudyLog[]> = {}
   studyLogs.forEach(l => {
     if (!chapterLogs[l.chapterId]) chapterLogs[l.chapterId] = []
@@ -264,30 +266,30 @@ export function detectStagnationRisk(
     const accuracies = recent.map(l =>
       l.questionsAnswered > 0 ? l.correctAnswers / l.questionsAnswered : 0
     )
-    // Check if accuracy improved from first to last of recent 3
     if (accuracies[2] <= accuracies[0] && accuracies[1] <= accuracies[0]) {
       stagnant.push(chapterId)
     }
   })
 
-  if (stagnant.length >= 3) {
+  const n = stagnant.length
+  if (n >= 3) {
     return {
       id: "stagnation",
       level: "warning",
       category: "analytics.risk.stagnation",
-      title: `${stagnant.length} chapters not improving`,
-      description: "Multiple chapters show no accuracy improvement despite repeated reviews.",
-      prescription: "Try different study methods: watch videos, practice TBS, or teach the concept.",
+      title: t ? t("risk.stagnation.warning.title").replace("{n}", String(n)) : `${n} chapters not improving`,
+      description: t ? t("risk.stagnation.warning.desc") : "Multiple chapters show no accuracy improvement despite repeated reviews.",
+      prescription: t ? t("risk.stagnation.warning.rx") : "Try different study methods: watch videos, practice TBS, or teach the concept.",
     }
   }
-  if (stagnant.length >= 1) {
+  if (n >= 1) {
     return {
       id: "stagnation",
       level: "info",
       category: "analytics.risk.stagnation",
-      title: `${stagnant.length} chapter${stagnant.length > 1 ? "s" : ""} plateaued`,
-      description: "Some chapters aren't showing improvement with current study approach.",
-      prescription: "Consider changing study techniques for these chapters.",
+      title: t ? t("risk.stagnation.info.title").replace("{n}", String(n)) : `${n} chapter${n > 1 ? "s" : ""} plateaued`,
+      description: t ? t("risk.stagnation.info.desc") : "Some chapters aren't showing improvement with current study approach.",
+      prescription: t ? t("risk.stagnation.info.rx") : "Consider changing study techniques for these chapters.",
     }
   }
   return null
@@ -297,12 +299,13 @@ export function detectUntouchedRisk(
   chapters: Chapter[],
   studyLogs: StudyLog[],
   studyGoals: StudyGoals,
+  t?: (key: string) => string,
 ): RiskItem | null {
   const studiedIds = new Set(studyLogs.map(l => l.chapterId))
   const untouched = chapters.filter(c => !studiedIds.has(c.id))
   const untouchedPct = untouched.length / chapters.length
+  const pct = Math.round(untouchedPct * 100)
 
-  // Check if any exam is within 30 days
   const today = new Date()
   const hasUpcomingExam = (["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).some(section => {
     const examDate = studyGoals.sections[section].examDate
@@ -316,9 +319,9 @@ export function detectUntouchedRisk(
       id: "untouched",
       level: "critical",
       category: "analytics.risk.untouched",
-      title: `${Math.round(untouchedPct * 100)}% chapters untouched`,
-      description: `${untouched.length} of ${chapters.length} chapters haven't been studied yet, with an exam within 30 days.`,
-      prescription: "Focus on high-yield chapters and create a rapid coverage plan.",
+      title: t ? t("risk.untouched.critical.title").replace("{n}", String(pct)) : `${pct}% chapters untouched`,
+      description: t ? t("risk.untouched.critical.desc").replace("{a}", String(untouched.length)).replace("{b}", String(chapters.length)) : `${untouched.length} of ${chapters.length} chapters haven't been studied yet, with an exam within 30 days.`,
+      prescription: t ? t("risk.untouched.critical.rx") : "Focus on high-yield chapters and create a rapid coverage plan.",
     }
   }
   if (untouchedPct > 0.5) {
@@ -326,9 +329,9 @@ export function detectUntouchedRisk(
       id: "untouched",
       level: "warning",
       category: "analytics.risk.untouched",
-      title: `${Math.round(untouchedPct * 100)}% chapters untouched`,
-      description: `${untouched.length} chapters haven't been studied yet.`,
-      prescription: "Increase daily study time or prioritize key chapters.",
+      title: t ? t("risk.untouched.warning.title").replace("{n}", String(pct)) : `${pct}% chapters untouched`,
+      description: t ? t("risk.untouched.warning.desc").replace("{n}", String(untouched.length)) : `${untouched.length} chapters haven't been studied yet.`,
+      prescription: t ? t("risk.untouched.warning.rx") : "Increase daily study time or prioritize key chapters.",
     }
   }
   return null
@@ -337,6 +340,7 @@ export function detectUntouchedRisk(
 export function detectVarianceRisk(
   studyLogs: StudyLog[],
   weeks: number = 4,
+  t?: (key: string) => string,
 ): RiskItem | null {
   const today = new Date()
   const weeklyHours: number[] = []
@@ -360,15 +364,16 @@ export function detectVarianceRisk(
 
   const variance = weeklyHours.reduce((sum, h) => sum + Math.pow(h - mean, 2), 0) / weeklyHours.length
   const cv = Math.sqrt(variance) / mean
+  const cvPct = (cv * 100).toFixed(0)
 
   if (cv > 0.7) {
     return {
       id: "variance",
       level: "critical",
       category: "analytics.risk.variance",
-      title: "Highly inconsistent study schedule",
-      description: `Weekly hours vary greatly (CV=${(cv * 100).toFixed(0)}%). Consistency beats intensity.`,
-      prescription: "Set a fixed daily study time and stick to it, even if shorter.",
+      title: t ? t("risk.variance.critical.title") : "Highly inconsistent study schedule",
+      description: t ? t("risk.variance.critical.desc").replace("{n}", cvPct) : `Weekly hours vary greatly (CV=${cvPct}%). Consistency beats intensity.`,
+      prescription: t ? t("risk.variance.critical.rx") : "Set a fixed daily study time and stick to it, even if shorter.",
     }
   }
   if (cv > 0.5) {
@@ -376,9 +381,9 @@ export function detectVarianceRisk(
       id: "variance",
       level: "warning",
       category: "analytics.risk.variance",
-      title: "Inconsistent study pattern",
-      description: `Study hours fluctuate week to week (CV=${(cv * 100).toFixed(0)}%).`,
-      prescription: "Try to maintain a more consistent daily routine.",
+      title: t ? t("risk.variance.warning.title") : "Inconsistent study pattern",
+      description: t ? t("risk.variance.warning.desc").replace("{n}", cvPct) : `Study hours fluctuate week to week (CV=${cvPct}%).`,
+      prescription: t ? t("risk.variance.warning.rx") : "Try to maintain a more consistent daily routine.",
     }
   }
   return null
@@ -389,17 +394,18 @@ export function detectAllRisks(
   studyLogs: StudyLog[],
   chapterRetentions: ChapterRetention[],
   studyGoals: StudyGoals,
+  t?: (key: string) => string,
 ): RiskItem[] {
   const risks: RiskItem[] = []
-  const r1 = detectReviewDebt(chapterRetentions)
+  const r1 = detectReviewDebt(chapterRetentions, t)
   if (r1) risks.push(r1)
-  const r2 = detectCrammingRisk(studyLogs)
+  const r2 = detectCrammingRisk(studyLogs, 14, t)
   if (r2) risks.push(r2)
-  const r3 = detectStagnationRisk(studyLogs, chapterRetentions)
+  const r3 = detectStagnationRisk(studyLogs, chapterRetentions, t)
   if (r3) risks.push(r3)
-  const r4 = detectUntouchedRisk(chapters, studyLogs, studyGoals)
+  const r4 = detectUntouchedRisk(chapters, studyLogs, studyGoals, t)
   if (r4) risks.push(r4)
-  const r5 = detectVarianceRisk(studyLogs)
+  const r5 = detectVarianceRisk(studyLogs, 4, t)
   if (r5) risks.push(r5)
 
   // Sort: critical > warning > info
@@ -464,6 +470,7 @@ export function generateAllocations(
   studyLogs: StudyLog[],
   chapterRetentions: ChapterRetention[],
   studyGoals: StudyGoals,
+  t?: (key: string) => string,
 ): AllocationRecommendation[] {
   const weeklyBudget = studyGoals.dailyStudyHours * 7
 
@@ -484,27 +491,26 @@ export function generateAllocations(
     const currentPerWeek = totalRecentHours > 0 ? (sectionHours[section] / 4) : weeklyBudget / 5
 
     let recommendedPerWeek = currentPerWeek
-    let reason = "Current pace looks good."
+    let reason = t ? t("risk.allocation.paceGood") : "Current pace looks good."
     let change: AllocationRecommendation["change"] = "maintain"
 
     if (pace && pace.status === "behind" && pace.delayDays > 7) {
       const increase = Math.min(currentPerWeek * 0.5, 3)
       recommendedPerWeek = currentPerWeek + increase
       change = "increase"
-      reason = `Behind by ${pace.delayDays} days. Increase pace to catch up.`
+      reason = t ? t("risk.allocation.behind").replace("{n}", String(pace.delayDays)) : `Behind by ${pace.delayDays} days. Increase pace to catch up.`
     } else if (pace && pace.status === "ahead" && pace.delayDays < -14) {
       recommendedPerWeek = Math.max(currentPerWeek * 0.7, 1)
       change = "decrease"
-      reason = "Ahead of schedule. Redistribute time to weaker sections."
+      reason = t ? t("risk.allocation.ahead") : "Ahead of schedule. Redistribute time to weaker sections."
     }
 
-    // Override for sections with many overdue chapters
     const sectionRetentions = chapterRetentions.filter(r => r.section === section)
     const overdueCount = sectionRetentions.filter(r => r.isOverdue).length
     if (overdueCount > 3) {
       recommendedPerWeek = Math.max(recommendedPerWeek, currentPerWeek + 2)
       change = "increase"
-      reason = `${overdueCount} overdue chapters need urgent review.`
+      reason = t ? t("risk.allocation.overdueReview").replace("{n}", String(overdueCount)) : `${overdueCount} overdue chapters need urgent review.`
     }
 
     return {

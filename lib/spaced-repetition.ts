@@ -142,16 +142,23 @@ export function getReviewQueueForDashboard(
 
 // ── Display Helpers ────────────────────────────────────────────────────
 
-export function getMasteryLevelInfo(level: MasteryLevel): { label: string; color: string; bgColor: string } {
+export function getMasteryLevelInfo(level: MasteryLevel, t?: (key: string) => string): { label: string; color: string; bgColor: string } {
+  const labels: Record<MasteryLevel, { en: string; key: string }> = {
+    new: { en: "New", key: "mastery.new" },
+    learning: { en: "Learning", key: "mastery.learning" },
+    reviewing: { en: "Reviewing", key: "mastery.reviewing" },
+    mastered: { en: "Mastered", key: "mastery.mastered" },
+  }
+  const label = t ? t(labels[level].key) : labels[level].en
   switch (level) {
     case "new":
-      return { label: "New", color: "hsl(230, 15%, 50%)", bgColor: "hsl(230, 15%, 95%)" }
+      return { label, color: "hsl(230, 15%, 50%)", bgColor: "hsl(230, 15%, 95%)" }
     case "learning":
-      return { label: "Learning", color: "hsl(25, 55%, 40%)", bgColor: "hsl(25, 55%, 95%)" }
+      return { label, color: "hsl(25, 55%, 40%)", bgColor: "hsl(25, 55%, 95%)" }
     case "reviewing":
-      return { label: "Reviewing", color: "hsl(225, 50%, 35%)", bgColor: "hsl(225, 50%, 95%)" }
+      return { label, color: "hsl(225, 50%, 35%)", bgColor: "hsl(225, 50%, 95%)" }
     case "mastered":
-      return { label: "Mastered", color: "hsl(145, 45%, 30%)", bgColor: "hsl(145, 45%, 95%)" }
+      return { label, color: "hsl(145, 45%, 30%)", bgColor: "hsl(145, 45%, 95%)" }
   }
 }
 

@@ -6,12 +6,13 @@ import {
   Sparkles, Loader2, Trash2, Brain, AlertTriangle, BookOpen, Bookmark, Type,
 } from "lucide-react"
 import { type EssenceNote, type Insight, type InsightType } from "@/lib/study-data"
+import { useLanguage, type TranslationKey } from "@/lib/i18n"
 
-const INSIGHT_CONFIG: Record<InsightType, { label: string; color: string; bgColor: string; icon: any }> = {
-  concept: { label: "Core Concept", color: "hsl(220, 70%, 50%)", bgColor: "hsl(220, 70%, 95%)", icon: Lightbulb },
-  framework: { label: "Framework", color: "hsl(160, 60%, 38%)", bgColor: "hsl(160, 60%, 93%)", icon: Brain },
-  trap: { label: "Pitfall", color: "hsl(0, 65%, 50%)", bgColor: "hsl(0, 65%, 95%)", icon: AlertTriangle },
-  rule: { label: "Memory Rule", color: "hsl(270, 55%, 50%)", bgColor: "hsl(270, 55%, 94%)", icon: Bookmark },
+const INSIGHT_CONFIG: Record<InsightType, { labelKey: TranslationKey; color: string; bgColor: string; icon: any }> = {
+  concept: { labelKey: "essence.coreConcept", color: "hsl(220, 70%, 50%)", bgColor: "hsl(220, 70%, 95%)", icon: Lightbulb },
+  framework: { labelKey: "essence.framework", color: "hsl(160, 60%, 38%)", bgColor: "hsl(160, 60%, 93%)", icon: Brain },
+  trap: { labelKey: "essence.pitfall", color: "hsl(0, 65%, 50%)", bgColor: "hsl(0, 65%, 95%)", icon: AlertTriangle },
+  rule: { labelKey: "essence.memoryRule", color: "hsl(270, 55%, 50%)", bgColor: "hsl(270, 55%, 94%)", icon: Bookmark },
 }
 
 interface EssenceNotesProps {
@@ -23,6 +24,7 @@ interface EssenceNotesProps {
 }
 
 export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accentColor }: EssenceNotesProps) {
+  const { t, locale } = useLanguage()
   const [inputMode, setInputMode] = useState<"image" | "text">("image")
   const [images, setImages] = useState<string[]>([])
   const [pastedText, setPastedText] = useState("")
@@ -82,16 +84,16 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
     setIsAnalyzing(true)
     setError(null)
     setAnalysisResult(null)
-    setAnalyzeStatus(inputMode === "image" ? "Extracting text..." : "AI analyzing...")
+    setAnalyzeStatus(inputMode === "image" ? t("essence.extractingText") : t("essence.aiAnalyzing"))
 
     // Update status periodically
     const statusMessages = [
-      "Extracting text...",
-      "Loading images...",
-      "AI analyzing content...",
-      "Extracting key insights...",
-      "Structuring insights...",
-      "Almost there...",
+      t("essence.extractingText"),
+      t("essence.loadingImages"),
+      t("essence.aiAnalyzing"),
+      t("essence.extractingInsights"),
+      t("essence.structuringInsights"),
+      t("essence.almostThere"),
     ]
     let statusIdx = 0
     const statusInterval = setInterval(() => {
@@ -170,10 +172,10 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
   const filteredInsights = filterType === "all" ? allInsights : allInsights.filter(i => i.type === filterType)
 
   const contentTypeLabels: Record<string, string> = {
-    textbook: "Textbook",
-    mcq: "MCQ",
-    tbs: "TBS Simulation",
-    other: "Other",
+    textbook: t("essence.textbook"),
+    mcq: t("essence.mcq"),
+    tbs: t("essence.tbsSim"),
+    other: t("essence.other"),
   }
 
   return (
@@ -183,7 +185,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
         <div className="w-6 h-6 rounded flex items-center justify-center" style={{ backgroundColor: `${accentColor}20` }}>
           <Lightbulb className="w-3.5 h-3.5" style={{ color: accentColor }} />
         </div>
-        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Essence Notes</h3>
+        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("essence.title")}</h3>
         <span className="ml-auto text-[10px] font-bold text-[hsl(0,0%,100%)] px-2 py-0.5 rounded-full" style={{ backgroundColor: accentColor }}>
           {allInsights.length}
         </span>
@@ -198,14 +200,14 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
             onClick={() => { setInputMode("image"); setAnalysisResult(null); setError(null) }}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium transition-colors ${inputMode === "image" ? "bg-foreground text-background" : "bg-muted/30 text-muted-foreground hover:text-foreground"}`}
           >
-            <ImageIcon className="w-3.5 h-3.5" /> Screenshot
+            <ImageIcon className="w-3.5 h-3.5" /> {t("essence.screenshot")}
           </button>
           <button
             type="button"
             onClick={() => { setInputMode("text"); setAnalysisResult(null); setError(null) }}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium transition-colors ${inputMode === "text" ? "bg-foreground text-background" : "bg-muted/30 text-muted-foreground hover:text-foreground"}`}
           >
-            <Type className="w-3.5 h-3.5" /> Paste Text
+            <Type className="w-3.5 h-3.5" /> {t("essence.pasteText")}
           </button>
         </div>
 
@@ -216,10 +218,10 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                    {images.length} image{images.length !== 1 ? "s" : ""}
+                    {images.length} {images.length !== 1 ? t("essence.imagesPlural") : t("essence.images")}
                   </p>
                   <button type="button" onClick={clearAll} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1">
-                    <Trash2 className="w-3 h-3" /> Clear
+                    <Trash2 className="w-3 h-3" /> {t("essence.clear")}
                   </button>
                 </div>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -241,7 +243,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
             >
               <ImageIcon className="w-5 h-5" />
               <span className="text-xs">
-                {images.length === 0 ? "Upload or paste screenshots (Cmd+V)" : "Add image"}
+                {images.length === 0 ? t("essence.uploadPrompt") : t("essence.addImage")}
               </span>
             </button>
             <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageUpload} className="hidden" />
@@ -252,20 +254,20 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
         {inputMode === "text" && (
           <div className="space-y-2">
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              Paste MCQ or text content directly
+              {t("essence.pasteMCQ")}
             </p>
             <textarea
               value={pastedText}
               onChange={(e) => { setPastedText(e.target.value); setAnalysisResult(null); setError(null) }}
-              placeholder={"Paste the question, options, and explanation as-is.\nExample:\nWhich of the following is correct regarding...\nA. ...\nB. ...\nC. ...\nD. ...\n\nExplanation: The correct answer is B because..."}
+              placeholder={t("essence.pastePlaceholder")}
               rows={10}
               className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-vertical font-mono leading-relaxed"
             />
             {pastedText.trim() && (
               <div className="flex items-center justify-between">
-                <p className="text-[10px] text-muted-foreground">{pastedText.trim().length} chars</p>
+                <p className="text-[10px] text-muted-foreground">{pastedText.trim().length} {t("essence.chars")}</p>
                 <button type="button" onClick={() => setPastedText("")} className="text-[10px] text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1">
-                  <Trash2 className="w-3 h-3" /> Clear
+                  <Trash2 className="w-3 h-3" /> {t("essence.clear")}
                 </button>
               </div>
             )}
@@ -282,9 +284,9 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
             style={{ backgroundColor: accentColor }}
           >
             {isAnalyzing ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> {analyzeStatus || "Analyzing..."}</>
+              <><Loader2 className="w-4 h-4 animate-spin" /> {analyzeStatus || t("essence.analyzing")}</>
             ) : (
-              <><Sparkles className="w-4 h-4" /> Extract Insights with AI {inputMode === "image" ? "(1-2 min)" : "(30s-1 min)"}</>
+              <><Sparkles className="w-4 h-4" /> {t("essence.extractInsights")} {inputMode === "image" ? t("essence.imageTime") : t("essence.textTime")}</>
             )}
           </button>
         )}
@@ -301,10 +303,10 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
               <div className="flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                 <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                  AI Results — {contentTypeLabels[analysisResult.contentType] || "Other"}
+                  {t("essence.aiResults")} — {contentTypeLabels[analysisResult.contentType] || t("essence.other")}
                 </span>
                 {analysisResult.isDemo && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">DEMO</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">{t("essence.demo")}</span>
                 )}
               </div>
               <button
@@ -313,7 +315,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                 className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg text-[hsl(0,0%,100%)] hover:opacity-90 transition-all flex items-center gap-1"
                 style={{ backgroundColor: accentColor }}
               >
-                <Plus className="w-3 h-3" /> Save All
+                <Plus className="w-3 h-3" /> {t("essence.saveAll")}
               </button>
             </div>
 
@@ -324,7 +326,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                 <div key={i} className="rounded-lg border overflow-hidden" style={{ borderColor: `${config.color}30` }}>
                   <div className="px-3 py-2 flex items-center gap-2" style={{ backgroundColor: config.bgColor }}>
                     <Icon className="w-3.5 h-3.5" style={{ color: config.color }} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: config.color }}>{config.label}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: config.color }}>{t(config.labelKey)}</span>
                     <span className="text-xs font-bold text-foreground ml-1">{insight.title}</span>
                     <button
                       type="button"
@@ -332,7 +334,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                       className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded text-[hsl(0,0%,100%)] hover:opacity-90 transition-all"
                       style={{ backgroundColor: config.color }}
                     >
-                      Save
+                      {t("essence.save")}
                     </button>
                   </div>
                   <div className="px-3 py-2.5 bg-background">
@@ -359,7 +361,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
             className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full transition-colors ${filterType === "all" ? "text-[hsl(0,0%,100%)]" : "text-muted-foreground hover:text-foreground bg-muted/50"}`}
             style={filterType === "all" ? { backgroundColor: accentColor } : {}}
           >
-            All ({allInsights.length})
+            {t("essence.all")} ({allInsights.length})
           </button>
           {(Object.keys(INSIGHT_CONFIG) as InsightType[]).map((type) => {
             const count = allInsights.filter(i => i.type === type).length
@@ -373,7 +375,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                 className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full transition-colors ${filterType === type ? "text-[hsl(0,0%,100%)]" : "text-muted-foreground hover:text-foreground bg-muted/50"}`}
                 style={filterType === type ? { backgroundColor: config.color } : {}}
               >
-                {config.label} ({count})
+                {t(config.labelKey)} ({count})
               </button>
             )
           })}
@@ -385,8 +387,8 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
         {allInsights.length === 0 && (
           <div className="p-8 text-center">
             <Sparkles className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">No notes yet</p>
-            <p className="text-xs text-muted-foreground mt-1">Upload screenshots to extract key insights with AI</p>
+            <p className="text-sm text-muted-foreground">{t("essence.noNotes")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("essence.noNotesDesc")}</p>
           </div>
         )}
         {filteredInsights.map((insight, index) => {
@@ -406,7 +408,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded" style={{ backgroundColor: config.bgColor, color: config.color }}>
-                        {config.label}
+                        {t(config.labelKey)}
                       </span>
                       <span className="text-xs font-bold text-card-foreground">{insight.title}</span>
                     </div>
@@ -418,7 +420,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                     )}
                     <div className="flex items-center gap-3 mt-2">
                       <p className="text-[10px] text-muted-foreground">
-                        {new Date(insight.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(insight.createdAt).toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                       </p>
                       {hasImages && (
                         <button
@@ -427,7 +429,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                           className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
                         >
                           <ImageIcon className="w-3 h-3" />
-                          {isExpanded ? "Hide" : "Source"}
+                          {isExpanded ? t("essence.hide") : t("essence.source")}
                           {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                         </button>
                       )}

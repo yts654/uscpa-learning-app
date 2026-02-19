@@ -93,7 +93,7 @@ export function DrillDownCard({ studyLogs }: DrillDownCardProps) {
                       tickLine={false}
                       tick={{ fontSize: 11 }}
                       className="fill-muted-foreground"
-                      label={{ value: "Session", position: "insideBottomRight", offset: -4, fontSize: 10 }}
+                      label={{ value: t("analytics.drilldown.session"), position: "insideBottomRight", offset: -4, fontSize: 10 }}
                     />
                     <YAxis
                       domain={[0, 100]}
@@ -119,7 +119,7 @@ export function DrillDownCard({ studyLogs }: DrillDownCardProps) {
                       stroke={selectedInfo ? SECTION_INFO[selectedInfo.section].color : "hsl(225, 50%, 22%)"}
                       strokeWidth={2.5}
                       dot={{ r: 4 }}
-                      name="Accuracy"
+                      name={t("analytics.drilldown.accuracy")}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -127,7 +127,7 @@ export function DrillDownCard({ studyLogs }: DrillDownCardProps) {
             </div>
           ) : (
             <div className="py-6 text-center text-xs text-muted-foreground">
-              Select a chapter to view accuracy trend
+              {t("analytics.drilldown.selectChapter")}
             </div>
           )}
         </div>
