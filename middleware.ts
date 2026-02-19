@@ -1,21 +1,34 @@
-import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
+import { getToken } from "next-auth/jwt"
+import type { NextRequest } from "next/server"
 
-export default withAuth({
-  pages: {
-    signIn: "/login",
-  },
-  secret: process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production",
-})
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Allow public paths
+  if (
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/icons")
+  ) {
+    return NextResponse.next()
+  }
+
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production",
+  })
+
+  if (!token) {
+    const loginUrl = new URL("/login", request.url)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  return NextResponse.next()
+}
 
 export const config = {
-  matcher: [
-    /*
-     * Match all paths except:
-     * - /login
-     * - /api/auth (NextAuth routes)
-     * - /_next (Next.js internals)
-     * - /favicon.ico, /icons, etc (static assets)
-     */
-    "/((?!login|api/auth|_next|favicon\\.ico|icons).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon\\.ico).*)"],
 }
