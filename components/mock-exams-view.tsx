@@ -172,7 +172,7 @@ export function MockExamsView({ mockExams, onUpdateMockExams }: MockExamsViewPro
             <FileText className="w-5 h-5 text-muted-foreground" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground">{t("mockExams.title")}</h2>
+            <h2 className="font-serif text-3xl font-bold text-foreground">{t("mockExams.title")}</h2>
             <p className="text-sm text-muted-foreground">{t("mockExams.subtitle")}</p>
           </div>
         </div>
