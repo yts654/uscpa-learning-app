@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
 
-// Allow long-running analysis (up to 5 minutes)
-export const maxDuration = 300
+// Allow long-running analysis (Hobby plan max: 60s)
+export const maxDuration = 60
 
 // Stage 1: Vision model extracts text from images
 const VISION_MODELS = [
