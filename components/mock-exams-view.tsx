@@ -167,14 +167,9 @@ export function MockExamsView({ mockExams, onUpdateMockExams }: MockExamsViewPro
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center flex-shrink-0">
-            <FileText className="w-5 h-5 text-muted-foreground" />
-          </div>
-          <div>
-            <h2 className="font-serif text-3xl font-bold text-foreground">{t("mockExams.title")}</h2>
-            <p className="text-sm text-muted-foreground">{t("mockExams.subtitle")}</p>
-          </div>
+        <div>
+          <h2 className="font-serif text-3xl font-bold text-foreground">{t("mockExams.title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("mockExams.subtitle")}</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
