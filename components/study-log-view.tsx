@@ -237,7 +237,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h2 className="font-serif text-3xl text-foreground">Study Log</h2>
+          <h2 className="font-serif text-3xl font-bold text-foreground">Study Log</h2>
           <p className="text-muted-foreground mt-1">Record and track your daily study sessions by subject and chapter.</p>
         </div>
         <button

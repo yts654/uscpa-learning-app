@@ -66,7 +66,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl text-foreground text-balance">Chapters</h2>
+        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">Chapters</h2>
         <p className="text-muted-foreground mt-1">Track your study progress by chapter. Click a chapter to view details and record study sessions.</p>
       </div>
 

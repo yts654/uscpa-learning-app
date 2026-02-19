@@ -114,7 +114,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl text-foreground text-balance">Study Overview</h2>
+        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">Study Overview</h2>
         <p className="text-muted-foreground mt-1">Track your USCPA exam preparation progress across all sections.</p>
       </div>
 

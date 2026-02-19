@@ -111,7 +111,7 @@ export function ChapterDetailView({
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chapter {chapter.number}</p>
-            <h2 className="font-serif text-2xl text-foreground text-balance">{chapter.title}</h2>
+            <h2 className="font-serif text-2xl font-bold text-foreground text-balance">{chapter.title}</h2>
             <p className="text-sm text-muted-foreground mt-0.5">{info.fullName}</p>
           </div>
         </div>

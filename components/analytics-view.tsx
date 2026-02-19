@@ -56,7 +56,7 @@ export function AnalyticsView({ progress, chapters }: AnalyticsViewProps) {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl text-foreground text-balance">Analytics</h2>
+        <h2 className="font-serif text-3xl font-bold text-foreground text-balance">Analytics</h2>
         <p className="text-muted-foreground mt-1">Detailed performance analysis across all exam sections and chapters.</p>
       </div>
 

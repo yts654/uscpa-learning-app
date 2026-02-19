@@ -137,7 +137,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
       <div>
         <div className="flex items-center gap-3 mb-1">
           <Brain className="w-7 h-7 text-foreground" />
-          <h2 className="font-serif text-3xl text-foreground text-balance">Review Schedule</h2>
+          <h2 className="font-serif text-3xl font-bold text-foreground text-balance">Review Schedule</h2>
         </div>
         <p className="text-muted-foreground mt-1">
           {t("review.header.desc")}

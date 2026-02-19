@@ -61,7 +61,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
     <div className="space-y-8 max-w-2xl">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl text-foreground">Settings</h2>
+        <h2 className="font-serif text-3xl font-bold text-foreground">Settings</h2>
         <p className="text-muted-foreground mt-1">Configure your study preferences and exam targets.</p>
       </div>
 
