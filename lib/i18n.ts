@@ -468,6 +468,119 @@ const translations = {
     en: "Language",
     ja: "言語",
   },
+
+  // ── Analytics ─────────────────────────────────────────────────
+  "analytics.title": { en: "Analytics", ja: "Analytics" },
+  "analytics.subtitle": {
+    en: "Strategic insights to guide your study decisions.",
+    ja: "学習の意思決定を支える戦略的インサイト",
+  },
+
+  // Pace Engine
+  "analytics.pace.title": { en: "Goal Pace", ja: "ゴール進捗" },
+  "analytics.pace.subtitle": {
+    en: "Required vs actual weekly pace toward your exam date",
+    ja: "試験日に向けた必要ペース vs 実績ペース",
+  },
+  "analytics.pace.remaining": { en: "Remaining", ja: "残り" },
+  "analytics.pace.chapters": { en: "chapters", ja: "チャプター" },
+  "analytics.pace.estimatedHours": { en: "Est. hours left", ja: "推定残時間" },
+  "analytics.pace.weeklyRequired": { en: "Weekly required", ja: "必要週次時間" },
+  "analytics.pace.weeklyActual": { en: "Weekly actual", ja: "実績週次時間" },
+  "analytics.pace.eta": { en: "ETA", ja: "完了予定" },
+  "analytics.pace.delay": { en: "Delay", ja: "遅延" },
+  "analytics.pace.onTrack": { en: "On track", ja: "順調" },
+  "analytics.pace.ahead": { en: "Ahead of schedule", ja: "予定より先行" },
+  "analytics.pace.behind": { en: "Behind schedule", ja: "遅延中" },
+  "analytics.pace.noGoal": {
+    en: "Set an exam date in Settings to see pace analysis.",
+    ja: "Settings で試験日を設定するとペース分析が表示されます。",
+  },
+  "analytics.pace.hPerWeek": { en: "h/week", ja: "h/週" },
+  "analytics.pace.days": { en: "days", ja: "日" },
+  "analytics.pace.weeksLeft": { en: "weeks left", ja: "週間残り" },
+
+  // Risk Radar
+  "analytics.risk.title": { en: "Risk Radar", ja: "リスク検知" },
+  "analytics.risk.subtitle": {
+    en: "Potential issues that may affect your progress",
+    ja: "進捗に影響する可能性のあるリスク",
+  },
+  "analytics.risk.noRisks": {
+    en: "No risks detected. Keep up the good work!",
+    ja: "リスクは検出されませんでした。この調子で頑張りましょう！",
+  },
+  "analytics.risk.critical": { en: "Critical", ja: "重大" },
+  "analytics.risk.warning": { en: "Warning", ja: "注意" },
+  "analytics.risk.info": { en: "Info", ja: "情報" },
+  "analytics.risk.reviewDebt": { en: "Review Debt", ja: "復習滞留" },
+  "analytics.risk.cramming": { en: "Cramming Risk", ja: "詰め込みリスク" },
+  "analytics.risk.stagnation": { en: "Stagnation", ja: "停滞" },
+  "analytics.risk.untouched": { en: "Untouched Chapters", ja: "未着手チャプター" },
+  "analytics.risk.variance": { en: "Study Variance", ja: "学習量のばらつき" },
+
+  // Retention Calibration
+  "analytics.retention.title": { en: "Retention Calibration", ja: "定着度キャリブレーション" },
+  "analytics.retention.subtitle": {
+    en: "Predicted vs actual recall — calibrate your review intervals",
+    ja: "予測保持率 vs 実測想起率 — 復習間隔を最適化",
+  },
+  "analytics.retention.predicted": { en: "Predicted", ja: "予測" },
+  "analytics.retention.actual": { en: "Actual", ja: "実測" },
+  "analytics.retention.gap": { en: "Gap", ja: "乖離" },
+  "analytics.retention.action": { en: "Action", ja: "推奨" },
+  "analytics.retention.shortenInterval": { en: "Shorten interval", ja: "間隔短縮" },
+  "analytics.retention.extendInterval": { en: "Extend interval", ja: "間隔延長" },
+  "analytics.retention.onTrack": { en: "On track", ja: "順調" },
+  "analytics.retention.noData": {
+    en: "Rate your recall in the Review tab to see calibration data.",
+    ja: "Review タブで想起評価を入力するとキャリブレーションデータが表示されます。",
+  },
+
+  // Allocation Optimizer
+  "analytics.allocation.title": { en: "Weekly Strategy", ja: "今週の戦略" },
+  "analytics.allocation.subtitle": {
+    en: "Recommended time allocation adjustments",
+    ja: "推奨される時間配分の調整",
+  },
+  "analytics.allocation.section": { en: "Section", ja: "セクション" },
+  "analytics.allocation.current": { en: "Current", ja: "現在" },
+  "analytics.allocation.recommended": { en: "Recommended", ja: "推奨" },
+  "analytics.allocation.change": { en: "Change", ja: "変更" },
+  "analytics.allocation.reason": { en: "Reason", ja: "理由" },
+  "analytics.allocation.increase": { en: "Increase", ja: "増加" },
+  "analytics.allocation.decrease": { en: "Decrease", ja: "減少" },
+  "analytics.allocation.maintain": { en: "Maintain", ja: "維持" },
+
+  // Coverage
+  "analytics.coverage.title": { en: "Coverage Gaps", ja: "カバレッジ" },
+  "analytics.coverage.subtitle": {
+    en: "Untouched and fragile chapters requiring attention",
+    ja: "未着手・脆弱なチャプターの一覧",
+  },
+  "analytics.coverage.untouched": { en: "Untouched", ja: "未着手" },
+  "analytics.coverage.fragile": { en: "Fragile", ja: "脆弱" },
+  "analytics.coverage.urgent": { en: "Urgent", ja: "緊急" },
+  "analytics.coverage.normal": { en: "Normal", ja: "通常" },
+  "analytics.coverage.noCoverage": {
+    en: "All chapters are covered. Great job!",
+    ja: "全チャプターがカバーされています。素晴らしい！",
+  },
+
+  // Drill-Down
+  "analytics.drilldown.title": { en: "Chapter Detail", ja: "チャプター詳細" },
+  "analytics.drilldown.subtitle": {
+    en: "Accuracy trend per chapter over time",
+    ja: "チャプター別の正答率推移",
+  },
+
+  // ── Review Recall Rating ──────────────────────────────────────
+  "review.recall.title": { en: "How well did you recall?", ja: "どのくらい思い出せた？" },
+  "review.recall.0": { en: "Forgot", ja: "忘れた" },
+  "review.recall.1": { en: "Hard", ja: "難しい" },
+  "review.recall.2": { en: "OK", ja: "OK" },
+  "review.recall.3": { en: "Easy", ja: "簡単" },
+  "review.recall.rated": { en: "Rated", ja: "評価済み" },
 } as const
 
 export type TranslationKey = keyof typeof translations

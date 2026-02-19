@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from "react"
 import { Filter, Brain, AlertTriangle, Clock, CalendarCheck, Shield, BookOpen, ChevronRight, Bell, Info, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { SECTION_INFO, type ExamSection, type Chapter } from "@/lib/study-data"
+import { SECTION_INFO, type ExamSection, type Chapter, type RecallRating } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import {
   type ChapterRetention,
@@ -21,6 +21,7 @@ interface ReviewViewProps {
   chapters: Chapter[]
   onSelectChapter: (chapter: Chapter) => void
   onViewChange: (view: View) => void
+  onRecallRating?: (chapterId: string, rating: RecallRating) => void
 }
 
 interface UrgencyGroup {
@@ -34,11 +35,25 @@ interface UrgencyGroup {
   items: ChapterRetention[]
 }
 
-export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onViewChange }: ReviewViewProps) {
+const RECALL_COLORS: Record<RecallRating, string> = {
+  0: "hsl(0, 65%, 45%)",
+  1: "hsl(25, 55%, 40%)",
+  2: "hsl(225, 50%, 45%)",
+  3: "hsl(145, 45%, 35%)",
+}
+const RECALL_BG_COLORS: Record<RecallRating, string> = {
+  0: "hsl(0, 65%, 95%)",
+  1: "hsl(25, 55%, 95%)",
+  2: "hsl(225, 50%, 95%)",
+  3: "hsl(145, 45%, 95%)",
+}
+
+export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onViewChange, onRecallRating }: ReviewViewProps) {
   const { t } = useLanguage()
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null)
   const [criteriaOpen, setCriteriaOpen] = useState(false)
+  const [ratedChapters, setRatedChapters] = useState<Record<string, RecallRating>>({})
 
   const filtered = useMemo(() => {
     if (selectedSection === "ALL") return chapterRetentions
@@ -276,11 +291,11 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         const alertItems = filtered.filter((r) => r.reviewCount > 0 && (r.isOverdue || r.isDueToday))
         if (alertItems.length === 0) return null
         return (
-          <div className="bg-[hsl(0,65%,97%)] rounded-xl border border-[hsl(0,65%,88%)] p-4">
+          <div className="bg-red-50 dark:bg-red-950/20 rounded-xl border border-red-200 dark:border-red-900/40 p-4">
             <div className="flex items-center gap-2 mb-3">
               <Bell className="w-4 h-4 text-[hsl(0,65%,45%)]" />
-              <h3 className="text-sm font-semibold text-[hsl(0,65%,35%)]">{t("review.alert.title")}</h3>
-              <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-[hsl(0,65%,45%)] text-white">{alertItems.length}</span>
+              <h3 className="text-sm font-semibold text-red-700 dark:text-red-400">{t("review.alert.title")}</h3>
+              <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-red-500 text-white">{alertItems.length}</span>
             </div>
             <div className="space-y-2">
               {alertItems.sort((a, b) => a.retention - b.retention).map((item) => {
@@ -290,7 +305,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                   <button
                     key={item.chapterId}
                     onClick={() => setSelectedChapterId(item.chapterId === selectedChapterId ? null : item.chapterId)}
-                    className="w-full flex items-center gap-3 p-2.5 rounded-lg bg-white/80 hover:bg-white transition-colors text-left"
+                    className="w-full flex items-center gap-3 p-2.5 rounded-lg bg-card/80 hover:bg-card transition-colors text-left"
                   >
                     <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: item.isOverdue ? "hsl(0,65%,45%)" : "hsl(25,55%,40%)" }} />
                     <div
@@ -579,13 +594,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                 const retColor = getRetentionColor(item.retention)
 
                 return (
+                  <div key={item.chapterId} className={cn(idx < group.items.length - 1 && "border-b border-border")}>
                   <button
-                    key={item.chapterId}
                     onClick={() => handleChapterClick(item.chapterId)}
-                    className={cn(
-                      "w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors group relative",
-                      idx < group.items.length - 1 && "border-b border-border"
-                    )}
+                    className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors group relative"
                   >
                     {/* Section badge */}
                     <div
@@ -634,6 +646,44 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
 
                     <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
                   </button>
+
+                  {/* Recall Rating Buttons */}
+                  {onRecallRating && item.reviewCount > 0 && (
+                    <div className="px-4 pb-2.5 flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-1">{t("review.recall.title")}</span>
+                      {ratedChapters[item.chapterId] !== undefined ? (
+                        <span
+                          className="text-xs font-medium px-2 py-0.5 rounded"
+                          style={{
+                            color: RECALL_COLORS[ratedChapters[item.chapterId]],
+                            backgroundColor: RECALL_BG_COLORS[ratedChapters[item.chapterId]],
+                          }}
+                        >
+                          {t(`review.recall.${ratedChapters[item.chapterId]}` as "review.recall.0")}
+                        </span>
+                      ) : (
+                        ([0, 1, 2, 3] as RecallRating[]).map((rating) => (
+                          <button
+                            key={rating}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setRatedChapters(prev => ({ ...prev, [item.chapterId]: rating }))
+                              onRecallRating(item.chapterId, rating)
+                            }}
+                            className="text-[11px] font-medium px-2 py-0.5 rounded border transition-all hover:scale-105"
+                            style={{
+                              color: RECALL_COLORS[rating],
+                              backgroundColor: RECALL_BG_COLORS[rating],
+                              borderColor: RECALL_COLORS[rating] + "40",
+                            }}
+                          >
+                            {t(`review.recall.${rating}` as "review.recall.0")}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
                 )
               })}
             </div>

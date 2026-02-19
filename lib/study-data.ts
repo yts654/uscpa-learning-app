@@ -1,5 +1,38 @@
 export type ExamSection = "FAR" | "AUD" | "REG" | "BEC" | "TCP"
 
+// ── Recall & Goals Types ────────────────────────────────────────────
+export type RecallRating = 0 | 1 | 2 | 3
+
+export interface RecallRecord {
+  chapterId: string
+  date: string
+  rating: RecallRating
+  predictedRetention: number
+}
+
+export interface SectionGoal {
+  examDate: string | null
+  targetScore: number
+}
+
+export interface StudyGoals {
+  sections: Record<ExamSection, SectionGoal>
+  dailyStudyHours: number
+  questionsPerSession: number
+}
+
+export const DEFAULT_STUDY_GOALS: StudyGoals = {
+  sections: {
+    FAR: { examDate: null, targetScore: 75 },
+    AUD: { examDate: null, targetScore: 75 },
+    REG: { examDate: null, targetScore: 75 },
+    BEC: { examDate: null, targetScore: 75 },
+    TCP: { examDate: null, targetScore: 75 },
+  },
+  dailyStudyHours: 3,
+  questionsPerSession: 25,
+}
+
 export interface Chapter {
   id: string
   section: ExamSection
@@ -46,6 +79,7 @@ export interface StudyLog {
   questionsAnswered: number
   correctAnswers: number
   memo: string
+  recallRating?: RecallRating
 }
 
 export interface StudyProgress {
@@ -404,21 +438,3 @@ export const INITIAL_PROGRESS: StudyProgress[] = [
   { section: "TCP", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 200, studyHours: 0, lastStudied: "", streak: 0 },
 ]
 
-export const WEEKLY_STUDY_DATA = [
-  { day: "Mon", hours: 2.5, questions: 25 },
-  { day: "Tue", hours: 1.8, questions: 18 },
-  { day: "Wed", hours: 3.2, questions: 32 },
-  { day: "Thu", hours: 2.0, questions: 20 },
-  { day: "Fri", hours: 1.5, questions: 15 },
-  { day: "Sat", hours: 4.0, questions: 42 },
-  { day: "Sun", hours: 3.5, questions: 35 },
-]
-
-export const MONTHLY_PROGRESS_DATA = [
-  { month: "Sep", far: 0, aud: 0, reg: 0, bec: 0, tcp: 0 },
-  { month: "Oct", far: 0, aud: 0, reg: 0, bec: 0, tcp: 0 },
-  { month: "Nov", far: 0, aud: 0, reg: 0, bec: 0, tcp: 0 },
-  { month: "Dec", far: 0, aud: 0, reg: 0, bec: 0, tcp: 0 },
-  { month: "Jan", far: 30, aud: 0, reg: 0, bec: 0, tcp: 0 },
-  { month: "Feb", far: 48, aud: 0, reg: 0, bec: 0, tcp: 0 },
-]

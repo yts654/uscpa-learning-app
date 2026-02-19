@@ -11,7 +11,12 @@ import { AnalyticsView } from "@/components/analytics-view"
 import { SettingsView } from "@/components/settings-view"
 import { ReviewView } from "@/components/review-view"
 import { MockExamsView } from "@/components/mock-exams-view"
-import { INITIAL_PROGRESS, CHAPTERS, STUDY_LOGS, INITIAL_ESSENCE_NOTES, INITIAL_MOCK_EXAMS, type Chapter, type StudyLog, type ExamSection, type EssenceNote, type MockExam } from "@/lib/study-data"
+import {
+  INITIAL_PROGRESS, CHAPTERS, STUDY_LOGS, INITIAL_ESSENCE_NOTES, INITIAL_MOCK_EXAMS,
+  DEFAULT_STUDY_GOALS,
+  type Chapter, type StudyLog, type ExamSection, type EssenceNote, type MockExam,
+  type StudyGoals, type RecallRecord, type RecallRating,
+} from "@/lib/study-data"
 import { computeAllChapterRetentions } from "@/lib/spaced-repetition"
 import { LanguageProvider } from "@/lib/i18n"
 
@@ -27,6 +32,8 @@ export default function Home() {
   const [profile, setProfile] = useState({ name: "Unknown", email: "user@example.com", photoUrl: null as string | null })
   const [mockExams, setMockExams] = useState<MockExam[]>(INITIAL_MOCK_EXAMS)
   const [completedSections, setCompletedSections] = useState<ExamSection[]>([])
+  const [studyGoals, setStudyGoals] = useState<StudyGoals>(DEFAULT_STUDY_GOALS)
+  const [recallRecords, setRecallRecords] = useState<RecallRecord[]>([])
 
   const handleSelectChapter = useCallback((chapter: Chapter) => {
     setSelectedChapter(chapter)
@@ -53,6 +60,14 @@ export default function Home() {
   const chapterRetentions = useMemo(() => {
     return computeAllChapterRetentions(chapters, studyLogs)
   }, [chapters, studyLogs])
+
+  // Handle recall rating from Review tab
+  const handleRecallRating = useCallback((chapterId: string, rating: RecallRating) => {
+    const retention = chapterRetentions.find(r => r.chapterId === chapterId)
+    const predictedRetention = retention ? retention.retention : 50
+    const today = new Date().toISOString().split("T")[0]
+    setRecallRecords(prev => [...prev, { chapterId, date: today, rating, predictedRetention }])
+  }, [chapterRetentions])
 
   // Calculate study streak
   const streak = useMemo(() => {
@@ -112,11 +127,36 @@ export default function Home() {
             )}
             {currentView === "study-log" && <StudyLogView chapters={chapters} studyLogs={studyLogs} onUpdateLogs={setStudyLogs} />}
             {currentView === "mock-exams" && <MockExamsView mockExams={mockExams} onUpdateMockExams={setMockExams} />}
-            {currentView === "analytics" && <AnalyticsView progress={progress} chapters={chapters} />}
-            {currentView === "review" && (
-              <ReviewView chapterRetentions={chapterRetentions} chapters={chapters} onSelectChapter={handleSelectChapter} onViewChange={handleViewChange} />
+            {currentView === "analytics" && (
+              <AnalyticsView
+                chapters={chapters}
+                studyLogs={studyLogs}
+                chapterRetentions={chapterRetentions}
+                studyGoals={studyGoals}
+                mockExams={mockExams}
+                completedSections={completedSections}
+                recallRecords={recallRecords}
+              />
             )}
-            {currentView === "settings" && <SettingsView profile={profile} onUpdateProfile={setProfile} completedSections={completedSections} onUpdateCompletedSections={setCompletedSections} />}
+            {currentView === "review" && (
+              <ReviewView
+                chapterRetentions={chapterRetentions}
+                chapters={chapters}
+                onSelectChapter={handleSelectChapter}
+                onViewChange={handleViewChange}
+                onRecallRating={handleRecallRating}
+              />
+            )}
+            {currentView === "settings" && (
+              <SettingsView
+                profile={profile}
+                onUpdateProfile={setProfile}
+                completedSections={completedSections}
+                onUpdateCompletedSections={setCompletedSections}
+                studyGoals={studyGoals}
+                onUpdateStudyGoals={setStudyGoals}
+              />
+            )}
           </main>
         </div>
       </div>

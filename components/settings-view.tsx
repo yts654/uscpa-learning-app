@@ -3,7 +3,7 @@
 import { useState, useRef } from "react"
 import { useTheme } from "next-themes"
 import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Monitor, Languages } from "lucide-react"
-import { SECTION_INFO, type ExamSection } from "@/lib/study-data"
+import { SECTION_INFO, type ExamSection, type StudyGoals } from "@/lib/study-data"
 import { useLanguage, type Locale } from "@/lib/i18n"
 
 interface UserProfile {
@@ -17,9 +17,11 @@ interface SettingsViewProps {
   onUpdateProfile: (profile: UserProfile) => void
   completedSections: ExamSection[]
   onUpdateCompletedSections: (sections: ExamSection[]) => void
+  studyGoals: StudyGoals
+  onUpdateStudyGoals: (goals: StudyGoals) => void
 }
 
-export function SettingsView({ profile, onUpdateProfile, completedSections, onUpdateCompletedSections }: SettingsViewProps) {
+export function SettingsView({ profile, onUpdateProfile, completedSections, onUpdateCompletedSections, studyGoals, onUpdateStudyGoals }: SettingsViewProps) {
   const { theme, setTheme } = useTheme()
   const { locale, setLocale, t } = useLanguage()
   const [name, setName] = useState(profile.name)
@@ -48,6 +50,42 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
     onUpdateProfile({ name, email, photoUrl })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  // Helper to parse/update exam date parts from studyGoals
+  const getDateParts = (section: ExamSection) => {
+    const examDate = studyGoals.sections[section].examDate
+    if (!examDate) return { year: "", month: "", day: "" }
+    const [y, m, d] = examDate.split("-")
+    return { year: y, month: String(parseInt(m)), day: String(parseInt(d)) }
+  }
+
+  const updateSectionDate = (section: ExamSection, part: "year" | "month" | "day", value: string) => {
+    const parts = getDateParts(section)
+    parts[part] = value
+
+    let examDate: string | null = null
+    if (parts.year && parts.month && parts.day) {
+      examDate = `${parts.year}-${parts.month.padStart(2, "0")}-${parts.day.padStart(2, "0")}`
+    }
+
+    onUpdateStudyGoals({
+      ...studyGoals,
+      sections: {
+        ...studyGoals.sections,
+        [section]: { ...studyGoals.sections[section], examDate },
+      },
+    })
+  }
+
+  const updateTargetScore = (section: ExamSection, score: number) => {
+    onUpdateStudyGoals({
+      ...studyGoals,
+      sections: {
+        ...studyGoals.sections,
+        [section]: { ...studyGoals.sections[section], targetScore: score },
+      },
+    })
   }
 
   const initials = name
@@ -209,6 +247,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
         {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map((section) => {
           const info = SECTION_INFO[section]
           const isCompleted = completedSections.includes(section)
+          const dateParts = getDateParts(section)
           const toggleCompleted = () => {
             if (isCompleted) {
               onUpdateCompletedSections(completedSections.filter(s => s !== section))
@@ -243,7 +282,8 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                   <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Exam Date</label>
                   <div className="grid grid-cols-3 gap-2">
                     <select
-                      defaultValue=""
+                      value={dateParts.year}
+                      onChange={(e) => updateSectionDate(section, "year", e.target.value)}
                       disabled={isCompleted}
                       className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -253,7 +293,8 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                       ))}
                     </select>
                     <select
-                      defaultValue=""
+                      value={dateParts.month}
+                      onChange={(e) => updateSectionDate(section, "month", e.target.value)}
                       disabled={isCompleted}
                       className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -267,7 +308,8 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                       ))}
                     </select>
                     <select
-                      defaultValue=""
+                      value={dateParts.day}
+                      onChange={(e) => updateSectionDate(section, "day", e.target.value)}
                       disabled={isCompleted}
                       className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -281,7 +323,8 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                 <div>
                   <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Target Score</label>
                   <select
-                    defaultValue="75"
+                    value={studyGoals.sections[section].targetScore}
+                    onChange={(e) => updateTargetScore(section, parseInt(e.target.value))}
                     disabled={isCompleted}
                     className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -307,7 +350,8 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <div>
             <label className="text-sm font-medium text-card-foreground block mb-1.5">Daily Study Goal (hours)</label>
             <select
-              defaultValue="3"
+              value={studyGoals.dailyStudyHours}
+              onChange={(e) => onUpdateStudyGoals({ ...studyGoals, dailyStudyHours: parseInt(e.target.value) })}
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
             >
               <option value="1">1 hour</option>
@@ -320,7 +364,8 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <div>
             <label className="text-sm font-medium text-card-foreground block mb-1.5">Questions per Session</label>
             <select
-              defaultValue="25"
+              value={studyGoals.questionsPerSession}
+              onChange={(e) => onUpdateStudyGoals({ ...studyGoals, questionsPerSession: parseInt(e.target.value) })}
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
             >
               <option value="10">10 questions</option>

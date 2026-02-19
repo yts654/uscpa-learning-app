@@ -1,8 +1,9 @@
 "use client"
 
-import { LayoutDashboard, BookOpen, BarChart3, ClipboardList, Settings, LogOut, Flame, BookMarked, RefreshCw, FileText } from "lucide-react"
+import { LayoutDashboard, BookOpen, BarChart3, ClipboardList, Settings, LogOut, Flame, BookMarked, RefreshCw, FileText, Sun, Moon, Languages } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage, type TranslationKey } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 
 type View = "dashboard" | "chapters" | "study-log" | "mock-exams" | "analytics" | "settings" | "review"
 
@@ -24,23 +25,49 @@ const NAV_ITEMS: { id: View; label: string; icon: React.ElementType; descKey: Tr
 ]
 
 export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSidebarProps) {
-  const { t } = useLanguage()
+  const { t, locale, setLocale } = useLanguage()
+  const { theme, setTheme } = useTheme()
   const initials = profile.name
     .split(" ")
     .map(w => w[0])
     .join("")
     .toUpperCase()
     .slice(0, 2)
+
+  const toggleLocale = () => setLocale(locale === "ja" ? "en" : "ja")
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark")
+
   return (
     <aside className="hidden lg:flex flex-col w-64 bg-[hsl(232_47%_8%)] text-[hsl(230_15%_82%)] min-h-screen">
       {/* Brand */}
       <div className="flex items-center gap-3 px-6 py-6 border-b border-[hsl(232_35%_16%)]">
-        <div className="w-9 h-9 rounded-lg bg-[hsl(0_0%_100%)] flex items-center justify-center">
+        <div className="w-9 h-9 rounded-lg bg-[hsl(0_0%_100%)] flex items-center justify-center flex-shrink-0">
           <BookOpen className="w-5 h-5 text-[hsl(232_47%_8%)]" />
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <h1 className="font-serif text-lg text-[hsl(0_0%_100%)] leading-tight">CPA Mastery</h1>
           <p className="text-xs text-[hsl(230_15%_50%)] tracking-wide uppercase">Study Platform</p>
+        </div>
+        {/* Quick toggles */}
+        <div className="flex flex-col gap-1.5 flex-shrink-0">
+          <button
+            onClick={toggleLocale}
+            className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
+            title={locale === "ja" ? "Switch to English" : "日本語に切替"}
+          >
+            <span className="text-[9px] font-bold text-[hsl(230_15%_72%)]">{locale === "ja" ? "EN" : "JA"}</span>
+          </button>
+          <button
+            onClick={toggleTheme}
+            className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
+          >
+            {theme === "dark" ? (
+              <Sun className="w-3.5 h-3.5 text-[hsl(40_80%_60%)]" />
+            ) : (
+              <Moon className="w-3.5 h-3.5 text-[hsl(230_15%_72%)]" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -64,10 +91,10 @@ export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSi
               key={item.id}
               onClick={() => onViewChange(item.id)}
               className={cn(
-                "flex items-start gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 text-left",
+                "flex items-start gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 text-left",
                 isActive
                   ? "bg-[hsl(0_0%_100%)] text-[hsl(232_47%_8%)]"
-                  : "text-[hsl(230_15%_60%)] hover:bg-[hsl(232_40%_14%)] hover:text-[hsl(0_0%_100%)]"
+                  : "text-[hsl(230_15%_72%)] hover:bg-[hsl(232_40%_14%)] hover:text-[hsl(0_0%_100%)]"
               )}
             >
               <Icon className="w-4 h-4 mt-0.5 flex-shrink-0" />

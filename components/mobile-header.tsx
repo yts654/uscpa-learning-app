@@ -1,8 +1,10 @@
 "use client"
 
 import { useRef, useEffect } from "react"
-import { BookOpen, LayoutDashboard, BookMarked, ClipboardList, BarChart3, RefreshCw, Settings, FileText } from "lucide-react"
+import { BookOpen, LayoutDashboard, BookMarked, ClipboardList, BarChart3, RefreshCw, Settings, FileText, Sun, Moon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 
 type View = "dashboard" | "chapters" | "study-log" | "mock-exams" | "analytics" | "settings" | "review"
 
@@ -24,6 +26,11 @@ const NAV_ITEMS: { id: View; label: string; icon: React.ElementType }[] = [
 export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef<HTMLButtonElement>(null)
+  const { locale, setLocale } = useLanguage()
+  const { theme, setTheme } = useTheme()
+
+  const toggleLocale = () => setLocale(locale === "ja" ? "en" : "ja")
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark")
 
   // Scroll active tab into view on mount and view change
   useEffect(() => {
@@ -39,11 +46,30 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
     <header className="lg:hidden sticky top-0 z-50 bg-gradient-to-r from-[hsl(232_47%_8%)] to-[hsl(225_50%_12%)]">
       {/* Brand row */}
       <div className="flex items-center px-4 py-2.5 border-b border-[hsl(232_35%_16%)]">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1">
           <div className="w-7 h-7 rounded-lg bg-[hsl(0_0%_100%)] flex items-center justify-center">
             <BookOpen className="w-3.5 h-3.5 text-[hsl(232_47%_8%)]" />
           </div>
           <h1 className="font-serif text-sm text-[hsl(0_0%_100%)]">CPA Mastery</h1>
+        </div>
+        {/* Quick toggles */}
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={toggleLocale}
+            className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
+          >
+            <span className="text-[9px] font-bold text-[hsl(230_15%_72%)]">{locale === "ja" ? "EN" : "JA"}</span>
+          </button>
+          <button
+            onClick={toggleTheme}
+            className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
+          >
+            {theme === "dark" ? (
+              <Sun className="w-3.5 h-3.5 text-[hsl(40_80%_60%)]" />
+            ) : (
+              <Moon className="w-3.5 h-3.5 text-[hsl(230_15%_72%)]" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -62,10 +88,10 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
               ref={isActive ? activeRef : undefined}
               onClick={() => onViewChange(item.id)}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 min-h-[40px]",
+                "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 min-h-[40px]",
                 isActive
                   ? "bg-[hsl(0_0%_100%)] text-[hsl(232_47%_8%)]"
-                  : "text-[hsl(230_15%_55%)] active:bg-[hsl(232_40%_14%)]"
+                  : "text-[hsl(230_15%_70%)] active:bg-[hsl(232_40%_14%)]"
               )}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
