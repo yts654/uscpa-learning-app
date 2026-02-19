@@ -77,7 +77,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
             <div key={item.label} className="p-4 text-center relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full" style={{ backgroundColor: item.color }} />
               <p className="text-2xl font-bold text-foreground mt-1">{item.value}</p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
             </div>
           ))}
         </div>
@@ -130,7 +130,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
             {/* Section Header */}
             <div className="flex items-center gap-3 mb-3">
               <div
-                className="w-8 h-8 rounded flex items-center justify-center text-[10px] font-bold text-[hsl(0,0%,100%)]"
+                className="w-8 h-8 rounded flex items-center justify-center text-xs font-bold text-[hsl(0,0%,100%)]"
                 style={{ backgroundColor: isSectionCompleted ? "hsl(0 0% 60%)" : info.color }}
               >
                 {section}
@@ -138,9 +138,9 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
               <div className="flex-1">
                 <h3 className={cn("text-sm font-semibold", isSectionCompleted ? "text-muted-foreground line-through" : "text-foreground")}>
                   {info.fullName}
-                  {isSectionCompleted && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-green-600 dark:text-green-400 no-underline inline-block">Completed</span>}
+                  {isSectionCompleted && <span className="ml-2 text-xs font-bold uppercase tracking-wider text-green-600 dark:text-green-400 no-underline inline-block">Completed</span>}
                 </h3>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {sectionChapters.length} chapters
                   {sectionHours > 0 && <span className="ml-1">/ {sectionHours.toFixed(1)}h studied</span>}
                   {sectionQuestions > 0 && <span className="ml-1">/ Accuracy: {sectionAccuracy}%</span>}
@@ -181,22 +181,22 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                     {/* Chapter Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapter.number}</span>
+                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapter.number}</span>
                         <h4 className="text-sm font-medium text-card-foreground truncate">{chapter.title}</h4>
                       </div>
                       {hasStudied && (
-                        <div className="flex items-center gap-4 mt-1.5">
-                          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <div className="flex items-center gap-2 sm:gap-4 mt-1.5 flex-wrap">
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Clock className="w-3 h-3" />
                             <span>{stats.hours.toFixed(1)}h</span>
                           </div>
                           {stats.questions > 0 && (
                             <>
-                              <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <BookOpen className="w-3 h-3" />
-                                <span>{stats.questions} questions</span>
+                                <span>{stats.questions} Q</span>
                               </div>
-                              <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <Target className="w-3 h-3" />
                                 <span>{stats.accuracy}%</span>
                               </div>
@@ -215,7 +215,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                       return (
                         <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
                           <span
-                            className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                            className="text-xs font-medium px-1.5 py-0.5 rounded"
                             style={{ color: masteryInfo.color, backgroundColor: masteryInfo.bgColor }}
                           >
                             {masteryInfo.label}
@@ -224,7 +224,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                             <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                               <div className="h-full rounded-full transition-all" style={{ width: `${ret.retention}%`, backgroundColor: retColor }} />
                             </div>
-                            <span className="text-[10px] font-medium w-8 text-right" style={{ color: retColor }}>{ret.retention}%</span>
+                            <span className="text-xs font-medium w-8 text-right" style={{ color: retColor }}>{ret.retention}%</span>
                           </div>
                         </div>
                       )
@@ -278,7 +278,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
 
                 return (
                   <div key={ch.id} className="px-6 py-2.5 flex items-center gap-4 hover:bg-muted/20 transition-colors">
-                    <span className="text-[10px] font-bold text-muted-foreground w-10 flex-shrink-0">Ch.{ch.number}</span>
+                    <span className="text-xs font-bold text-muted-foreground w-10 flex-shrink-0">Ch.{ch.number}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-card-foreground truncate">{ch.title}</p>
                       <div className="mt-1 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -291,7 +291,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                     <div className="flex items-center gap-3 flex-shrink-0 text-right">
                       <span className="text-xs font-bold text-foreground w-12">{stats.hours.toFixed(1)}h</span>
                       {stats.questions > 0 && (
-                        <span className="text-[10px] text-muted-foreground w-14">{stats.accuracy}% acc</span>
+                        <span className="text-xs text-muted-foreground w-14">{stats.accuracy}% acc</span>
                       )}
                     </div>
                   </div>

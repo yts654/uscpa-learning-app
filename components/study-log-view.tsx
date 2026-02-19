@@ -256,7 +256,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
             <div key={item.label} className="p-4 text-center relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full" style={{ backgroundColor: item.color }} />
               <p className="text-2xl font-bold text-foreground mt-1">{item.value}</p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
             </div>
           ))}
         </div>
@@ -326,7 +326,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">MC (Multiple Choice)</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground block mb-1">Questions</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
                     <input
                       type="number"
                       min="0"
@@ -337,7 +337,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground block mb-1">Correct</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
                     <input
                       type="number"
                       min="0"
@@ -353,7 +353,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">TBS (Task-Based Simulations)</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground block mb-1">Questions</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
                     <input
                       type="number"
                       min="0"
@@ -364,7 +364,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground block mb-1">Correct</label>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
                     <input
                       type="number"
                       min="0"
@@ -450,7 +450,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm font-semibold text-card-foreground">{week.weekLabel}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
                     <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{week.totalHours.toFixed(1)}h total</span>
                     {week.prevWeekHours > 0 && (
                       <span className="flex items-center gap-1">
@@ -476,15 +476,15 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     const mcTotal = s.mc > 0 ? Math.round((s.mc / (s.mc + s.tbs)) * 100) : 0
                     return (
                       <div key={section} className="flex items-center gap-3">
-                        <span className="text-[10px] font-bold w-8 text-muted-foreground">{section}</span>
-                        <div className="flex-1 h-4 bg-muted rounded-full overflow-hidden">
+                        <span className="text-xs font-bold w-8 text-muted-foreground flex-shrink-0">{section}</span>
+                        <div className="flex-1 min-w-0 h-4 bg-muted rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full transition-all"
                             style={{ width: `${barWidth}%`, backgroundColor: SECTION_INFO[section].color }}
                           />
                         </div>
-                        <span className="text-[10px] text-muted-foreground w-12 text-right">{s.hours.toFixed(1)}h</span>
-                        <span className="text-[10px] text-muted-foreground w-20 text-right">MC:{mcTotal}% TBS:{100 - mcTotal}%</span>
+                        <span className="text-xs text-muted-foreground min-w-fit text-right">{s.hours.toFixed(1)}h</span>
+                        <span className="text-xs text-muted-foreground min-w-fit text-right hidden sm:inline">MC:{mcTotal}% TBS:{100 - mcTotal}%</span>
                       </div>
                     )
                   })}
@@ -549,13 +549,13 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-semibold text-card-foreground">{formatDate(date)}</p>
-                  <p className="text-[11px] text-muted-foreground">{dayLogs.length} session{dayLogs.length > 1 ? "s" : ""}</p>
+                  <p className="text-xs text-muted-foreground">{dayLogs.length} session{dayLogs.length > 1 ? "s" : ""}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <div className="hidden sm:flex items-center gap-4 text-[11px] text-muted-foreground">
+                <div className="flex items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{dayHours.toFixed(1)}h</span>
-                  <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{dayQuestions} Q</span>
+                  <span className="hidden sm:flex items-center gap-1"><BookOpen className="w-3 h-3" />{dayQuestions} Q</span>
                   <span className="flex items-center gap-1"><Target className="w-3 h-3" />{dayAccuracy}%</span>
                 </div>
                 {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
@@ -579,7 +579,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                     >
                       {/* Section badge */}
                       <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-[10px] font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
+                        className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
                         style={{ backgroundColor: info.color }}
                       >
                         {log.section}
@@ -589,26 +589,26 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <p className="text-sm font-medium text-card-foreground">{log.chapterTitle}</p>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapters.find(c => c.id === log.chapterId)?.number}</span>
+                          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapters.find(c => c.id === log.chapterId)?.number}</span>
                         </div>
 
                         {/* Stats row with MC/TBS breakdown */}
                         <div className="flex items-center gap-4 mt-1.5 flex-wrap">
-                          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Clock className="w-3 h-3" />{log.studyHours}h
                           </span>
                           {log.mcQuestions > 0 && (
-                            <span className="text-[11px] text-muted-foreground">
+                            <span className="text-xs text-muted-foreground">
                               MC: {log.mcCorrect}/{log.mcQuestions}
                             </span>
                           )}
                           {log.tbsQuestions > 0 && (
-                            <span className="text-[11px] text-muted-foreground">
+                            <span className="text-xs text-muted-foreground">
                               TBS: {log.tbsCorrect}/{log.tbsQuestions}
                             </span>
                           )}
                           {log.questionsAnswered > 0 && (
-                            <span className="flex items-center gap-1 text-[11px]" style={{ color: logAccuracy >= 75 ? info.color : logAccuracy >= 50 ? "hsl(230, 8%, 46%)" : "hsl(0, 72%, 51%)" }}>
+                            <span className="flex items-center gap-1 text-xs" style={{ color: logAccuracy >= 75 ? info.color : logAccuracy >= 50 ? "hsl(230, 8%, 46%)" : "hsl(0, 72%, 51%)" }}>
                               <Target className="w-3 h-3" />{logAccuracy}% accuracy
                             </span>
                           )}

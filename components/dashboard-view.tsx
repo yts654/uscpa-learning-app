@@ -137,21 +137,21 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[hsl(225,50%,22%)] text-white text-xs font-bold flex-shrink-0">1</span>
                 <div>
                   <p className="text-sm font-medium text-card-foreground flex items-center gap-1.5"><BookMarked className="w-3.5 h-3.5" />{t("guide.step1.title")}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{t("guide.step1.desc")}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t("guide.step1.desc")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[hsl(225,50%,22%)] text-white text-xs font-bold flex-shrink-0">2</span>
                 <div>
                   <p className="text-sm font-medium text-card-foreground flex items-center gap-1.5"><ClipboardList className="w-3.5 h-3.5" />{t("guide.step2.title")}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{t("guide.step2.desc")}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t("guide.step2.desc")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[hsl(225,50%,22%)] text-white text-xs font-bold flex-shrink-0">3</span>
                 <div>
                   <p className="text-sm font-medium text-card-foreground flex items-center gap-1.5"><RefreshCw className="w-3.5 h-3.5" />{t("guide.step3.title")}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{t("guide.step3.desc")}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t("guide.step3.desc")}</p>
                 </div>
               </div>
             </div>
@@ -189,11 +189,11 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
               const barWidth = (s.hours / maxH) * 100
               return (
                 <div key={s.section} className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-muted-foreground w-7">{s.section}</span>
+                  <span className="text-xs font-bold text-muted-foreground w-7">{s.section}</span>
                   <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all" style={{ width: `${barWidth}%`, backgroundColor: s.color }} />
                   </div>
-                  <span className="text-[10px] text-muted-foreground w-10 text-right">{s.hours.toFixed(1)}h</span>
+                  <span className="text-xs text-muted-foreground w-10 text-right">{s.hours.toFixed(1)}h</span>
                 </div>
               )
             })}
@@ -215,7 +215,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
           </div>
           {/* Last 14 days activity grid */}
           <div className="mt-4">
-            <p className="text-[10px] text-muted-foreground mb-2">Last 14 days</p>
+            <p className="text-xs text-muted-foreground mb-2">Last 14 days</p>
             <div className="flex gap-1.5 flex-wrap">
               {(() => {
                 const studyDates = new Set(studyLogs.map(l => l.date))
@@ -301,7 +301,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                 <Brain className="w-4 h-4 text-muted-foreground" />
                 <div>
                   <h3 className="font-semibold text-card-foreground text-sm">Review Queue</h3>
-                  <p className="text-[11px] text-muted-foreground">Chapters needing review based on forgetting curve</p>
+                  <p className="text-xs text-muted-foreground">Chapters needing review based on forgetting curve</p>
                 </div>
               </div>
               <button
@@ -330,16 +330,16 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                         <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                           <div className="h-full rounded-full transition-all" style={{ width: `${item.retention}%`, backgroundColor: retColor }} />
                         </div>
-                        <span className="text-[10px] font-medium" style={{ color: retColor }}>{item.retention}%</span>
+                        <span className="text-xs font-medium" style={{ color: retColor }}>{item.retention}%</span>
                       </div>
                       <span
-                        className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                        className="text-xs font-medium px-1.5 py-0.5 rounded"
                         style={{ color: masteryInfo.color, backgroundColor: masteryInfo.bgColor }}
                       >
                         {masteryInfo.label}
                       </span>
                       {item.daysSinceLastStudy >= 0 && (
-                        <span className="text-[11px] text-muted-foreground hidden sm:inline">{item.daysSinceLastStudy}d ago</span>
+                        <span className="text-xs text-muted-foreground">{item.daysSinceLastStudy}d ago</span>
                       )}
                     </div>
                   </div>
@@ -397,13 +397,13 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                               style={{ width: `${progress}%`, backgroundColor: data.info.color }}
                             />
                           </div>
-                          <span className="text-[10px] text-muted-foreground">{data.chaptersStudied}/{data.totalChapters} chapters studied</span>
+                          <span className="text-xs text-muted-foreground">{data.chaptersStudied}/{data.totalChapters} chapters studied</span>
                         </div>
                       </div>
-                      <div className="hidden sm:flex items-center gap-4 text-[11px] text-muted-foreground flex-shrink-0">
+                      <div className="flex items-center gap-2 sm:gap-4 text-xs text-muted-foreground flex-shrink-0">
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{data.sectionHours.toFixed(1)}h</span>
-                        <span className="flex items-center gap-1"><Lightbulb className="w-3 h-3" />{data.insightCount}</span>
-                        {data.lastStudied && <span>{formatDate(data.lastStudied)}</span>}
+                        <span className="hidden sm:flex items-center gap-1"><Lightbulb className="w-3 h-3" />{data.insightCount}</span>
+                        {data.lastStudied && <span className="hidden sm:inline">{formatDate(data.lastStudied)}</span>}
                       </div>
                       <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${isOpen ? "rotate-180" : ""}`} />
                     </div>
@@ -418,7 +418,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                         {data.sectionLogs.length === 0 ? (
                           <div>
                             <p className="text-xs text-muted-foreground">{t("dashboard.section.noSessions")}</p>
-                            <p className="text-[11px] text-muted-foreground mt-1">{t("dashboard.section.startStudying")}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{t("dashboard.section.startStudying")}</p>
                             <button
                               onClick={() => onViewChange("chapters")}
                               className="mt-2 text-xs font-medium hover:underline transition-colors"
@@ -436,11 +436,11 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                                 const acc = log.questionsAnswered > 0 ? Math.round((log.correctAnswers / log.questionsAnswered) * 100) : 0
                                 return (
                                   <div key={log.id} className="flex items-center gap-3 py-1.5">
-                                    <span className="text-[11px] text-muted-foreground w-16 flex-shrink-0">{formatDate(log.date)}</span>
+                                    <span className="text-xs text-muted-foreground w-16 flex-shrink-0">{formatDate(log.date)}</span>
                                     <span className="text-xs text-card-foreground truncate flex-1">{log.chapterTitle}</span>
-                                    <span className="text-[11px] text-muted-foreground flex-shrink-0">{log.studyHours}h</span>
+                                    <span className="text-xs text-muted-foreground flex-shrink-0">{log.studyHours}h</span>
                                     {log.questionsAnswered > 0 && (
-                                      <span className="text-[11px] flex-shrink-0" style={{ color: acc >= 75 ? data.info.color : "hsl(0, 72%, 51%)" }}>{acc}%</span>
+                                      <span className="text-xs flex-shrink-0" style={{ color: acc >= 75 ? data.info.color : "hsl(0, 72%, 51%)" }}>{acc}%</span>
                                     )}
                                   </div>
                                 )
@@ -470,7 +470,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                                   <span className="inline-block w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: data.info.color }} />
                                   <div>
                                     <p className="text-xs font-medium text-card-foreground">{insight.title}</p>
-                                    <p className="text-[11px] text-muted-foreground line-clamp-2">{insight.body}</p>
+                                    <p className="text-xs text-muted-foreground line-clamp-2">{insight.body}</p>
                                   </div>
                                 </div>
                               )))}
@@ -532,7 +532,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-card-foreground truncate">{log.chapterTitle}</p>
-                    <div className="flex items-center gap-3 mt-0.5 text-[11px] text-muted-foreground">
+                    <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
                       <span>{formatDate(log.date)}</span>
                       <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{log.studyHours}h</span>
                       {log.questionsAnswered > 0 && (

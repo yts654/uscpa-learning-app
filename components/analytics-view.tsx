@@ -70,7 +70,7 @@ export function AnalyticsView({ progress, chapters }: AnalyticsViewProps) {
             <div key={m.label} className="p-5 text-center relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-0.5 rounded-full" style={{ backgroundColor: m.color }} />
               <p className="text-3xl font-bold mt-1" style={{ color: m.color }}>{m.value}</p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">{m.label}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{m.label}</p>
             </div>
           ))}
         </div>
@@ -149,8 +149,8 @@ export function AnalyticsView({ progress, chapters }: AnalyticsViewProps) {
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Exhibit 4: Section-by-Section Performance Breakdown</h3>
         </div>
 
-        {/* Table Header */}
-        <div className="grid grid-cols-7 px-6 py-3 border-b border-border bg-muted/20 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        {/* Desktop Table Header */}
+        <div className="hidden md:grid grid-cols-7 px-6 py-3 border-b border-border bg-muted/20 text-xs font-bold uppercase tracking-wider text-muted-foreground">
           <div className="col-span-2">Section</div>
           <div className="text-center">Chapters</div>
           <div className="text-center">Completed</div>
@@ -159,11 +159,11 @@ export function AnalyticsView({ progress, chapters }: AnalyticsViewProps) {
           <div className="text-center">Study Hours</div>
         </div>
 
-        {/* Table Rows */}
+        {/* Desktop Table Rows */}
         {sectionData.map((s) => {
           const info = SECTION_INFO[s.section]
           return (
-            <div key={s.section} className="grid grid-cols-7 px-6 py-4 border-b border-border last:border-b-0 items-center hover:bg-muted/20 transition-colors">
+            <div key={s.section} className="hidden md:grid grid-cols-7 px-6 py-4 border-b border-border last:border-b-0 items-center hover:bg-muted/20 transition-colors">
               <div className="col-span-2 flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded flex items-center justify-center text-[10px] font-bold text-[hsl(0,0%,100%)]"
@@ -188,14 +188,83 @@ export function AnalyticsView({ progress, chapters }: AnalyticsViewProps) {
           )
         })}
 
-        {/* Total Row */}
-        <div className="grid grid-cols-7 px-6 py-4 bg-muted/30 items-center font-bold border-t-2 border-foreground/10">
+        {/* Mobile Card Rows */}
+        <div className="md:hidden divide-y divide-border">
+          {sectionData.map((s) => {
+            const info = SECTION_INFO[s.section]
+            return (
+              <div key={`mobile-${s.section}`} className="px-5 py-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className="w-8 h-8 rounded flex items-center justify-center text-[10px] font-bold text-[hsl(0,0%,100%)]"
+                    style={{ backgroundColor: SECTION_COLORS[s.section] }}
+                  >
+                    {s.section}
+                  </div>
+                  <p className="text-sm font-medium text-card-foreground">{info.fullName}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Chapters</span>
+                    <span className="font-medium text-card-foreground">{s.chapters}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Completed</span>
+                    <span className="font-medium text-card-foreground">{s.completed}/{s.chapters}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Accuracy</span>
+                    <span className="font-bold" style={{ color: s.accuracy >= 70 ? SECTION_COLORS[s.section] : s.accuracy >= 50 ? "hsl(230, 8%, 46%)" : "hsl(0, 72%, 51%)" }}>
+                      {s.accuracy}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Questions</span>
+                    <span className="font-medium text-card-foreground">{s.questions}</span>
+                  </div>
+                  <div className="flex justify-between col-span-2">
+                    <span className="text-muted-foreground">Study Hours</span>
+                    <span className="font-medium text-card-foreground">{s.hours.toFixed(1)}h</span>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Total Row — Desktop */}
+        <div className="hidden md:grid grid-cols-7 px-6 py-4 bg-muted/30 items-center font-bold border-t-2 border-foreground/10">
           <div className="col-span-2 text-sm text-card-foreground">Total</div>
           <div className="text-center text-sm text-card-foreground">{chapters.length}</div>
           <div className="text-center text-sm text-card-foreground">{completedChapters}/{chapters.length}</div>
           <div className="text-center text-sm" style={{ color: SECTION_COLORS.FAR }}>{overallAccuracy}%</div>
           <div className="text-center text-sm text-card-foreground">{totalQuestions}</div>
           <div className="text-center text-sm text-card-foreground">{totalHours.toFixed(1)}h</div>
+        </div>
+        {/* Total Row — Mobile */}
+        <div className="md:hidden px-5 py-4 bg-muted/30 border-t-2 border-foreground/10">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs font-bold">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Total Chapters</span>
+              <span className="text-card-foreground">{chapters.length}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Completed</span>
+              <span className="text-card-foreground">{completedChapters}/{chapters.length}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Accuracy</span>
+              <span style={{ color: SECTION_COLORS.FAR }}>{overallAccuracy}%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Questions</span>
+              <span className="text-card-foreground">{totalQuestions}</span>
+            </div>
+            <div className="flex justify-between col-span-2">
+              <span className="text-muted-foreground">Study Hours</span>
+              <span className="text-card-foreground">{totalHours.toFixed(1)}h</span>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -105,7 +105,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
             {photoUrl && (
               <button
                 onClick={handleRemovePhoto}
-                className="text-[11px] text-muted-foreground hover:text-destructive transition-colors"
+                className="text-xs text-muted-foreground hover:text-destructive transition-colors"
               >
                 Remove photo
               </button>
@@ -228,7 +228,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                 <span className={`text-sm font-semibold ${isCompleted ? "text-muted-foreground line-through" : "text-card-foreground"}`}>{info.fullName}</span>
                 <button
                   onClick={toggleCompleted}
-                  className={`ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${
+                  className={`ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
                     isCompleted
                       ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                       : "bg-muted text-muted-foreground hover:bg-border"
@@ -238,14 +238,14 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                   {isCompleted ? "Completed" : "Mark Complete"}
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider block mb-1">Exam Date</label>
-                  <div className="flex gap-1.5">
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Exam Date</label>
+                  <div className="grid grid-cols-3 gap-2">
                     <select
                       defaultValue=""
                       disabled={isCompleted}
-                      className="flex-1 px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <option value="">{locale === "ja" ? "年" : "Year"}</option>
                       {Array.from({ length: 7 }, (_, i) => 2025 + i).map(y => (
@@ -255,7 +255,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                     <select
                       defaultValue=""
                       disabled={isCompleted}
-                      className="flex-1 px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <option value="">{locale === "ja" ? "月" : "Mon"}</option>
                       {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
@@ -269,7 +269,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                     <select
                       defaultValue=""
                       disabled={isCompleted}
-                      className="w-[4.5rem] px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <option value="">{locale === "ja" ? "日" : "Day"}</option>
                       {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
@@ -279,7 +279,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                   </div>
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider block mb-1">Target Score</label>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Target Score</label>
                   <select
                     defaultValue="75"
                     disabled={isCompleted}

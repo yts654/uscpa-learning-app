@@ -151,7 +151,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
             <div key={item.label} className="p-4 text-center relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full" style={{ backgroundColor: item.color }} />
               <p className="text-2xl font-bold text-foreground mt-1">{item.value}</p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
             </div>
           ))}
         </div>
@@ -173,7 +173,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                   {/* Review Intervals */}
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2.5">{t("review.criteria.intervals.title")}</h4>
-                    <p className="text-[11px] text-muted-foreground mb-2">{t("review.criteria.intervals.desc")}</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t("review.criteria.intervals.desc")}</p>
                     <div className="space-y-1.5">
                       {[
                         { review: t("review.criteria.intervals.1st"), interval: t("review.criteria.intervals.1d"), bar: 3 },
@@ -183,11 +183,11 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                         { review: t("review.criteria.intervals.5th"), interval: t("review.criteria.intervals.30d"), bar: 100 },
                       ].map((item) => (
                         <div key={item.review} className="flex items-center gap-2">
-                          <span className="text-[11px] text-card-foreground w-14 flex-shrink-0">{item.review}</span>
+                          <span className="text-xs text-card-foreground w-14 flex-shrink-0">{item.review}</span>
                           <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                             <div className="h-full rounded-full bg-[hsl(225,50%,22%)]" style={{ width: `${item.bar}%` }} />
                           </div>
-                          <span className="text-[11px] font-medium text-muted-foreground w-14 text-right">{item.interval}</span>
+                          <span className="text-xs font-medium text-muted-foreground w-14 text-right">{item.interval}</span>
                         </div>
                       ))}
                     </div>
@@ -196,15 +196,15 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                   {/* Alert Criteria */}
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2.5">{t("review.criteria.alerts.title")}</h4>
-                    <p className="text-[11px] text-muted-foreground mb-2">{t("review.criteria.alerts.desc")}</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t("review.criteria.alerts.desc")}</p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
                         <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "hsl(0, 65%, 97%)" }}>
                           <AlertTriangle className="w-3 h-3" style={{ color: "hsl(0, 65%, 45%)" }} />
                         </div>
                         <div>
-                          <p className="text-[11px] font-medium text-card-foreground">{t("review.criteria.alerts.overdue.label")}</p>
-                          <p className="text-[10px] text-muted-foreground">{t("review.criteria.alerts.overdue.desc")}</p>
+                          <p className="text-xs font-medium text-card-foreground">{t("review.criteria.alerts.overdue.label")}</p>
+                          <p className="text-xs text-muted-foreground">{t("review.criteria.alerts.overdue.desc")}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
@@ -212,8 +212,8 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                           <Clock className="w-3 h-3" style={{ color: "hsl(25, 55%, 40%)" }} />
                         </div>
                         <div>
-                          <p className="text-[11px] font-medium text-card-foreground">{t("review.criteria.alerts.dueToday.label")}</p>
-                          <p className="text-[10px] text-muted-foreground">{t("review.criteria.alerts.dueToday.desc")}</p>
+                          <p className="text-xs font-medium text-card-foreground">{t("review.criteria.alerts.dueToday.label")}</p>
+                          <p className="text-xs text-muted-foreground">{t("review.criteria.alerts.dueToday.desc")}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
@@ -221,8 +221,8 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                           <CalendarCheck className="w-3 h-3" style={{ color: "hsl(225, 50%, 35%)" }} />
                         </div>
                         <div>
-                          <p className="text-[11px] font-medium text-card-foreground">{t("review.criteria.alerts.comingUp.label")}</p>
-                          <p className="text-[10px] text-muted-foreground">{t("review.criteria.alerts.comingUp.desc")}</p>
+                          <p className="text-xs font-medium text-card-foreground">{t("review.criteria.alerts.comingUp.label")}</p>
+                          <p className="text-xs text-muted-foreground">{t("review.criteria.alerts.comingUp.desc")}</p>
                         </div>
                       </div>
                     </div>
@@ -240,12 +240,12 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                       ].map((item) => (
                         <div key={item.level} className="flex items-center gap-2">
                           <span
-                            className="text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 w-20 text-center"
+                            className="text-xs font-medium px-1.5 py-0.5 rounded flex-shrink-0 w-20 text-center"
                             style={{ color: item.color, backgroundColor: item.bg }}
                           >
                             {item.level}
                           </span>
-                          <span className="text-[11px] text-muted-foreground">{item.condition}</span>
+                          <span className="text-xs text-muted-foreground">{item.condition}</span>
                         </div>
                       ))}
                     </div>
@@ -263,8 +263,8 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                       ].map((item) => (
                         <div key={item.range} className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                          <span className="text-[11px] font-medium text-card-foreground w-16">{item.range}</span>
-                          <span className="text-[11px] text-muted-foreground">— {item.label}</span>
+                          <span className="text-xs font-medium text-card-foreground w-16">{item.range}</span>
+                          <span className="text-xs text-muted-foreground">— {item.label}</span>
                         </div>
                       ))}
                     </div>
@@ -283,7 +283,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
             <div className="flex items-center gap-2 mb-3">
               <Bell className="w-4 h-4 text-[hsl(0,65%,45%)]" />
               <h3 className="text-sm font-semibold text-[hsl(0,65%,35%)]">{t("review.alert.title")}</h3>
-              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[hsl(0,65%,45%)] text-white">{alertItems.length}</span>
+              <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-[hsl(0,65%,45%)] text-white">{alertItems.length}</span>
             </div>
             <div className="space-y-2">
               {alertItems.sort((a, b) => a.retention - b.retention).map((item) => {
@@ -305,9 +305,9 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-foreground truncate">Ch.{item.chapterNumber} {item.chapterTitle}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[10px] font-medium" style={{ color: retColor }}>{t("review.alert.retention")} {item.retention}%</span>
-                        <span className="text-[10px] text-muted-foreground">{item.daysSinceLastStudy} {t("review.alert.daysAgo")}</span>
-                        <span className="text-[10px] font-medium" style={{ color: item.isOverdue ? "hsl(0,65%,45%)" : "hsl(25,55%,40%)" }}>
+                        <span className="text-xs font-medium" style={{ color: retColor }}>{t("review.alert.retention")} {item.retention}%</span>
+                        <span className="text-xs text-muted-foreground">{item.daysSinceLastStudy} {t("review.alert.daysAgo")}</span>
+                        <span className="text-xs font-medium" style={{ color: item.isOverdue ? "hsl(0,65%,45%)" : "hsl(25,55%,40%)" }}>
                           {item.isOverdue ? t("review.alert.overdue") : t("review.alert.dueToday")}
                         </span>
                       </div>
@@ -371,7 +371,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     key={ch.chapterId}
                     onClick={() => setSelectedChapterId(isSelected ? null : ch.chapterId)}
                     className={cn(
-                      "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all border",
+                      "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border",
                       isSelected
                         ? "border-current shadow-sm"
                         : isAlert
@@ -398,7 +398,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
             <div className="px-6 pb-2">
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={curveData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+                  <LineChart data={curveData} margin={{ top: 8, right: 8, bottom: 0, left: -10 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(230, 12%, 90%)" />
                     <XAxis
                       dataKey="day"
@@ -481,19 +481,19 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
               <div className="px-6 pb-5 pt-1">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("review.detail.retention")}</p>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.retention")}</p>
                     <p className="text-lg font-bold mt-0.5" style={{ color: getRetentionColor(selected.retention) }}>{selected.retention}%</p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("review.detail.reviewCount")}</p>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.reviewCount")}</p>
                     <p className="text-lg font-bold text-foreground mt-0.5">{selected.reviewCount}<span className="text-xs font-normal text-muted-foreground ml-1">{t("review.detail.reviewCountUnit")}</span></p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("review.detail.lastStudied")}</p>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.lastStudied")}</p>
                     <p className="text-lg font-bold text-foreground mt-0.5">{selected.daysSinceLastStudy}<span className="text-xs font-normal text-muted-foreground ml-1">{t("review.detail.daysAgoUnit")}</span></p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("review.detail.nextReview")}</p>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.nextReview")}</p>
                     <p className="text-lg font-bold mt-0.5" style={{ color: selected.isOverdue || selected.isDueToday ? "hsl(0,65%,45%)" : "hsl(225,50%,35%)" }}>
                       {formatNextDate(selected.nextReviewDate)}
                     </p>
@@ -503,15 +503,15 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3">
                   <div className="flex items-center gap-1.5">
                     <div className="w-5 h-0.5 rounded-full" style={{ backgroundColor: SECTION_INFO[selected.section].color }} />
-                    <span className="text-[10px] text-muted-foreground">{t("review.chart.currentCurve")}（{selected.reviewCount}{t("review.detail.reviewsSuffix")}）</span>
+                    <span className="text-xs text-muted-foreground">{t("review.chart.currentCurve")}（{selected.reviewCount}{t("review.detail.reviewsSuffix")}）</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-5 h-0.5 rounded-full opacity-40" style={{ backgroundColor: SECTION_INFO[selected.section].color, borderTop: "2px dashed" }} />
-                    <span className="text-[10px] text-muted-foreground">{t("review.chart.nextCurve")}</span>
+                    <span className="text-xs text-muted-foreground">{t("review.chart.nextCurve")}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: selected.isOverdue ? "hsl(0,65%,45%)" : SECTION_INFO[selected.section].color, border: "2px solid white" }} />
-                    <span className="text-[10px] text-muted-foreground">{t("review.chart.currentPosition")}</span>
+                    <span className="text-xs text-muted-foreground">{t("review.chart.currentPosition")}</span>
                   </div>
                 </div>
               </div>
@@ -570,7 +570,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                   {group.label}
                   <span className="ml-2 text-xs font-normal text-muted-foreground">({group.items.length})</span>
                 </h3>
-                <p className="text-[11px] text-muted-foreground">{group.description}</p>
+                <p className="text-xs text-muted-foreground">{group.description}</p>
               </div>
             </div>
 
@@ -601,7 +601,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     {/* Chapter info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ch.{item.chapterNumber}</span>
+                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{item.chapterNumber}</span>
                         <span className="text-sm font-medium text-card-foreground truncate">{item.chapterTitle}</span>
                       </div>
                       {/* Retention bar + stats row */}
@@ -613,24 +613,24 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                               style={{ width: `${item.retention}%`, backgroundColor: retColor }}
                             />
                           </div>
-                          <span className="text-[10px] font-medium w-8 text-right" style={{ color: retColor }}>
+                          <span className="text-xs font-medium w-8 text-right" style={{ color: retColor }}>
                             {item.retention}%
                           </span>
                         </div>
                         {/* Mastery badge */}
                         <span
-                          className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                          className="text-xs font-medium px-1.5 py-0.5 rounded"
                           style={{ color: masteryInfo.color, backgroundColor: masteryInfo.bgColor }}
                         >
                           {masteryInfo.label}
                         </span>
-                        {/* Extra stats on sm+ */}
-                        <div className="hidden sm:flex items-center gap-3 text-[11px] text-muted-foreground">
+                        {/* Extra stats */}
+                        <div className="flex items-center gap-2 sm:gap-3 text-xs text-muted-foreground flex-wrap">
                           {item.daysSinceLastStudy >= 0 && (
                             <span>{item.daysSinceLastStudy}d ago</span>
                           )}
-                          <span>Next: {formatNextDate(item.nextReviewDate)}</span>
-                          <span>{item.reviewCount} reviews</span>
+                          <span className="hidden sm:inline">Next: {formatNextDate(item.nextReviewDate)}</span>
+                          <span className="hidden sm:inline">{item.reviewCount} reviews</span>
                         </div>
                       </div>
                     </div>

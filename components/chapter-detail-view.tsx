@@ -110,7 +110,7 @@ export function ChapterDetailView({
             {chapter.section}
           </div>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Chapter {chapter.number}</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chapter {chapter.number}</p>
             <h2 className="font-serif text-2xl text-foreground text-balance">{chapter.title}</h2>
             <p className="text-sm text-muted-foreground mt-0.5">{info.fullName}</p>
           </div>
@@ -124,7 +124,7 @@ export function ChapterDetailView({
           {statItems.map((item) => (
             <div key={item.label} className="p-4 text-center">
               <p className="text-2xl font-bold text-foreground capitalize">{item.value}</p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-0.5">{item.label}</p>
               {item.showBar && totalQuestions > 0 && (
                 <div className="w-16 h-1 mx-auto mt-2 bg-muted rounded-full overflow-hidden">
                   <div className="h-full rounded-full" style={{ width: `${accuracy}%`, backgroundColor: info.color }} />
@@ -144,13 +144,13 @@ export function ChapterDetailView({
                 <ClipboardList className="w-3.5 h-3.5" style={{ color: info.color }} />
               </div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Study Log</h3>
-              <span className="ml-auto text-[10px] font-bold text-[hsl(0,0%,100%)] px-2 py-0.5 rounded-full" style={{ backgroundColor: info.color }}>
+              <span className="ml-auto text-xs font-bold text-[hsl(0,0%,100%)] px-2 py-0.5 rounded-full" style={{ backgroundColor: info.color }}>
                 {chapterLogs.length}
               </span>
               <button
                 type="button"
                 onClick={() => setShowLogForm(!showLogForm)}
-                className="ml-2 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-[hsl(0,0%,100%)] hover:opacity-90 transition-all flex items-center gap-1"
+                className="ml-2 px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider text-[hsl(0,0%,100%)] hover:opacity-90 transition-all flex items-center gap-1"
                 style={{ backgroundColor: info.color }}
               >
                 <Plus className="w-3 h-3" />
@@ -160,49 +160,49 @@ export function ChapterDetailView({
 
             {showLogForm && (
               <div className="p-5 border-b border-border bg-muted/10 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider block mb-1">Date</label>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Date</label>
                     <input type="date" value={logDate} onChange={(e) => setLogDate(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                   </div>
                   <div>
-                    <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider block mb-1">Hours</label>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Hours</label>
                     <input type="number" step="0.5" min="0" value={logHours} onChange={(e) => setLogHours(e.target.value)} placeholder="e.g. 2.0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">MC (Multiple Choice)</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">MC (Multiple Choice)</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[10px] font-medium text-muted-foreground block mb-1">Questions</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
                       <input type="number" min="0" value={logMcQuestions} onChange={(e) => setLogMcQuestions(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                     <div>
-                      <label className="text-[10px] font-medium text-muted-foreground block mb-1">Correct</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
                       <input type="number" min="0" value={logMcCorrect} onChange={(e) => setLogMcCorrect(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">TBS (Task-Based Simulations)</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">TBS (Task-Based Simulations)</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[10px] font-medium text-muted-foreground block mb-1">Questions</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">Questions</label>
                       <input type="number" min="0" value={logTbsQuestions} onChange={(e) => setLogTbsQuestions(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                     <div>
-                      <label className="text-[10px] font-medium text-muted-foreground block mb-1">Correct</label>
+                      <label className="text-xs font-medium text-muted-foreground block mb-1">Correct</label>
                       <input type="number" min="0" value={logTbsCorrect} onChange={(e) => setLogTbsCorrect(e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                     </div>
                   </div>
                 </div>
                 {logTotalQuestions > 0 && (
-                  <div className="text-[10px] text-muted-foreground bg-muted/30 rounded-lg px-3 py-1.5">
+                  <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg px-3 py-1.5">
                     Total: {logTotalQuestions} questions, {logTotalCorrect} correct ({logTotalQuestions > 0 ? Math.round((logTotalCorrect / logTotalQuestions) * 100) : 0}%)
                   </div>
                 )}
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider block mb-1">Memo</label>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Memo</label>
                   <textarea value={logMemo} onChange={(e) => setLogMemo(e.target.value)} placeholder="What did you study today?" rows={2} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-vertical" />
                 </div>
                 <div className="flex gap-2">
@@ -232,7 +232,7 @@ export function ChapterDetailView({
                     <div key={log.id} className="px-5 py-3.5 hover:bg-muted/20 transition-colors">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-card-foreground">{formatDate(log.date)}</span>
-                        <div className="flex items-center gap-3 text-[11px] text-muted-foreground flex-wrap">
+                        <div className="flex items-center gap-2 sm:gap-3 text-xs text-muted-foreground flex-wrap">
                           <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{log.studyHours}h</span>
                           {log.mcQuestions > 0 && (
                             <span>MC: {log.mcCorrect}/{log.mcQuestions}</span>

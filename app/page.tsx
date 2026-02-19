@@ -24,7 +24,7 @@ export default function Home() {
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null)
   const [studyLogs, setStudyLogs] = useState<StudyLog[]>(STUDY_LOGS)
   const [essenceNotes, setEssenceNotes] = useState<EssenceNote[]>(INITIAL_ESSENCE_NOTES)
-  const [profile, setProfile] = useState({ name: "Yuki Tanaka", email: "yuki.tanaka@example.com", photoUrl: null as string | null })
+  const [profile, setProfile] = useState({ name: "Unknown", email: "user@example.com", photoUrl: null as string | null })
   const [mockExams, setMockExams] = useState<MockExam[]>(INITIAL_MOCK_EXAMS)
   const [completedSections, setCompletedSections] = useState<ExamSection[]>([])
 
@@ -87,11 +87,11 @@ export default function Home() {
 
   return (
     <LanguageProvider>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen overflow-x-hidden">
         <AppSidebar currentView={currentView} onViewChange={handleViewChange} streak={streak} profile={profile} />
-        <div className="flex-1 flex flex-col min-h-screen">
+        <div className="flex-1 flex flex-col min-h-screen min-w-0">
           <MobileHeader currentView={currentView} onViewChange={handleViewChange} />
-          <main className="flex-1 p-4 md:p-8 lg:p-10 max-w-6xl w-full mx-auto">
+          <main className="flex-1 p-4 md:p-8 lg:p-10 max-w-6xl w-full mx-auto overflow-x-hidden">
             {currentView === "dashboard" && (
               <DashboardView progress={progress} chapters={chapters} onViewChange={handleViewChange} completedSections={completedSections} studyLogs={studyLogs} essenceNotes={essenceNotes} streak={streak} chapterRetentions={chapterRetentions} />
             )}

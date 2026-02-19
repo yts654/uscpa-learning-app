@@ -101,6 +101,15 @@
   backface-visibility: hidden;
 }
 
+/* Hide scrollbar for horizontal tab bars */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Custom scrollbar for the app */
 ::-webkit-scrollbar {
   width: 6px;
