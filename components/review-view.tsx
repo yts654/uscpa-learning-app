@@ -64,7 +64,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
     return [
       {
         id: "overdue",
-        label: "Overdue",
+        label: t("review.group.overdue.label"),
         description: t("review.group.overdue.desc"),
         icon: AlertTriangle,
         color: "hsl(0, 65%, 45%)",
@@ -74,7 +74,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
       },
       {
         id: "due-today",
-        label: "Due Today",
+        label: t("review.group.dueToday.label"),
         description: t("review.group.dueToday.desc"),
         icon: Clock,
         color: "hsl(25, 55%, 40%)",
@@ -84,7 +84,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
       },
       {
         id: "coming-up",
-        label: "Coming Up",
+        label: t("review.group.comingUp.label"),
         description: t("review.group.comingUp.desc"),
         icon: CalendarCheck,
         color: "hsl(225, 50%, 35%)",
@@ -94,7 +94,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
       },
       {
         id: "well-retained",
-        label: "Well Retained",
+        label: t("review.group.wellRetained.label"),
         description: t("review.group.wellRetained.desc"),
         icon: Shield,
         color: "hsl(145, 45%, 30%)",
@@ -104,7 +104,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
       },
       {
         id: "not-studied",
-        label: "Not Yet Studied",
+        label: t("review.group.notStudied.label"),
         description: t("review.group.notStudied.desc"),
         icon: BookOpen,
         color: "hsl(230, 15%, 50%)",
@@ -125,10 +125,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
   }
 
   const summaryItems = [
-    { label: "Studied", value: studied.length.toString(), color: "hsl(225, 50%, 22%)" },
-    { label: "Overdue", value: overdue.length.toString(), color: "hsl(0, 65%, 45%)" },
-    { label: "Avg Retention", value: `${avgRetention}%`, color: "hsl(175, 45%, 28%)" },
-    { label: "Mastered", value: mastered.length.toString(), color: "hsl(145, 45%, 30%)" },
+    { label: t("review.summary.studied"), value: studied.length.toString(), color: "hsl(225, 50%, 22%)" },
+    { label: t("review.summary.overdue"), value: overdue.length.toString(), color: "hsl(0, 65%, 45%)" },
+    { label: t("review.summary.avgRetention"), value: `${avgRetention}%`, color: "hsl(175, 45%, 28%)" },
+    { label: t("review.summary.mastered"), value: mastered.length.toString(), color: "hsl(145, 45%, 30%)" },
   ]
 
   return (

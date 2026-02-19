@@ -127,7 +127,7 @@ const translations = {
   },
   "review.criteria.alerts.overdue.label": {
     en: "Overdue — Retention below 30%",
-    ja: "Overdue — 保持率 30%未満",
+    ja: "期限切れ — 保持率 30%未満",
   },
   "review.criteria.alerts.overdue.desc": {
     en: "Memory has significantly faded. Review immediately.",
@@ -135,7 +135,7 @@ const translations = {
   },
   "review.criteria.alerts.dueToday.label": {
     en: "Due Today — Next review date is today or earlier",
-    ja: "Due Today — 次回復習日 ≤ 今日",
+    ja: "今日が期限 — 次回復習日が今日以前",
   },
   "review.criteria.alerts.dueToday.desc": {
     en: "Scheduled review timing has arrived.",
@@ -143,7 +143,7 @@ const translations = {
   },
   "review.criteria.alerts.comingUp.label": {
     en: "Coming Up — Review due within 7 days",
-    ja: "Coming Up — 7日以内に復習予定",
+    ja: "もうすぐ — 7日以内に復習予定",
   },
   "review.criteria.alerts.comingUp.desc": {
     en: "Review timing is approaching soon.",
@@ -201,7 +201,7 @@ const translations = {
   // Review chart
   "review.chart.title": {
     en: "Forgetting Curve — Per Chapter",
-    ja: "Forgetting Curve — チャプター別",
+    ja: "忘却曲線 — チャプター別",
   },
   "review.chart.selectedDesc": {
     en: "'s forgetting curve",
@@ -431,6 +431,37 @@ const translations = {
     en: "All",
     ja: "すべて",
   },
+
+  // Review — summary strip labels
+  "review.summary.studied": { en: "Studied", ja: "学習済み" },
+  "review.summary.overdue": { en: "Overdue", ja: "期限切れ" },
+  "review.summary.avgRetention": { en: "Avg Retention", ja: "平均保持率" },
+  "review.summary.mastered": { en: "Mastered", ja: "習得済み" },
+
+  // Review — urgency group labels
+  "review.group.overdue.label": { en: "Overdue", ja: "期限切れ" },
+  "review.group.dueToday.label": { en: "Due Today", ja: "今日が復習日" },
+  "review.group.comingUp.label": { en: "Coming Up", ja: "もうすぐ" },
+  "review.group.wellRetained.label": { en: "Well Retained", ja: "定着済み" },
+  "review.group.notStudied.label": { en: "Not Yet Studied", ja: "未学習" },
+
+  // Review — alert section
+  "review.alert.needsReview": { en: "Needs review", ja: "要復習" },
+  "review.alert.reviewToday": { en: "Review today", ja: "今日が復習日" },
+
+  // Dashboard — review queue
+  "dashboard.reviewQueue.title": { en: "Review Queue", ja: "復習キュー" },
+  "dashboard.reviewQueue.desc": {
+    en: "Chapters needing review based on forgetting curve",
+    ja: "忘却曲線に基づく復習が必要なチャプター",
+  },
+  "dashboard.reviewQueue.viewSchedule": { en: "View Schedule", ja: "スケジュールを見る" },
+
+  // Dashboard — sections
+  "dashboard.sections.title": { en: "Exam Sections", ja: "試験セクション" },
+  "dashboard.sections.viewAll": { en: "View All Chapters", ja: "全チャプターを見る" },
+  "dashboard.recentActivity.title": { en: "Recent Activity", ja: "最近のアクティビティ" },
+  "dashboard.recentActivity.viewLog": { en: "View Study Log", ja: "学習記録を見る" },
 
   // Settings language
   "settings.language": {

@@ -300,15 +300,15 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
               <div className="flex items-center gap-2">
                 <Brain className="w-4 h-4 text-muted-foreground" />
                 <div>
-                  <h3 className="font-semibold text-card-foreground text-sm">Review Queue</h3>
-                  <p className="text-xs text-muted-foreground">Chapters needing review based on forgetting curve</p>
+                  <h3 className="font-semibold text-card-foreground text-sm">{t("dashboard.reviewQueue.title")}</h3>
+                  <p className="text-xs text-muted-foreground">{t("dashboard.reviewQueue.desc")}</p>
                 </div>
               </div>
               <button
                 onClick={() => onViewChange("review")}
                 className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                View Schedule <ArrowUpRight className="w-3 h-3" />
+                {t("dashboard.reviewQueue.viewSchedule")} <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
             {reviewQueue.map((item, idx) => {
@@ -353,12 +353,12 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
       {/* 5 Section Cards (expandable) */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-foreground">Exam Sections</h3>
+          <h3 className="font-semibold text-foreground">{t("dashboard.sections.title")}</h3>
           <button
             onClick={() => onViewChange("chapters")}
             className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            View All Chapters <ArrowUpRight className="w-3 h-3" />
+            {t("dashboard.sections.viewAll")} <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -496,12 +496,12 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
       {/* Recent Activity */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-foreground">Recent Activity</h3>
+          <h3 className="font-semibold text-foreground">{t("dashboard.recentActivity.title")}</h3>
           <button
             onClick={() => onViewChange("study-log")}
             className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            View Study Log <ArrowUpRight className="w-3 h-3" />
+            {t("dashboard.recentActivity.viewLog")} <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
         <div className="bg-card rounded-xl border border-border overflow-hidden">
