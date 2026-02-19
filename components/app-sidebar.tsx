@@ -4,6 +4,7 @@ import { LayoutDashboard, BookOpen, BarChart3, ClipboardList, Settings, LogOut, 
 import { cn } from "@/lib/utils"
 import { useLanguage, type TranslationKey } from "@/lib/i18n"
 import { useTheme } from "next-themes"
+import { signOut } from "next-auth/react"
 
 type View = "dashboard" | "chapters" | "study-log" | "mock-exams" | "analytics" | "settings" | "review"
 
@@ -170,7 +171,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-[hsl(0_0%_100%)] truncate">{profile.name}</p>
               </div>
-              <button className="text-[hsl(230_15%_40%)] hover:text-[hsl(0_0%_100%)] transition-colors flex-shrink-0">
+              <button onClick={() => signOut({ callbackUrl: "/login" })} className="text-[hsl(230_15%_40%)] hover:text-[hsl(0_0%_100%)] transition-colors flex-shrink-0">
                 <LogOut className="w-4 h-4" />
               </button>
             </>

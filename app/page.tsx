@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, useEffect } from "react"
+import { useSession, signOut } from "next-auth/react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { MobileHeader } from "@/components/mobile-header"
 import { DashboardView } from "@/components/dashboard-view"
@@ -29,7 +30,19 @@ export default function Home() {
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null)
   const [studyLogs, setStudyLogs] = useState<StudyLog[]>(STUDY_LOGS)
   const [essenceNotes, setEssenceNotes] = useState<EssenceNote[]>(INITIAL_ESSENCE_NOTES)
+  const { data: session } = useSession()
   const [profile, setProfile] = useState({ name: "Unknown", email: "user@example.com", photoUrl: null as string | null })
+
+  // Sync session data to profile
+  useEffect(() => {
+    if (session?.user) {
+      setProfile(prev => ({
+        ...prev,
+        name: session.user?.name || prev.name,
+        email: session.user?.email || prev.email,
+      }))
+    }
+  }, [session])
   const [mockExams, setMockExams] = useState<MockExam[]>(INITIAL_MOCK_EXAMS)
   const [completedSections, setCompletedSections] = useState<ExamSection[]>([])
   const [studyGoals, setStudyGoals] = useState<StudyGoals>(DEFAULT_STUDY_GOALS)
