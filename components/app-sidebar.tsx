@@ -128,7 +128,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile }: AppSi
             <LogOut className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-[10px] text-[hsl(230_15%_35%)] text-center mt-3">&copy; 2025 CPA Mastery</p>
+        <p className="text-[10px] text-[hsl(230_15%_35%)] text-center mt-3">&copy; 2026 CPA Mastery</p>
       </div>
     </aside>
   )
