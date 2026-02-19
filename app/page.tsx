@@ -158,6 +158,9 @@ export default function Home() {
               />
             )}
           </main>
+          <footer className="lg:hidden py-4 text-center text-[10px] text-muted-foreground">
+            &copy; 2025 CPA Mastery
+          </footer>
         </div>
       </div>
     </LanguageProvider>
