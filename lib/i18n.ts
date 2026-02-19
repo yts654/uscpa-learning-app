@@ -596,6 +596,7 @@ const translations = {
   "sidebar.studyPlatform": { en: "Study Platform", es: "Plataforma de estudio" },
   "sidebar.studyStreak": { en: "Study Streak", es: "Racha de estudio" },
   "sidebar.days": { en: "days", es: "días" },
+  "sidebar.collapse": { en: "Collapse", es: "Colapsar" },
   "sidebar.navigation": { en: "Navigation", es: "Navegación" },
   "sidebar.switchToEnglish": { en: "Switch to English", es: "Cambiar a inglés" },
   "sidebar.switchToSpanish": { en: "Switch to Spanish", es: "Cambiar a español" },

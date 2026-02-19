@@ -34,6 +34,7 @@ export default function Home() {
   const [completedSections, setCompletedSections] = useState<ExamSection[]>([])
   const [studyGoals, setStudyGoals] = useState<StudyGoals>(DEFAULT_STUDY_GOALS)
   const [recallRecords, setRecallRecords] = useState<RecallRecord[]>([])
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const handleSelectChapter = useCallback((chapter: Chapter) => {
     setSelectedChapter(chapter)
@@ -103,7 +104,7 @@ export default function Home() {
   return (
     <LanguageProvider>
       <div className="flex min-h-screen overflow-x-hidden">
-        <AppSidebar currentView={currentView} onViewChange={handleViewChange} streak={streak} profile={profile} />
+        <AppSidebar currentView={currentView} onViewChange={handleViewChange} streak={streak} profile={profile} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(prev => !prev)} />
         <div className="flex-1 flex flex-col min-h-screen min-w-0">
           <MobileHeader currentView={currentView} onViewChange={handleViewChange} />
           <main className="flex-1 p-4 md:p-8 lg:p-10 max-w-6xl w-full mx-auto overflow-x-hidden">
