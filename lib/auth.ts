@@ -2,7 +2,10 @@ import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 
+const secret = process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production"
+
 export const authOptions: NextAuthOptions = {
+  secret,
   providers: [
     CredentialsProvider({
       name: "Credentials",
