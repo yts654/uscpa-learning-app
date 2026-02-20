@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
+import { verifyUser } from "@/lib/users"
 
 const secret = process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production"
 
@@ -16,22 +17,31 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
+        // Try KV database first
+        try {
+          const user = await verifyUser(credentials.email, credentials.password)
+          if (user) {
+            return { id: user.id, email: user.email, name: user.name }
+          }
+        } catch {
+          // KV not configured, fall through to env var admin
+        }
+
+        // Fallback: env var admin account
         const adminEmail = process.env.ADMIN_EMAIL
         const adminPasswordHashB64 = process.env.ADMIN_PASSWORD_HASH_B64
 
-        if (!adminEmail || !adminPasswordHashB64) return null
-
-        if (credentials.email.toLowerCase() !== adminEmail.toLowerCase()) return null
-
-        const adminPasswordHash = Buffer.from(adminPasswordHashB64, "base64").toString("utf-8")
-        const isValid = await bcrypt.compare(credentials.password, adminPasswordHash)
-        if (!isValid) return null
-
-        return {
-          id: "1",
-          email: adminEmail,
-          name: adminEmail.split("@")[0],
+        if (adminEmail && adminPasswordHashB64) {
+          if (credentials.email.toLowerCase() === adminEmail.toLowerCase()) {
+            const hash = Buffer.from(adminPasswordHashB64, "base64").toString("utf-8")
+            const isValid = await bcrypt.compare(credentials.password, hash)
+            if (isValid) {
+              return { id: "admin", email: adminEmail, name: adminEmail.split("@")[0] }
+            }
+          }
         }
+
+        return null
       },
     }),
   ],
@@ -40,7 +50,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {

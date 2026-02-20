@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { useTheme } from "next-themes"
-import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Monitor, Languages } from "lucide-react"
+import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Monitor, Languages, Lock } from "lucide-react"
 import { SECTION_INFO, type ExamSection, type StudyGoals } from "@/lib/study-data"
 import { useLanguage, type Locale } from "@/lib/i18n"
 
@@ -28,6 +28,10 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
   const [email, setEmail] = useState(profile.email)
   const [photoUrl, setPhotoUrl] = useState<string | null>(profile.photoUrl)
   const [saved, setSaved] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [passwordMsg, setPasswordMsg] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  const [passwordLoading, setPasswordLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +54,34 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
     onUpdateProfile({ name, email, photoUrl })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  const handlePasswordChange = async () => {
+    if (!currentPassword || !newPassword) return
+    if (newPassword.length < 8) {
+      setPasswordMsg({ type: "error", text: t("settings.passwordMinLength") })
+      return
+    }
+    setPasswordLoading(true)
+    setPasswordMsg(null)
+    try {
+      const res = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      })
+      if (res.ok) {
+        setPasswordMsg({ type: "success", text: t("settings.passwordChanged") })
+        setCurrentPassword("")
+        setNewPassword("")
+      } else {
+        const data = await res.json()
+        setPasswordMsg({ type: "error", text: data.error || t("settings.passwordError") })
+      }
+    } catch {
+      setPasswordMsg({ type: "error", text: t("settings.passwordError") })
+    }
+    setPasswordLoading(false)
   }
 
   // Helper to parse/update exam date parts from studyGoals
@@ -173,6 +205,47 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
               />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Change Password */}
+      <div className="bg-card rounded-xl border border-border p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <Lock className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.changePassword")}</h3>
+        </div>
+        <div className="space-y-4 max-w-sm">
+          <div>
+            <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.currentPassword")}</label>
+            <input
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.newPassword")}</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder={t("settings.passwordMinLengthHint")}
+              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+            />
+          </div>
+          {passwordMsg && (
+            <div className={`text-xs px-3 py-2 rounded-lg ${passwordMsg.type === "success" ? "text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/20" : "text-red-400 bg-red-400/10"}`}>
+              {passwordMsg.text}
+            </div>
+          )}
+          <button
+            onClick={handlePasswordChange}
+            disabled={passwordLoading || !currentPassword || !newPassword}
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {passwordLoading ? "..." : t("settings.updatePassword")}
+          </button>
         </div>
       </div>
 

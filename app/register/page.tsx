@@ -1,15 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { BookOpen, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter()
-  const [email, setEmail] = useState("admin@cpamastery.com")
-  const [password, setPassword] = useState("CpaMastery2026!")
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -19,18 +19,24 @@ export default function LoginPage() {
     setError("")
     setLoading(true)
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    })
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      })
+      const data = await res.json()
 
-    if (result?.error) {
-      setError("Invalid email or password")
+      if (!res.ok) {
+        setError(data.error || "Registration failed")
+        setLoading(false)
+        return
+      }
+
+      router.push("/login")
+    } catch {
+      setError("Something went wrong")
       setLoading(false)
-    } else {
-      router.push("/")
-      router.refresh()
     }
   }
 
@@ -46,19 +52,30 @@ export default function LoginPage() {
           <p className="text-sm text-[hsl(230,15%,50%)] mt-1">USCPA Study Platform</p>
         </div>
 
-        {/* Login Card */}
+        {/* Register Card */}
         <div className="bg-[hsl(232,40%,12%)] border border-[hsl(232,35%,20%)] rounded-2xl p-6 shadow-xl">
-          <h2 className="text-lg font-semibold text-white mb-1">Sign In</h2>
-          <p className="text-xs text-[hsl(230,15%,50%)] mb-6">Enter your credentials to access the platform</p>
+          <h2 className="text-lg font-semibold text-white mb-1">Create Account</h2>
+          <p className="text-xs text-[hsl(230,15%,50%)] mb-6">Enter your details to get started</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-[hsl(230,15%,65%)] mb-1.5">Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                required
+                className="w-full px-3 py-2.5 rounded-lg bg-[hsl(232,40%,8%)] border border-[hsl(232,35%,22%)] text-white text-sm placeholder:text-[hsl(230,15%,35%)] focus:outline-none focus:ring-2 focus:ring-[hsl(225,50%,40%)] focus:border-transparent transition-all"
+              />
+            </div>
             <div>
               <label className="block text-xs font-medium text-[hsl(230,15%,65%)] mb-1.5">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@cpamastery.com"
+                placeholder="you@example.com"
                 required
                 className="w-full px-3 py-2.5 rounded-lg bg-[hsl(232,40%,8%)] border border-[hsl(232,35%,22%)] text-white text-sm placeholder:text-[hsl(230,15%,35%)] focus:outline-none focus:ring-2 focus:ring-[hsl(225,50%,40%)] focus:border-transparent transition-all"
               />
@@ -70,8 +87,9 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
+                  placeholder="Min. 8 characters"
                   required
+                  minLength={8}
                   className="w-full px-3 py-2.5 pr-10 rounded-lg bg-[hsl(232,40%,8%)] border border-[hsl(232,35%,22%)] text-white text-sm placeholder:text-[hsl(230,15%,35%)] focus:outline-none focus:ring-2 focus:ring-[hsl(225,50%,40%)] focus:border-transparent transition-all"
                 />
                 <button
@@ -98,17 +116,17 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Signing in...
+                  Creating account...
                 </>
               ) : (
-                "Sign In"
+                "Create Account"
               )}
             </button>
           </form>
 
           <p className="text-xs text-[hsl(230,15%,50%)] text-center mt-4">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-white hover:underline">Create one</Link>
+            Already have an account?{" "}
+            <Link href="/login" className="text-white hover:underline">Sign in</Link>
           </p>
         </div>
 

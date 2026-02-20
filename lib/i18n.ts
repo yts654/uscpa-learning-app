@@ -791,6 +791,14 @@ const translations = {
   "settings.streakNotifications": { en: "Streak notifications", es: "Notificaciones de racha" },
   "settings.saved": { en: "Saved!", es: "¡Guardado!" },
   "settings.saveChanges": { en: "Save Changes", es: "Guardar cambios" },
+  "settings.changePassword": { en: "Change Password", es: "Cambiar contraseña" },
+  "settings.currentPassword": { en: "Current Password", es: "Contraseña actual" },
+  "settings.newPassword": { en: "New Password", es: "Nueva contraseña" },
+  "settings.passwordMinLength": { en: "Password must be at least 8 characters", es: "La contraseña debe tener al menos 8 caracteres" },
+  "settings.passwordMinLengthHint": { en: "Min. 8 characters", es: "Mín. 8 caracteres" },
+  "settings.passwordChanged": { en: "Password updated successfully", es: "Contraseña actualizada" },
+  "settings.passwordError": { en: "Failed to update password", es: "Error al actualizar contraseña" },
+  "settings.updatePassword": { en: "Update Password", es: "Actualizar contraseña" },
 
   // ── Review (remaining) ──────────────────────────────────────────
   "review.title": { en: "Review Schedule", es: "Calendario de repaso" },
