@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv"
+import { Redis } from "@upstash/redis"
 import bcrypt from "bcryptjs"
 
 export interface User {
@@ -9,12 +9,20 @@ export interface User {
   createdAt: string
 }
 
+function getRedis() {
+  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) throw new Error("REDIS_NOT_CONFIGURED")
+  return new Redis({ url, token })
+}
+
 function key(email: string) {
   return `user:${email.toLowerCase()}`
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
-  return await kv.get<User>(key(email))
+  const redis = getRedis()
+  return await redis.get<User>(key(email))
 }
 
 export async function createUser(name: string, email: string, password: string): Promise<User> {
@@ -29,7 +37,8 @@ export async function createUser(name: string, email: string, password: string):
     passwordHash: hash,
     createdAt: new Date().toISOString(),
   }
-  await kv.set(key(email), user)
+  const redis = getRedis()
+  await redis.set(key(email), user)
   return user
 }
 
@@ -44,7 +53,8 @@ export async function updatePassword(email: string, currentPassword: string, new
   const user = await verifyUser(email, currentPassword)
   if (!user) return false
   user.passwordHash = await bcrypt.hash(newPassword, 12)
-  await kv.set(key(email), user)
+  const redis = getRedis()
+  await redis.set(key(email), user)
   return true
 }
 
@@ -54,13 +64,14 @@ export async function updateUserProfile(email: string, updates: { name?: string;
 
   if (updates.name) user.name = updates.name
 
+  const redis = getRedis()
   if (updates.newEmail && updates.newEmail.toLowerCase() !== email.toLowerCase()) {
     const existing = await getUserByEmail(updates.newEmail)
     if (existing) return false
-    await kv.del(key(email))
+    await redis.del(key(email))
     user.email = updates.newEmail.toLowerCase()
   }
 
-  await kv.set(key(user.email), user)
+  await redis.set(key(user.email), user)
   return true
 }
