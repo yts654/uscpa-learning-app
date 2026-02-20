@@ -17,12 +17,13 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null
 
         const adminEmail = process.env.ADMIN_EMAIL
-        const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH
+        const adminPasswordHashB64 = process.env.ADMIN_PASSWORD_HASH_B64
 
-        if (!adminEmail || !adminPasswordHash) return null
+        if (!adminEmail || !adminPasswordHashB64) return null
 
         if (credentials.email.toLowerCase() !== adminEmail.toLowerCase()) return null
 
+        const adminPasswordHash = Buffer.from(adminPasswordHashB64, "base64").toString("utf-8")
         const isValid = await bcrypt.compare(credentials.password, adminPasswordHash)
         if (!isValid) return null
 
