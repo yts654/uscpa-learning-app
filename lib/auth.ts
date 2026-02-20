@@ -1,7 +1,6 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
-import { verifyUser } from "@/lib/users"
 
 const secret = process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production"
 
@@ -17,14 +16,26 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
-        // Try KV database first
+        // Try Redis database first (dynamic import to avoid breaking if not configured)
         try {
-          const user = await verifyUser(credentials.email, credentials.password)
-          if (user) {
-            return { id: user.id, email: user.email, name: user.name }
+          const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
+          const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+          if (redisUrl && redisToken) {
+            const { Redis } = await import("@upstash/redis")
+            const redis = new Redis({ url: redisUrl, token: redisToken })
+            const user = await redis.get<{
+              id: string; name: string; email: string; passwordHash: string
+            }>(`user:${credentials.email.toLowerCase()}`)
+            if (user) {
+              const valid = await bcrypt.compare(credentials.password, user.passwordHash)
+              if (valid) {
+                return { id: user.id, email: user.email, name: user.name }
+              }
+              return null // User found but wrong password
+            }
           }
         } catch {
-          // KV not configured, fall through to env var admin
+          // Redis not available, fall through
         }
 
         // Fallback: env var admin account
