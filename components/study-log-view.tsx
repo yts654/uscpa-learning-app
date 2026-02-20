@@ -20,6 +20,7 @@ interface WeekSummary {
   prevWeekHours: number
   sections: Record<ExamSection, { hours: number; mc: number; tbs: number; mcCorrect: number; tbsCorrect: number }>
   comments: string[]
+  logs: StudyLog[]
 }
 
 function getMonday(d: Date): Date {
@@ -47,10 +48,7 @@ function generateWeekComments(
 
   for (const section of allSections) {
     const s = sections[section]
-    if (s.hours === 0) {
-      comments.push(`${section}: ${t("studyLog.weekComment.noSessions")}`)
-      continue
-    }
+    if (s.hours === 0) continue
     const total = s.mc + s.tbs
     if (total === 0) continue
     const mcRatio = s.mc / total
@@ -82,6 +80,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
   const [showForm, setShowForm] = useState(false)
   const [expandedDate, setExpandedDate] = useState<string | null>(null)
+  const [expandedWeek, setExpandedWeek] = useState<string | null>(null)
 
   // Form state — MC/TBS split
   const [formSection, setFormSection] = useState<ExamSection>("FAR")
@@ -169,6 +168,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
         prevWeekHours: prevH,
         sections,
         comments,
+        logs: weekLogs,
       })
     }
 
@@ -442,81 +442,142 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       {weeklySummaries.length > 0 && (
         <div className="space-y-4">
           <h3 className="font-semibold text-foreground">{t("studyLog.weeklySummary")}</h3>
-          {weeklySummaries.map((week) => (
-            <div key={week.startDate} className="bg-card rounded-xl border border-border overflow-hidden">
-              <div className="px-5 py-4 border-b border-border bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-semibold text-card-foreground">{week.weekLabel}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{week.totalHours.toFixed(1)}{t("studyLog.hTotal")}</span>
-                    {week.prevWeekHours > 0 && (
-                      <span className="flex items-center gap-1">
-                        {week.totalHours >= week.prevWeekHours ? (
-                          <TrendingUp className="w-3 h-3 text-green-600" />
-                        ) : (
-                          <TrendingDown className="w-3 h-3 text-red-500" />
-                        )}
-                        vs {week.prevWeekHours.toFixed(1)}h {t("studyLog.vsPrev")}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="px-5 py-4 space-y-3">
-                {/* Per-section breakdown */}
-                <div className="space-y-2">
-                  {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map((section) => {
-                    const s = week.sections[section]
-                    if (s.hours === 0 && s.mc === 0 && s.tbs === 0) return null
-                    const maxHours = Math.max(...Object.values(week.sections).map(x => x.hours), 1)
-                    const barWidth = (s.hours / maxHours) * 100
-                    const mcTotal = s.mc > 0 ? Math.round((s.mc / (s.mc + s.tbs)) * 100) : 0
-                    return (
-                      <div key={section} className="flex items-center gap-3">
-                        <span className="text-xs font-bold w-8 text-muted-foreground flex-shrink-0">{section}</span>
-                        <div className="flex-1 min-w-0 h-4 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full rounded-full transition-all"
-                            style={{ width: `${barWidth}%`, backgroundColor: SECTION_INFO[section].color }}
-                          />
-                        </div>
-                        <span className="text-xs text-muted-foreground min-w-fit text-right">{s.hours.toFixed(1)}h</span>
-                        <span className="text-xs text-muted-foreground min-w-fit text-right hidden sm:inline">MC:{mcTotal}% TBS:{100 - mcTotal}%</span>
-                      </div>
-                    )
-                  })}
-                </div>
-                {/* Auto-generated comments */}
-                {week.comments.length > 0 && (
-                  <div className="pt-2 border-t border-border space-y-1.5">
-                    {week.comments.map((comment, idx) => {
-                      const isWarning = comment.includes(t("studyLog.weekComment.noSessions") as string) || comment.includes("MC (") || comment.includes("TBS (") || comment.includes(t("studyLog.weekComment.hoursDown").split("{n}")[0] as string)
-                      const isGood = comment.includes(t("studyLog.weekComment.goodBalance") as string) || comment.includes(t("studyLog.weekComment.hoursUp").split("{n}")[0] as string)
-                      return (
-                        <div key={idx} className="flex items-start gap-2 text-xs">
-                          {isWarning ? (
-                            <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-                          ) : isGood ? (
-                            <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+          {weeklySummaries.map((week) => {
+            const isWeekExpanded = expandedWeek === week.startDate
+            const activeSections = (["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).filter(
+              s => week.sections[s].hours > 0 || week.sections[s].mc > 0 || week.sections[s].tbs > 0
+            )
+
+            // Group week logs by date for daily drill-down
+            const dayMap: Record<string, StudyLog[]> = {}
+            for (const log of week.logs) {
+              if (!dayMap[log.date]) dayMap[log.date] = []
+              dayMap[log.date].push(log)
+            }
+            const weekDates = Object.keys(dayMap).sort()
+
+            return (
+              <div key={week.startDate} className="bg-card rounded-xl border border-border overflow-hidden">
+                <button
+                  onClick={() => setExpandedWeek(isWeekExpanded ? null : week.startDate)}
+                  className="w-full px-5 py-4 bg-muted/30 hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm font-semibold text-card-foreground">{week.weekLabel}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{week.totalHours.toFixed(1)}{t("studyLog.hTotal")}</span>
+                      {week.prevWeekHours > 0 && (
+                        <span className="flex items-center gap-1">
+                          {week.totalHours >= week.prevWeekHours ? (
+                            <TrendingUp className="w-3 h-3 text-green-600" />
                           ) : (
-                            <span className="w-3.5 h-3.5 flex-shrink-0" />
+                            <TrendingDown className="w-3 h-3 text-red-500" />
                           )}
-                          <span className={cn(
-                            isWarning ? "text-amber-700 dark:text-amber-400" : isGood ? "text-green-700 dark:text-green-400" : "text-muted-foreground"
-                          )}>
-                            {comment}
-                          </span>
+                          vs {week.prevWeekHours.toFixed(1)}h {t("studyLog.vsPrev")}
+                        </span>
+                      )}
+                      {isWeekExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </div>
+                </button>
+
+                {isWeekExpanded && (
+                  <div className="border-t border-border">
+                    <div className="px-5 py-4 space-y-3">
+                      {/* Per-section breakdown - only active sections */}
+                      <div className="space-y-2">
+                        {activeSections.map((section) => {
+                          const s = week.sections[section]
+                          const maxHours = Math.max(...activeSections.map(sec => week.sections[sec].hours), 1)
+                          const barWidth = (s.hours / maxHours) * 100
+                          const total = s.mc + s.tbs
+                          const mcTotal = total > 0 ? Math.round((s.mc / total) * 100) : 0
+                          return (
+                            <div key={section} className="flex items-center gap-3">
+                              <span className="text-xs font-bold w-8 text-muted-foreground flex-shrink-0">{section}</span>
+                              <div className="flex-1 min-w-0 h-4 bg-muted rounded-full overflow-hidden">
+                                <div
+                                  className="h-full rounded-full transition-all"
+                                  style={{ width: `${barWidth}%`, backgroundColor: SECTION_INFO[section].color }}
+                                />
+                              </div>
+                              <span className="text-xs text-muted-foreground min-w-fit text-right">{s.hours.toFixed(1)}h</span>
+                              {total > 0 && (
+                                <span className="text-xs text-muted-foreground min-w-fit text-right hidden sm:inline">MC:{mcTotal}% TBS:{100 - mcTotal}%</span>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                      {/* Auto-generated comments */}
+                      {week.comments.length > 0 && (
+                        <div className="pt-2 border-t border-border space-y-1.5">
+                          {week.comments.map((comment, idx) => {
+                            const isWarning = comment.includes("MC (") || comment.includes("TBS (") || comment.includes(t("studyLog.weekComment.hoursDown").split("{n}")[0] as string)
+                            const isGood = comment.includes(t("studyLog.weekComment.goodBalance") as string) || comment.includes(t("studyLog.weekComment.hoursUp").split("{n}")[0] as string)
+                            return (
+                              <div key={idx} className="flex items-start gap-2 text-xs">
+                                {isWarning ? (
+                                  <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                                ) : isGood ? (
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+                                ) : (
+                                  <span className="w-3.5 h-3.5 flex-shrink-0" />
+                                )}
+                                <span className={cn(
+                                  isWarning ? "text-amber-700 dark:text-amber-400" : isGood ? "text-green-700 dark:text-green-400" : "text-muted-foreground"
+                                )}>
+                                  {comment}
+                                </span>
+                              </div>
+                            )
+                          })}
                         </div>
-                      )
-                    })}
+                      )}
+                    </div>
+
+                    {/* Daily breakdown */}
+                    <div className="border-t border-border">
+                      {weekDates.map((date) => {
+                        const dayLogs = dayMap[date]
+                        const dayHours = dayLogs.reduce((a, b) => a + b.studyHours, 0)
+                        const d = new Date(date + "T00:00:00")
+                        const dayLabel = d.toLocaleDateString(locale === "es" ? "es" : "en-US", { weekday: "short", month: "short", day: "numeric" })
+                        return (
+                          <div key={date} className="px-5 py-3 border-b border-border last:border-b-0">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="text-xs font-semibold text-card-foreground">{dayLabel}</span>
+                              <span className="text-[10px] text-muted-foreground">{dayHours.toFixed(1)}h / {dayLogs.length} {dayLogs.length > 1 ? t("studyLog.sessions") : t("studyLog.session")}</span>
+                            </div>
+                            <div className="space-y-1.5 pl-2">
+                              {dayLogs.map((log) => (
+                                <div key={log.id} className="flex items-center gap-2 text-xs">
+                                  <div
+                                    className="w-5 h-5 rounded flex items-center justify-center text-[7px] font-bold text-white flex-shrink-0"
+                                    style={{ backgroundColor: SECTION_INFO[log.section].color }}
+                                  >
+                                    {log.section.charAt(0)}
+                                  </div>
+                                  <span className="text-card-foreground truncate">{log.chapterTitle}</span>
+                                  <span className="text-muted-foreground ml-auto flex-shrink-0">{log.studyHours}h</span>
+                                  {log.questionsAnswered > 0 && (
+                                    <span className="text-muted-foreground flex-shrink-0">{log.correctAnswers}/{log.questionsAnswered}Q</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
