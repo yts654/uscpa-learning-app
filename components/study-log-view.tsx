@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2 } from "lucide-react"
+import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
 import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, LineChart, Line } from "recharts"
 
 interface StudyLogViewProps {
   chapters: Chapter[]
@@ -71,6 +72,173 @@ function generateWeekComments(
   }
 
   return comments
+}
+
+// ── Charts Component ─────────────────────────────────────────────
+const ALL_SECTIONS: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
+const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
+  const [chartMode, setChartMode] = useState<"weekly" | "monthly">("weekly")
+
+  // Weekly chart data: hours per day of the current week, stacked by section
+  const weeklyData = useMemo(() => {
+    if (logs.length === 0) return []
+    const now = new Date()
+    const monday = getMonday(now)
+
+    return DAY_LABELS.map((label, i) => {
+      const d = new Date(monday)
+      d.setDate(d.getDate() + i)
+      const dateStr = d.toISOString().split("T")[0]
+      const dayLogs = logs.filter(l => l.date === dateStr)
+      const entry: Record<string, number | string> = { name: label }
+      let totalQ = 0, totalC = 0
+      for (const s of ALL_SECTIONS) {
+        const sLogs = dayLogs.filter(l => l.section === s)
+        entry[s] = parseFloat(sLogs.reduce((a, b) => a + b.studyHours, 0).toFixed(1))
+        totalQ += sLogs.reduce((a, b) => a + b.questionsAnswered, 0)
+        totalC += sLogs.reduce((a, b) => a + b.correctAnswers, 0)
+      }
+      entry.accuracy = totalQ > 0 ? Math.round((totalC / totalQ) * 100) : 0
+      return entry
+    })
+  }, [logs])
+
+  // Monthly chart data: hours per week for last 8 weeks
+  const monthlyData = useMemo(() => {
+    if (logs.length === 0) return []
+    const now = new Date()
+    const currentMonday = getMonday(now)
+    const weeks: { name: string; dateKey: string }[] = []
+    for (let i = 7; i >= 0; i--) {
+      const monday = new Date(currentMonday)
+      monday.setDate(monday.getDate() - i * 7)
+      const sunday = new Date(monday)
+      sunday.setDate(sunday.getDate() + 6)
+      const fmt = (d: Date) => d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" })
+      weeks.push({ name: `${fmt(monday)}`, dateKey: monday.toISOString().split("T")[0] })
+    }
+
+    return weeks.map(({ name, dateKey }) => {
+      const weekStart = new Date(dateKey + "T00:00:00")
+      const weekEnd = new Date(weekStart)
+      weekEnd.setDate(weekEnd.getDate() + 6)
+      const weekLogs = logs.filter(l => {
+        const d = new Date(l.date + "T00:00:00")
+        return d >= weekStart && d <= weekEnd
+      })
+      const entry: Record<string, number | string> = { name }
+      let totalQ = 0, totalC = 0
+      for (const s of ALL_SECTIONS) {
+        const sLogs = weekLogs.filter(l => l.section === s)
+        entry[s] = parseFloat(sLogs.reduce((a, b) => a + b.studyHours, 0).toFixed(1))
+        totalQ += sLogs.reduce((a, b) => a + b.questionsAnswered, 0)
+        totalC += sLogs.reduce((a, b) => a + b.correctAnswers, 0)
+      }
+      entry.accuracy = totalQ > 0 ? Math.round((totalC / totalQ) * 100) : 0
+      return entry
+    })
+  }, [logs, locale])
+
+  const chartData = chartMode === "weekly" ? weeklyData : monthlyData
+  const hasData = chartData.some(d => ALL_SECTIONS.some(s => (d[s] as number) > 0))
+
+  if (logs.length === 0) return null
+
+  return (
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="px-5 py-4 border-b border-border bg-muted/30 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            {chartMode === "weekly" ? "This Week" : "Last 8 Weeks"}
+          </h3>
+        </div>
+        <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
+          <button
+            onClick={() => setChartMode("weekly")}
+            className={cn(
+              "px-3 py-1 rounded-md text-xs font-medium transition-all",
+              chartMode === "weekly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Weekly
+          </button>
+          <button
+            onClick={() => setChartMode("monthly")}
+            className={cn(
+              "px-3 py-1 rounded-md text-xs font-medium transition-all",
+              chartMode === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Monthly
+          </button>
+        </div>
+      </div>
+
+      <div className="p-5 space-y-6">
+        {/* Study Hours Stacked Bar Chart */}
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-3">Study Hours by Section</p>
+          {hasData ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={chartData} barCategoryGap="20%">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" unit="h" width={35} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                  labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
+                />
+                {ALL_SECTIONS.map(s => (
+                  <Bar key={s} dataKey={s} stackId="hours" fill={SECTION_INFO[s].color} radius={s === "ISC" ? [3, 3, 0, 0] : undefined} />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[220px] flex items-center justify-center text-sm text-muted-foreground">
+              No data for this period
+            </div>
+          )}
+        </div>
+
+        {/* Accuracy Line Chart */}
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-3">Accuracy Trend (%)</p>
+          {hasData ? (
+            <ResponsiveContainer width="100%" height={160}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" domain={[0, 100]} unit="%" width={40} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                  labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
+                  formatter={(value: number) => [`${value}%`, "Accuracy"]}
+                />
+                <Line type="monotone" dataKey="accuracy" stroke="hsl(175 45% 40%)" strokeWidth={2} dot={{ r: 4, fill: "hsl(175 45% 40%)" }} connectNulls />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[160px] flex items-center justify-center text-sm text-muted-foreground">
+              No data for this period
+            </div>
+          )}
+        </div>
+
+        {/* Legend */}
+        <div className="flex flex-wrap gap-3 justify-center">
+          {ALL_SECTIONS.map(s => (
+            <div key={s} className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: SECTION_INFO[s].color }} />
+              <span className="text-[10px] text-muted-foreground">{s}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogViewProps) {
@@ -406,6 +574,9 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
           </div>
         </div>
       )}
+
+      {/* Charts Section */}
+      <StudyCharts logs={logs} locale={locale} />
 
       {/* Section Filter */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
