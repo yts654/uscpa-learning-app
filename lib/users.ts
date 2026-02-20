@@ -1,5 +1,6 @@
-import { Redis } from "@upstash/redis"
 import bcrypt from "bcryptjs"
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs"
+import { join } from "path"
 
 export interface User {
   id: string
@@ -9,20 +10,71 @@ export interface User {
   createdAt: string
 }
 
-function getRedis() {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
-  if (!url || !token) throw new Error("REDIS_NOT_CONFIGURED")
-  return new Redis({ url, token })
+// ---------------------------------------------------------------------------
+// Storage helpers – file-based JSON that works without Redis
+// ---------------------------------------------------------------------------
+
+const DATA_DIR = join(process.cwd(), ".data")
+const USERS_FILE = join(DATA_DIR, "users.json")
+
+function ensureDataDir() {
+  if (!existsSync(DATA_DIR)) {
+    mkdirSync(DATA_DIR, { recursive: true })
+  }
+}
+
+function readUsers(): Record<string, User> {
+  ensureDataDir()
+  if (!existsSync(USERS_FILE)) return {}
+  try {
+    return JSON.parse(readFileSync(USERS_FILE, "utf-8"))
+  } catch {
+    return {}
+  }
+}
+
+function writeUsers(users: Record<string, User>) {
+  ensureDataDir()
+  writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8")
 }
 
 function key(email: string) {
-  return `user:${email.toLowerCase()}`
+  return email.toLowerCase()
 }
+
+// ---------------------------------------------------------------------------
+// Optional Redis support – only used when env vars are present
+// ---------------------------------------------------------------------------
+
+function getRedis() {
+  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) return null
+  try {
+    // Dynamic require to avoid crashing when @upstash/redis isn't installed
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { Redis } = require("@upstash/redis") as typeof import("@upstash/redis")
+    return new Redis({ url, token })
+  } catch {
+    return null
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   const redis = getRedis()
-  return await redis.get<User>(key(email))
+  if (redis) {
+    try {
+      return await redis.get<User>(`user:${key(email)}`)
+    } catch {
+      // fall through to file
+    }
+  }
+  const users = readUsers()
+  return users[key(email)] ?? null
 }
 
 export async function createUser(name: string, email: string, password: string): Promise<User> {
@@ -37,8 +89,20 @@ export async function createUser(name: string, email: string, password: string):
     passwordHash: hash,
     createdAt: new Date().toISOString(),
   }
+
   const redis = getRedis()
-  await redis.set(key(email), user)
+  if (redis) {
+    try {
+      await redis.set(`user:${key(email)}`, user)
+      return user
+    } catch {
+      // fall through to file
+    }
+  }
+
+  const users = readUsers()
+  users[key(email)] = user
+  writeUsers(users)
   return user
 }
 
@@ -53,8 +117,20 @@ export async function updatePassword(email: string, currentPassword: string, new
   const user = await verifyUser(email, currentPassword)
   if (!user) return false
   user.passwordHash = await bcrypt.hash(newPassword, 12)
+
   const redis = getRedis()
-  await redis.set(key(email), user)
+  if (redis) {
+    try {
+      await redis.set(`user:${key(email)}`, user)
+      return true
+    } catch {
+      // fall through to file
+    }
+  }
+
+  const users = readUsers()
+  users[key(email)] = user
+  writeUsers(users)
   return true
 }
 
@@ -64,14 +140,41 @@ export async function updateUserProfile(email: string, updates: { name?: string;
 
   if (updates.name) user.name = updates.name
 
-  const redis = getRedis()
   if (updates.newEmail && updates.newEmail.toLowerCase() !== email.toLowerCase()) {
     const existing = await getUserByEmail(updates.newEmail)
     if (existing) return false
-    await redis.del(key(email))
+
+    // Remove old key
+    const users = readUsers()
+    delete users[key(email)]
     user.email = updates.newEmail.toLowerCase()
+    users[key(user.email)] = user
+    writeUsers(users)
+
+    const redis = getRedis()
+    if (redis) {
+      try {
+        await redis.del(`user:${key(email)}`)
+        await redis.set(`user:${key(user.email)}`, user)
+      } catch {
+        // file already updated above
+      }
+    }
+    return true
   }
 
-  await redis.set(key(user.email), user)
+  const redis = getRedis()
+  if (redis) {
+    try {
+      await redis.set(`user:${key(user.email)}`, user)
+      return true
+    } catch {
+      // fall through to file
+    }
+  }
+
+  const users = readUsers()
+  users[key(user.email)] = user
+  writeUsers(users)
   return true
 }
