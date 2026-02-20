@@ -560,7 +560,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         >
           {t("review.allSections")}
         </button>
-        {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map((section) => (
+        {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map((section) => (
           <button
             key={section}
             onClick={() => setSelectedSection(section)}

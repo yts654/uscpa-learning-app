@@ -44,7 +44,7 @@ function generateWeekComments(
   t: (key: string) => string
 ): string[] {
   const comments: string[] = []
-  const allSections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP"]
+  const allSections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
 
   for (const section of allSections) {
     const s = sections[section]
@@ -141,7 +141,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       const endDate = new Date(weekStart + "T00:00:00")
       endDate.setDate(endDate.getDate() + 6)
 
-      const allSections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP"]
+      const allSections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
       const sections = {} as Record<ExamSection, { hours: number; mc: number; tbs: number; mcCorrect: number; tbsCorrect: number }>
       for (const s of allSections) {
         const sLogs = weekLogs.filter(l => l.section === s)
@@ -289,7 +289,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                   onChange={(e) => { setFormSection(e.target.value as ExamSection); setFormChapterId("") }}
                   className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
                 >
-                  {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(s => (
+                  {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(s => (
                     <option key={s} value={s}>{s} - {SECTION_INFO[s].fullName}</option>
                   ))}
                 </select>
@@ -421,7 +421,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
         >
           {t("studyLog.allSections")}
         </button>
-        {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section => (
+        {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(section => (
           <button
             key={section}
             onClick={() => setSelectedSection(section)}
@@ -444,7 +444,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
           <h3 className="font-semibold text-foreground">{t("studyLog.weeklySummary")}</h3>
           {weeklySummaries.map((week) => {
             const isWeekExpanded = expandedWeek === week.startDate
-            const activeSections = (["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).filter(
+            const activeSections = (["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).filter(
               s => week.sections[s].hours > 0 || week.sections[s].mc > 0 || week.sections[s].tbs > 0
             )
 

@@ -317,7 +317,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.examTarget")}</h3>
         </div>
 
-        {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map((section) => {
+        {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map((section) => {
           const info = SECTION_INFO[section]
           const isCompleted = completedSections.includes(section)
           const dateParts = getDateParts(section)

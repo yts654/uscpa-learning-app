@@ -30,7 +30,7 @@ export function CoverageCard({ items }: CoverageCardProps) {
   }
 
   // Group by section
-  const grouped: Record<ExamSection, CoverageItem[]> = { FAR: [], AUD: [], REG: [], BEC: [], TCP: [] }
+  const grouped: Record<ExamSection, CoverageItem[]> = { FAR: [], AUD: [], REG: [], BEC: [], TCP: [], ISC: [] }
   items.forEach(item => {
     grouped[item.section].push(item)
   })
@@ -88,7 +88,7 @@ export function CoverageCard({ items }: CoverageCardProps) {
         )}
 
         {/* Untouched by section */}
-        {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section => {
+        {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(section => {
           const sectionItems = grouped[section].filter(i => i.type === "untouched")
           if (sectionItems.length === 0) return null
           return (

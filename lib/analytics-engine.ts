@@ -157,7 +157,7 @@ export function calculateAllSectionPaces(
   studyLogs: StudyLog[],
   studyGoals: StudyGoals,
 ): PaceResult[] {
-  return (["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section =>
+  return (["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(section =>
     calculatePace(section, chapters, studyLogs, studyGoals.sections[section].examDate)
   )
 }
@@ -307,7 +307,7 @@ export function detectUntouchedRisk(
   const pct = Math.round(untouchedPct * 100)
 
   const today = new Date()
-  const hasUpcomingExam = (["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).some(section => {
+  const hasUpcomingExam = (["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).some(section => {
     const examDate = studyGoals.sections[section].examDate
     if (!examDate) return false
     const daysUntil = (new Date(examDate + "T00:00:00").getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
@@ -486,7 +486,7 @@ export function generateAllocations(
   })
   const totalRecentHours = Object.values(sectionHours).reduce((a, b) => a + b, 0)
 
-  const recommendations: AllocationRecommendation[] = (["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section => {
+  const recommendations: AllocationRecommendation[] = (["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(section => {
     const pace = paces.find(p => p.section === section)
     const currentPerWeek = totalRecentHours > 0 ? (sectionHours[section] / 4) : weeklyBudget / 5
 

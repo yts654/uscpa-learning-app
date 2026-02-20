@@ -1,4 +1,4 @@
-export type ExamSection = "FAR" | "AUD" | "REG" | "BEC" | "TCP"
+export type ExamSection = "FAR" | "AUD" | "REG" | "BEC" | "TCP" | "ISC"
 
 // ── Recall & Goals Types ────────────────────────────────────────────
 export type RecallRating = 0 | 1 | 2 | 3
@@ -28,6 +28,7 @@ export const DEFAULT_STUDY_GOALS: StudyGoals = {
     REG: { examDate: null, targetScore: 75 },
     BEC: { examDate: null, targetScore: 75 },
     TCP: { examDate: null, targetScore: 75 },
+    ISC: { examDate: null, targetScore: 75 },
   },
   dailyStudyHours: 3,
   questionsPerSession: 25,
@@ -122,6 +123,12 @@ export const SECTION_INFO: Record<ExamSection, { name: string; fullName: string;
     fullName: "Tax Compliance & Planning",
     color: "hsl(265 40% 35%)",
     topics: ["Individual Tax Compliance", "Entity Tax Compliance", "Property Transactions", "Tax Planning", "Federal Tax Procedures", "Ethics & Responsibilities"],
+  },
+  ISC: {
+    name: "ISC",
+    fullName: "Information Systems & Controls",
+    color: "hsl(195 50% 30%)",
+    topics: ["Information Systems", "IT Governance", "Internal Control", "Risk Management", "Business Continuity", "Information Security", "Trust Services Criteria", "SOC Reports"],
   },
 }
 
@@ -239,6 +246,19 @@ export const CHAPTERS: Chapter[] = [
   { id: "tcp-ch9", section: "TCP", number: 9, title: "Trusts and Estates", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "tcp-ch10", section: "TCP", number: 10, title: "Other Taxation Topics", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "tcp-ch11", section: "TCP", number: 11, title: "Transaction in Property", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  // ISC Chapters
+  { id: "isc-ch1", section: "ISC", number: 1, title: "Information Systems", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch2", section: "ISC", number: 2, title: "IT Governance", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch3", section: "ISC", number: 3, title: "Roles and Responsibilities of the Information Systems Department", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch4", section: "ISC", number: 4, title: "Internal Control", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch5", section: "ISC", number: 5, title: "Risk Management", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch6", section: "ISC", number: 6, title: "Business Continuity Plan", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch7", section: "ISC", number: 7, title: "Disaster Recovery Plan", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch8", section: "ISC", number: 8, title: "Information Security Legislation and Frameworks", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch9", section: "ISC", number: 9, title: "Information Security Management", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch10", section: "ISC", number: 10, title: "Threats and Attacks against Information Systems", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch11", section: "ISC", number: 11, title: "Trust Services Criteria", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "isc-ch12", section: "ISC", number: 12, title: "SOC Reports", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
 ]
 
 export const STUDY_LOGS: StudyLog[] = [
@@ -436,5 +456,6 @@ export const INITIAL_PROGRESS: StudyProgress[] = [
   { section: "REG", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 350, studyHours: 0, lastStudied: "", streak: 0 },
   { section: "BEC", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 250, studyHours: 0, lastStudied: "", streak: 0 },
   { section: "TCP", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 200, studyHours: 0, lastStudied: "", streak: 0 },
+  { section: "ISC", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 250, studyHours: 0, lastStudied: "", streak: 0 },
 ]
 

@@ -99,7 +99,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
         >
           {t("chapters.allSections")}
         </button>
-        {(["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section => (
+        {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(section => (
           <button
             key={section}
             onClick={() => setSelectedSection(section)}

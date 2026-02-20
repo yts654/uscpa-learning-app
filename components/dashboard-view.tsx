@@ -40,7 +40,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
   const activeDays = new Set(studyLogs.map(l => l.date)).size
 
   // Per-section hours
-  const sectionHoursData = (["FAR", "AUD", "REG", "BEC", "TCP"] as ExamSection[]).map(section => ({
+  const sectionHoursData = (["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(section => ({
     section,
     hours: studyLogs.filter(l => l.section === section).reduce((a, b) => a + b.studyHours, 0),
     color: SECTION_INFO[section].color,
@@ -65,7 +65,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
   })()
 
   // Section data for expandable cards
-  const sections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP"]
+  const sections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
 
   function getSectionData(section: ExamSection) {
     const info = SECTION_INFO[section]

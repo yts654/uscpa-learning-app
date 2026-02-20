@@ -12,7 +12,7 @@ interface MockExamsViewProps {
   onUpdateMockExams: (exams: MockExam[]) => void
 }
 
-const ALL_SECTIONS: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP"]
+const ALL_SECTIONS: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
 
 export function MockExamsView({ mockExams, onUpdateMockExams }: MockExamsViewProps) {
   const { t } = useLanguage()
