@@ -90,29 +90,36 @@
     font-family: "Times New Roman", Times, serif;
   }
 
-  /* McKinsey-inspired geometric pattern for dark mode */
+  /* Constellation network pattern for dark mode */
   .dark body {
     background-color: hsl(232, 30%, 6%);
     background-image:
-      /* Soft radial gradient for depth at top */
+      /* Ambient glow - top left */
       radial-gradient(
-        ellipse 80% 50% at 50% 0%,
-        hsla(230, 50%, 20%, 0.35) 0%,
+        ellipse 60% 50% at 10% 5%,
+        hsla(235, 55%, 18%, 0.4) 0%,
         transparent 70%
       ),
-      /* Diamond grid pattern */
-      url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0 L80 40 L40 80 L0 40Z' fill='none' stroke='%236B7EB8' stroke-width='0.5' opacity='0.15'/%3E%3Cpath d='M40 20 L60 40 L40 60 L20 40Z' fill='none' stroke='%236B7EB8' stroke-width='0.3' opacity='0.08'/%3E%3C/svg%3E"),
-      /* Dot accent grid */
+      /* Ambient glow - center right */
       radial-gradient(
-        circle 1px at center,
-        hsla(230, 40%, 65%, 0.1) 0%,
-        transparent 100%
-      );
+        ellipse 45% 45% at 80% 50%,
+        hsla(225, 50%, 14%, 0.3) 0%,
+        transparent 70%
+      ),
+      /* Ambient glow - bottom */
+      radial-gradient(
+        ellipse 50% 40% at 40% 95%,
+        hsla(240, 45%, 16%, 0.25) 0%,
+        transparent 70%
+      ),
+      /* Constellation SVG pattern */
+      url('/constellation.svg');
     background-size:
       100% 100%,
-      80px 80px,
-      40px 40px;
-    background-attachment: fixed, scroll, scroll;
+      100% 100%,
+      100% 100%,
+      400px 400px;
+    background-attachment: fixed, fixed, fixed, scroll;
   }
 }
 
