@@ -8,8 +8,8 @@ interface TourStep {
   mobileTarget?: string
   titleKey: TranslationKey
   descKey: TranslationKey
-  placement: "right" | "bottom" | "left"
-  mobilePlacement?: "right" | "bottom" | "left"
+  placement: "right" | "bottom"
+  mobilePlacement?: "right" | "bottom"
 }
 
 const TOUR_STEPS: TourStep[] = [
@@ -28,65 +28,63 @@ export function OnboardingTour() {
   const [step, setStep] = useState(0)
   const [hole, setHole] = useState({ top: 0, left: 0, width: 0, height: 0 })
   const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, width: 320 })
-  const [ready, setReady] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const rafRef = useRef<number>(0)
+  const [visible, setVisible] = useState(false)
+  const isMobileRef = useRef(false)
+  const positioningRef = useRef(false)
 
   // Check if tour should show
   useEffect(() => {
     const completed = localStorage.getItem(STORAGE_KEY)
     if (completed !== "true") {
-      const timer = setTimeout(() => setActive(true), 800)
+      const timer = setTimeout(() => setActive(true), 1000)
       return () => clearTimeout(timer)
     }
   }, [])
 
-  // Detect mobile
+  // Track mobile
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 1024)
+    const check = () => { isMobileRef.current = window.innerWidth < 1024 }
     check()
     window.addEventListener("resize", check)
     return () => window.removeEventListener("resize", check)
   }, [])
 
-  // Find the target element for the current step
-  const getTargetEl = useCallback((stepIdx: number): HTMLElement | null => {
-    const s = TOUR_STEPS[stepIdx]
-    const targetAttr = isMobile && s.mobileTarget ? s.mobileTarget : s.target
-    return document.querySelector(`[data-tour="${targetAttr}"]`) as HTMLElement | null
-  }, [isMobile])
+  // Get the target element for a given step
+  const getTarget = useCallback((idx: number): HTMLElement | null => {
+    const s = TOUR_STEPS[idx]
+    const attr = isMobileRef.current && s.mobileTarget ? s.mobileTarget : s.target
+    return document.querySelector(`[data-tour="${attr}"]`)
+  }, [])
 
-  // Position spotlight and tooltip
-  const positionElements = useCallback(() => {
-    if (!active) return
+  // Position the spotlight and tooltip around the target element
+  const position = useCallback(() => {
+    if (!active || positioningRef.current) return
+    positioningRef.current = true
 
-    const el = getTargetEl(step)
+    const el = getTarget(step)
     if (!el) {
-      setReady(false)
+      positioningRef.current = false
+      setVisible(false)
       return
     }
 
-    const s = TOUR_STEPS[step]
-    const placement = isMobile && s.mobilePlacement ? s.mobilePlacement : s.placement
-
-    // Scroll target into view (the scrollable container is the main content div)
-    const scrollContainer = document.querySelector(".flex-1.flex.flex-col.min-w-0.overflow-y-auto")
-    if (scrollContainer && scrollContainer.contains(el)) {
-      const containerRect = scrollContainer.getBoundingClientRect()
-      const elRect = el.getBoundingClientRect()
-      // If element is not fully visible in the scroll container, scroll to it
-      if (elRect.top < containerRect.top || elRect.bottom > containerRect.bottom) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" })
-        // Re-position after scroll animation
-        setTimeout(() => positionElements(), 400)
-        return
-      }
+    // Scroll into view if needed, then position after scroll settles
+    const rect = el.getBoundingClientRect()
+    const inViewport = rect.top >= 0 && rect.bottom <= window.innerHeight
+    if (!inViewport) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" })
+      setTimeout(() => {
+        positioningRef.current = false
+        position()
+      }, 500)
+      return
     }
 
-    const rect = el.getBoundingClientRect()
     const pad = 8
+    const s = TOUR_STEPS[step]
+    const placement = isMobileRef.current && s.mobilePlacement ? s.mobilePlacement : s.placement
 
-    // Spotlight hole
+    // Hole
     setHole({
       top: rect.top - pad,
       left: rect.left - pad,
@@ -94,65 +92,54 @@ export function OnboardingTour() {
       height: rect.height + pad * 2,
     })
 
-    // Tooltip position
-    const tooltipWidth = Math.min(320, window.innerWidth - 32)
+    // Tooltip
+    const tw = Math.min(320, window.innerWidth - 32)
     let top = 0
     let left = 0
 
     if (placement === "right") {
-      top = rect.top + rect.height / 2 - 80
-      left = rect.right + pad + 12
-      if (left + tooltipWidth > window.innerWidth - 16) {
-        top = rect.bottom + pad + 12
-        left = Math.max(16, rect.left + rect.width / 2 - tooltipWidth / 2)
+      top = Math.max(16, rect.top)
+      left = rect.right + pad + 16
+      // Fall back to bottom if no space on right
+      if (left + tw > window.innerWidth - 16) {
+        top = rect.bottom + pad + 16
+        left = Math.max(16, Math.min(rect.left, window.innerWidth - tw - 16))
       }
-    } else if (placement === "bottom") {
-      top = rect.bottom + pad + 12
-      left = Math.max(16, rect.left + rect.width / 2 - tooltipWidth / 2)
-    } else if (placement === "left") {
-      top = rect.top + rect.height / 2 - 80
-      left = rect.left - pad - 12 - tooltipWidth
-      if (left < 16) {
-        top = rect.bottom + pad + 12
-        left = Math.max(16, rect.left + rect.width / 2 - tooltipWidth / 2)
-      }
+    } else {
+      top = rect.bottom + pad + 16
+      left = Math.max(16, Math.min(rect.left + rect.width / 2 - tw / 2, window.innerWidth - tw - 16))
     }
 
-    // Clamp
-    if (left + tooltipWidth > window.innerWidth - 16) left = window.innerWidth - 16 - tooltipWidth
-    if (left < 16) left = 16
-    if (top < 16) top = 16
-    if (top + 200 > window.innerHeight) top = window.innerHeight - 220
+    // Clamp to viewport
+    if (top + 220 > window.innerHeight) top = Math.max(16, window.innerHeight - 240)
 
-    setTooltipPos({ top, left, width: tooltipWidth })
-    setReady(true)
-  }, [active, step, isMobile, getTargetEl])
+    setTooltipPos({ top, left, width: tw })
+    setVisible(true)
+    positioningRef.current = false
+  }, [active, step, getTarget])
 
-  // Re-position on step change, resize, scroll
+  // Re-position when step changes
   useEffect(() => {
     if (!active) return
-    setReady(false)
-    // Small delay to let DOM update (e.g. after scrollIntoView)
-    const timer = setTimeout(positionElements, 100)
+    setVisible(false)
+    const timer = setTimeout(position, 150)
+    return () => clearTimeout(timer)
+  }, [active, step, position])
 
-    const onResize = () => {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(positionElements)
+  // Re-position on resize
+  useEffect(() => {
+    if (!active) return
+    const handler = () => {
+      setVisible(false)
+      setTimeout(position, 100)
     }
-    window.addEventListener("resize", onResize)
-    window.addEventListener("scroll", onResize, true)
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener("resize", onResize)
-      window.removeEventListener("scroll", onResize, true)
-      cancelAnimationFrame(rafRef.current)
-    }
-  }, [active, positionElements])
+    window.addEventListener("resize", handler)
+    return () => window.removeEventListener("resize", handler)
+  }, [active, position])
 
   const finish = useCallback(() => {
     localStorage.setItem(STORAGE_KEY, "true")
     setActive(false)
-    document.body.style.overflow = ""
   }, [])
 
   const next = useCallback(() => {
@@ -163,24 +150,6 @@ export function OnboardingTour() {
     }
   }, [step, finish])
 
-  // Lock scroll on the body but allow scroll container to scroll for scrollIntoView
-  useEffect(() => {
-    if (active) {
-      document.body.style.overflow = "hidden"
-      // Allow the main content scroll container to scroll for positioning
-      const scrollContainer = document.querySelector(".flex-1.flex.flex-col.min-w-0.overflow-y-auto") as HTMLElement | null
-      if (scrollContainer) {
-        scrollContainer.style.overflow = "auto"
-      }
-      return () => {
-        document.body.style.overflow = ""
-        if (scrollContainer) {
-          scrollContainer.style.overflow = ""
-        }
-      }
-    }
-  }, [active])
-
   if (!active) return null
 
   const currentStep = TOUR_STEPS[step]
@@ -188,62 +157,43 @@ export function OnboardingTour() {
 
   return (
     <>
-      {/* Overlay with spotlight hole */}
+      {/* Overlay */}
       <div
-        className="fixed inset-0 z-[9998] pointer-events-auto"
+        className="fixed inset-0 z-[9998]"
         onClick={finish}
-        style={{ opacity: ready ? 1 : 0, transition: "opacity 200ms" }}
+        style={{ opacity: visible ? 1 : 0, transition: "opacity 200ms", pointerEvents: visible ? "auto" : "none" }}
       >
         <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <mask id="tour-mask">
+            <mask id="tour-spotlight">
               <rect x="0" y="0" width="100%" height="100%" fill="white" />
               <rect
-                x={hole.left}
-                y={hole.top}
-                width={hole.width}
-                height={hole.height}
-                rx={12}
-                ry={12}
-                fill="black"
+                x={hole.left} y={hole.top}
+                width={hole.width} height={hole.height}
+                rx={12} ry={12} fill="black"
               />
             </mask>
           </defs>
-          <rect
-            x="0" y="0" width="100%" height="100%"
-            fill="rgba(0,0,0,0.6)"
-            mask="url(#tour-mask)"
-          />
+          <rect x="0" y="0" width="100%" height="100%" fill="rgba(0,0,0,0.6)" mask="url(#tour-spotlight)" />
         </svg>
       </div>
 
-      {/* Spotlight border ring */}
-      {ready && (
+      {/* Spotlight ring */}
+      {visible && (
         <div
           className="fixed z-[9999] pointer-events-none rounded-xl ring-2 ring-white/40"
-          style={{
-            top: hole.top,
-            left: hole.left,
-            width: hole.width,
-            height: hole.height,
-            transition: "all 300ms ease",
-          }}
+          style={{ top: hole.top, left: hole.left, width: hole.width, height: hole.height, transition: "all 300ms" }}
         />
       )}
 
       {/* Tooltip */}
-      {ready && (
+      {visible && (
         <div
           className="fixed z-[10000] bg-white dark:bg-[hsl(232_47%_12%)] rounded-xl shadow-2xl border border-gray-200 dark:border-[hsl(232_35%_20%)] p-5"
-          style={{
-            top: tooltipPos.top,
-            left: tooltipPos.left,
-            width: tooltipPos.width,
-            transition: "all 300ms ease",
-          }}
+          style={{ top: tooltipPos.top, left: tooltipPos.left, width: tooltipPos.width, transition: "all 300ms" }}
           onClick={e => e.stopPropagation()}
         >
-          {/* Step indicator */}
+          {/* Progress dots */}
           <div className="flex items-center gap-1.5 mb-3">
             {TOUR_STEPS.map((_, i) => (
               <div
@@ -262,7 +212,6 @@ export function OnboardingTour() {
             </span>
           </div>
 
-          {/* Content */}
           <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
             {t(currentStep.titleKey)}
           </h3>
@@ -270,7 +219,6 @@ export function OnboardingTour() {
             {t(currentStep.descKey)}
           </p>
 
-          {/* Actions */}
           <div className="flex items-center justify-between">
             <button
               onClick={finish}
