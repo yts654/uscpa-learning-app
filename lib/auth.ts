@@ -27,12 +27,10 @@ export const authOptions: NextAuthOptions = {
           return { id: "admin", email: DEMO_EMAIL, name: "admin" }
         }
 
-        // 1. Try file-based / Redis user database
+        // 1. Try in-memory user database
         try {
           const user = await verifyUser(credentials.email, credentials.password)
           if (user) {
-            // Block unverified users
-            if (!user.emailVerified) return null
             return { id: user.id, email: user.email, name: user.name }
           }
         } catch (e) {
@@ -75,7 +73,6 @@ export const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        // maxAge を省略 → ブラウザセッション限りのCookie（タブを閉じたら消える）
       },
     },
   },

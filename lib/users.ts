@@ -6,8 +6,6 @@ export interface User {
   email: string
   passwordHash: string
   createdAt: string
-  emailVerified: boolean
-  verificationToken: string | null
 }
 
 // ---------------------------------------------------------------------------
@@ -39,8 +37,6 @@ export async function createUser(name: string, email: string, password: string):
     email: email.toLowerCase(),
     passwordHash: hash,
     createdAt: new Date().toISOString(),
-    emailVerified: false,
-    verificationToken: crypto.randomUUID(),
   }
 
   memoryStore.set(key(email), user)
@@ -60,26 +56,6 @@ export async function updatePassword(email: string, currentPassword: string, new
   user.passwordHash = await bcrypt.hash(newPassword, 10)
   memoryStore.set(key(email), user)
   return true
-}
-
-export async function verifyEmailToken(token: string): Promise<User | null> {
-  for (const user of memoryStore.values()) {
-    if (user.verificationToken === token) {
-      user.emailVerified = true
-      user.verificationToken = null
-      memoryStore.set(key(user.email), user)
-      return user
-    }
-  }
-  return null
-}
-
-export async function regenerateVerificationToken(email: string): Promise<string | null> {
-  const user = await getUserByEmail(email)
-  if (!user || user.emailVerified) return null
-  user.verificationToken = crypto.randomUUID()
-  memoryStore.set(key(email), user)
-  return user.verificationToken
 }
 
 export async function updateUserProfile(email: string, updates: { name?: string; newEmail?: string }): Promise<boolean> {

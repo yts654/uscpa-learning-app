@@ -1,12 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 import { BookOpen, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 
 export default function RegisterPage() {
-  const router = useRouter()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -33,8 +32,19 @@ export default function RegisterPage() {
         return
       }
 
-      // Redirect to verify-email page
-      router.push(`/verify-email?email=${encodeURIComponent(email)}`)
+      // Auto sign-in after registration
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (signInResult?.error) {
+        window.location.href = "/login"
+        return
+      }
+
+      window.location.href = "/home"
     } catch {
       setError("Something went wrong")
       setLoading(false)

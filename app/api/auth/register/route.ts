@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import { createUser } from "@/lib/users"
-import { sendVerificationEmail } from "@/lib/email"
 
 export const runtime = "nodejs"
 
@@ -15,18 +14,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 })
     }
 
-    const user = await createUser(name, email, password)
-
-    // Send verification email
-    if (user.verificationToken) {
-      try {
-        await sendVerificationEmail(user.email, user.verificationToken)
-      } catch (e) {
-        console.error("[register] Failed to send verification email:", e)
-      }
-    }
-
-    return NextResponse.json({ success: true, requiresVerification: true })
+    await createUser(name, email, password)
+    return NextResponse.json({ success: true })
   } catch (e: unknown) {
     if (e instanceof Error && e.message === "USER_EXISTS") {
       return NextResponse.json({ error: "An account with this email already exists" }, { status: 409 })
