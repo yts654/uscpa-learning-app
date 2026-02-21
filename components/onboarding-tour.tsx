@@ -20,7 +20,7 @@ const TOUR_STEPS: TourStep[] = [
   { target: "nav-review", titleKey: "tour.step5.title", descKey: "tour.step5.desc", placement: "right", mobilePlacement: "bottom" },
 ]
 
-const STORAGE_KEY = "onboarding-completed"
+const STORAGE_KEY = "onboarding-tour-v2"
 
 export function OnboardingTour() {
   const { t } = useLanguage()
