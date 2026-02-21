@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense } from "react"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { signIn, signOut } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { BookOpen, Eye, EyeOff, Loader2, CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
@@ -9,26 +9,20 @@ import Link from "next/link"
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { status } = useSession()
   const [email, setEmail] = useState("admin@cpamastery.com")
   const [password, setPassword] = useState("CpaMastery2026!")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [unverifiedEmail, setUnverifiedEmail] = useState("")
   const [loading, setLoading] = useState(false)
-  const [ready, setReady] = useState(false)
   const [resending, setResending] = useState(false)
 
   const verified = searchParams.get("verified")
 
-  // Always sign out any existing session when login page is visited
+  // Sign out any existing session in the background (non-blocking)
   useEffect(() => {
-    if (status === "authenticated") {
-      signOut({ redirect: false }).then(() => setReady(true))
-    } else if (status === "unauthenticated") {
-      setReady(true)
-    }
-  }, [status])
+    signOut({ redirect: false }).catch(() => {})
+  }, [])
 
   const handleResend = async () => {
     if (!unverifiedEmail) return
@@ -49,7 +43,6 @@ function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!ready) return
     setError("")
     setUnverifiedEmail("")
     setLoading(true)
@@ -81,8 +74,7 @@ function LoginForm() {
       setError("Invalid email or password")
       setLoading(false)
     } else {
-      router.push("/home")
-      router.refresh()
+      window.location.href = "/home"
     }
   }
 
@@ -158,7 +150,7 @@ function LoginForm() {
 
           <button
             type="submit"
-            disabled={loading || !ready}
+            disabled={loading}
             className="w-full py-2.5 rounded-lg bg-white text-[hsl(232,47%,8%)] text-sm font-bold hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             {loading ? (
