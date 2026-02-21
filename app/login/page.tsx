@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { signIn, signOut } from "next-auth/react"
+import { useState, useEffect, useRef } from "react"
+import { getCsrfToken } from "next-auth/react"
 import { BookOpen, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 
@@ -11,10 +11,11 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const csrfRef = useRef<string>("")
 
-  // Sign out any existing session in the background (non-blocking warm-up)
+  // Pre-fetch CSRF token on page load (warms up serverless function)
   useEffect(() => {
-    signOut({ redirect: false }).catch(() => {})
+    getCsrfToken().then((t) => { csrfRef.current = t || "" }).catch(() => {})
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,17 +23,34 @@ export default function LoginPage() {
     setError("")
     setLoading(true)
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    })
+    try {
+      // Get CSRF token (already cached from warm-up)
+      const csrf = csrfRef.current || await getCsrfToken() || ""
 
-    if (result?.error) {
-      setError("Invalid email or password")
+      // Direct POST — skips next-auth/react overhead (providers fetch etc.)
+      const res = await fetch("/api/auth/callback/credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          email,
+          password,
+          csrfToken: csrf,
+          json: "true",
+        }),
+        redirect: "follow",
+      })
+
+      const data = await res.json()
+
+      if (data?.url) {
+        window.location.href = "/home"
+      } else {
+        setError("Invalid email or password")
+        setLoading(false)
+      }
+    } catch {
+      setError("Something went wrong")
       setLoading(false)
-    } else {
-      window.location.href = "/home"
     }
   }
 
