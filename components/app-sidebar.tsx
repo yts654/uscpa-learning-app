@@ -42,7 +42,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
 
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col bg-[hsl(232_47%_8%)] text-[hsl(230_15%_82%)] h-screen sticky top-0 transition-all duration-300",
+      "hidden lg:flex flex-col bg-[hsl(232_47%_8%)] text-[hsl(230_15%_82%)] h-screen flex-shrink-0 transition-all duration-300",
       collapsed ? "w-16" : "w-64"
     )}>
       {/* Brand */}

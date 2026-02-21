@@ -116,9 +116,9 @@ export default function Home() {
 
   return (
     <LanguageProvider>
-      <div className="flex min-h-screen overflow-x-hidden">
+      <div className="flex h-screen overflow-hidden">
         <AppSidebar currentView={currentView} onViewChange={handleViewChange} streak={streak} profile={profile} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(prev => !prev)} />
-        <div className="flex-1 flex flex-col min-h-screen min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
           <MobileHeader currentView={currentView} onViewChange={handleViewChange} />
           <main className="flex-1 p-4 md:p-8 lg:p-10 max-w-6xl w-full mx-auto overflow-x-hidden">
             {currentView === "dashboard" && (
