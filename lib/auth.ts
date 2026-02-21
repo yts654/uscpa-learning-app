@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
-import { verifyUser } from "./users"
+import { verifyUser, getUserByEmail } from "./users"
 
 const secret = process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production"
 
@@ -24,8 +24,6 @@ export const authOptions: NextAuthOptions = {
           credentials.email.toLowerCase() === DEMO_EMAIL &&
           credentials.password === DEMO_PASSWORD
         ) {
-          // Check if demo user exists in DB first
-          const { getUserByEmail } = await import("./users")
           const dbUser = await getUserByEmail(DEMO_EMAIL)
           if (dbUser) {
             return { id: dbUser.id, email: dbUser.email, name: dbUser.name }
