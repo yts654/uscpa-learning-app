@@ -17,6 +17,22 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
+        // 0. Fast path: demo credentials (already visible in client code)
+        const DEMO_EMAIL = "admin@cpamastery.com"
+        const DEMO_PASSWORD = "CpaMastery2026!"
+        if (
+          credentials.email.toLowerCase() === DEMO_EMAIL &&
+          credentials.password === DEMO_PASSWORD
+        ) {
+          // Check if demo user exists in DB first
+          const { getUserByEmail } = await import("./users")
+          const dbUser = await getUserByEmail(DEMO_EMAIL)
+          if (dbUser) {
+            return { id: dbUser.id, email: dbUser.email, name: dbUser.name }
+          }
+          return { id: "admin", email: DEMO_EMAIL, name: "admin" }
+        }
+
         // 1. Try file-based / Redis user database
         try {
           const user = await verifyUser(credentials.email, credentials.password)
