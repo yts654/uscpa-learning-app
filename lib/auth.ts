@@ -31,6 +31,8 @@ export const authOptions: NextAuthOptions = {
         try {
           const user = await verifyUser(credentials.email, credentials.password)
           if (user) {
+            // Block unverified users
+            if (!user.emailVerified) return null
             return { id: user.id, email: user.email, name: user.name }
           }
         } catch (e) {
