@@ -110,7 +110,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
               key={item.id}
               onClick={() => onViewChange(item.id)}
               title={collapsed ? t(item.labelKey) : undefined}
-              data-tour={item.id === "chapters" ? "nav-chapters" : item.id === "study-log" ? "nav-study-log" : item.id === "review" ? "nav-review" : undefined}
+              data-tour={item.id === "dashboard" ? undefined : `nav-${item.id}`}
               className={cn(
                 "flex rounded-lg font-bold transition-all duration-200",
                 collapsed

@@ -8,8 +8,8 @@ interface TourStep {
   mobileTarget?: string
   titleKey: TranslationKey
   descKey: TranslationKey
-  placement: "right" | "bottom"
-  mobilePlacement?: "right" | "bottom"
+  placement: "right" | "bottom" | "center"
+  mobilePlacement?: "right" | "bottom" | "center"
 }
 
 const TOUR_STEPS: TourStep[] = [
@@ -17,10 +17,15 @@ const TOUR_STEPS: TourStep[] = [
   { target: "stats-cards", titleKey: "tour.step2.title", descKey: "tour.step2.desc", placement: "bottom" },
   { target: "nav-chapters", titleKey: "tour.step3.title", descKey: "tour.step3.desc", placement: "right", mobilePlacement: "bottom" },
   { target: "nav-study-log", titleKey: "tour.step4.title", descKey: "tour.step4.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "nav-review", titleKey: "tour.step5.title", descKey: "tour.step5.desc", placement: "right", mobilePlacement: "bottom" },
+  { target: "nav-mock-exams", titleKey: "tour.step5.title", descKey: "tour.step5.desc", placement: "right", mobilePlacement: "bottom" },
+  { target: "nav-review", titleKey: "tour.step6.title", descKey: "tour.step6.desc", placement: "right", mobilePlacement: "bottom" },
+  { target: "nav-analytics", titleKey: "tour.step7.title", descKey: "tour.step7.desc", placement: "right", mobilePlacement: "bottom" },
+  { target: "nav-settings", titleKey: "tour.step8.title", descKey: "tour.step8.desc", placement: "right", mobilePlacement: "bottom" },
+  { target: "stats-cards", titleKey: "tour.step9.title", descKey: "tour.step9.desc", placement: "bottom" },
+  { target: "", titleKey: "tour.step10.title", descKey: "tour.step10.desc", placement: "center" },
 ]
 
-const STORAGE_KEY = "onboarding-tour-v2"
+const STORAGE_KEY = "onboarding-tour-v3"
 
 export function OnboardingTour() {
   const { t } = useLanguage()
@@ -49,9 +54,15 @@ export function OnboardingTour() {
     return () => window.removeEventListener("resize", check)
   }, [])
 
+  // Check if the current step has no target (center display)
+  const isCenterStep = useCallback((idx: number): boolean => {
+    return !TOUR_STEPS[idx].target
+  }, [])
+
   // Get the target element for a given step
   const getTarget = useCallback((idx: number): HTMLElement | null => {
     const s = TOUR_STEPS[idx]
+    if (!s.target) return null
     const attr = isMobileRef.current && s.mobileTarget ? s.mobileTarget : s.target
     return document.querySelector(`[data-tour="${attr}"]`)
   }, [])
@@ -60,6 +71,20 @@ export function OnboardingTour() {
   const position = useCallback(() => {
     if (!active || positioningRef.current) return
     positioningRef.current = true
+
+    // Center display — no target element needed
+    if (isCenterStep(step)) {
+      const tw = Math.min(360, window.innerWidth - 32)
+      setHole({ top: 0, left: 0, width: 0, height: 0 })
+      setTooltipPos({
+        top: Math.max(16, window.innerHeight / 2 - 120),
+        left: Math.max(16, window.innerWidth / 2 - tw / 2),
+        width: tw,
+      })
+      setVisible(true)
+      positioningRef.current = false
+      return
+    }
 
     const el = getTarget(step)
     if (!el) {
@@ -116,7 +141,7 @@ export function OnboardingTour() {
     setTooltipPos({ top, left, width: tw })
     setVisible(true)
     positioningRef.current = false
-  }, [active, step, getTarget])
+  }, [active, step, getTarget, isCenterStep])
 
   // Re-position when step changes
   useEffect(() => {
@@ -154,6 +179,7 @@ export function OnboardingTour() {
 
   const currentStep = TOUR_STEPS[step]
   const isLast = step === TOUR_STEPS.length - 1
+  const isCenter = isCenterStep(step)
 
   return (
     <>
@@ -167,11 +193,13 @@ export function OnboardingTour() {
           <defs>
             <mask id="tour-spotlight">
               <rect x="0" y="0" width="100%" height="100%" fill="white" />
-              <rect
-                x={hole.left} y={hole.top}
-                width={hole.width} height={hole.height}
-                rx={12} ry={12} fill="black"
-              />
+              {!isCenter && (
+                <rect
+                  x={hole.left} y={hole.top}
+                  width={hole.width} height={hole.height}
+                  rx={12} ry={12} fill="black"
+                />
+              )}
             </mask>
           </defs>
           <rect x="0" y="0" width="100%" height="100%" fill="rgba(0,0,0,0.6)" mask="url(#tour-spotlight)" />
@@ -179,7 +207,7 @@ export function OnboardingTour() {
       </div>
 
       {/* Spotlight ring */}
-      {visible && (
+      {visible && !isCenter && (
         <div
           className="fixed z-[9999] pointer-events-none rounded-xl ring-2 ring-white/40"
           style={{ top: hole.top, left: hole.left, width: hole.width, height: hole.height, transition: "all 300ms" }}
@@ -194,20 +222,20 @@ export function OnboardingTour() {
           onClick={e => e.stopPropagation()}
         >
           {/* Progress dots */}
-          <div className="flex items-center gap-1.5 mb-3">
+          <div className="flex items-center gap-1 mb-3">
             {TOUR_STEPS.map((_, i) => (
               <div
                 key={i}
                 className={`h-1.5 rounded-full transition-all duration-200 ${
                   i === step
-                    ? "w-6 bg-[hsl(225,50%,22%)] dark:bg-white"
+                    ? "w-4 bg-[hsl(225,50%,22%)] dark:bg-white"
                     : i < step
                       ? "w-1.5 bg-[hsl(225,50%,22%)]/40 dark:bg-white/40"
                       : "w-1.5 bg-gray-200 dark:bg-[hsl(232_35%_24%)]"
                 }`}
               />
             ))}
-            <span className="ml-auto text-xs text-gray-400 dark:text-[hsl(230_15%_50%)]">
+            <span className="ml-auto text-xs text-gray-400 dark:text-[hsl(230_15%_50%)] flex-shrink-0">
               {step + 1} {t("tour.stepOf")} {TOUR_STEPS.length}
             </span>
           </div>
