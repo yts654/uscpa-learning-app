@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { BookOpen, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
@@ -33,7 +34,21 @@ export default function RegisterPage() {
         return
       }
 
-      router.push("/login")
+      // Auto sign-in after registration
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (signInResult?.error) {
+        // Registration succeeded but auto-login failed, go to login page
+        router.push("/login")
+        return
+      }
+
+      router.push("/home")
+      router.refresh()
     } catch {
       setError("Something went wrong")
       setLoading(false)

@@ -11,10 +11,12 @@ export interface User {
 }
 
 // ---------------------------------------------------------------------------
-// Storage helpers – file-based JSON that works without Redis
+// Storage helpers – file-based JSON (/tmp on Vercel, .data locally)
 // ---------------------------------------------------------------------------
 
-const DATA_DIR = join(process.cwd(), ".data")
+const DATA_DIR = process.env.VERCEL
+  ? join("/tmp", ".data")
+  : join(process.cwd(), ".data")
 const USERS_FILE = join(DATA_DIR, "users.json")
 
 function ensureDataDir() {
