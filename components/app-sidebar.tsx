@@ -42,7 +42,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
 
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col bg-[hsl(232_47%_8%)] text-[hsl(230_15%_82%)] min-h-screen transition-all duration-300",
+      "hidden lg:flex flex-col bg-[hsl(232_47%_8%)] text-[hsl(230_15%_82%)] h-screen sticky top-0 transition-all duration-300",
       collapsed ? "w-16" : "w-64"
     )}>
       {/* Brand */}
@@ -98,7 +98,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
       )}
 
       {/* Navigation */}
-      <nav className={cn("flex flex-col gap-1 mt-4 flex-1", collapsed ? "px-2" : "px-3")}>
+      <nav className={cn("flex flex-col gap-1 mt-4 flex-1 overflow-y-auto", collapsed ? "px-2" : "px-3")}>
         {!collapsed && (
           <p className="text-[10px] uppercase tracking-widest text-[hsl(230_15%_40%)] font-medium px-3 mb-2">{t("sidebar.navigation")}</p>
         )}
