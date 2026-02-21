@@ -786,9 +786,40 @@ const translations = {
   "settings.questionsPerSession": { en: "Questions per Session", es: "Preguntas por sesión" },
   "settings.questionsUnit": { en: "questions", es: "preguntas" },
   "settings.notifications": { en: "Notifications", es: "Notificaciones" },
-  "settings.dailyReminder": { en: "Daily study reminder", es: "Recordatorio diario de estudio" },
+  "settings.reviewAlerts": { en: "Review alerts", es: "Alertas de repaso" },
   "settings.weeklyReport": { en: "Weekly progress report", es: "Informe semanal de progreso" },
   "settings.streakNotifications": { en: "Streak notifications", es: "Notificaciones de racha" },
+  "settings.milestoneNotifications": { en: "Milestone notifications", es: "Notificaciones de hitos" },
+  "settings.notifBlocked": {
+    en: "Notifications are blocked. Please enable them in your browser settings.",
+    es: "Las notificaciones están bloqueadas. Habilítalas en la configuración de tu navegador.",
+  },
+
+  // Notification content
+  "notif.review.title": { en: "Review Alert", es: "Alerta de repaso" },
+  "notif.review.body": {
+    en: "{count} chapters need review. Lowest: {chapter} at {retention}%",
+    es: "{count} capítulos necesitan repaso. Más bajo: {chapter} al {retention}%",
+  },
+  "notif.streak.title": { en: "Streak at Risk!", es: "Racha en riesgo!" },
+  "notif.streak.body": {
+    en: "Your {streak}-day streak is at risk! Study today to keep it going.",
+    es: "Tu racha de {streak} días está en riesgo! Estudia hoy para mantenerla.",
+  },
+  "notif.weekly.title": { en: "Weekly Summary", es: "Resumen semanal" },
+  "notif.weekly.body": {
+    en: "Last week: {hours}h, {sessions} sessions, {accuracy}% accuracy",
+    es: "Semana pasada: {hours}h, {sessions} sesiones, {accuracy}% precisión",
+  },
+  "notif.milestone.streak": {
+    en: "You've maintained a {n}-day streak!",
+    es: "Has mantenido una racha de {n} días!",
+  },
+  "notif.milestone.hours": {
+    en: "You've studied for {n} hours total!",
+    es: "Has estudiado {n} horas en total!",
+  },
+  "notif.milestone.title": { en: "Milestone Reached!", es: "Hito alcanzado!" },
   "settings.saved": { en: "Saved!", es: "¡Guardado!" },
   "settings.saveChanges": { en: "Save Changes", es: "Guardar cambios" },
   "settings.changePassword": { en: "Change Password", es: "Cambiar contraseña" },

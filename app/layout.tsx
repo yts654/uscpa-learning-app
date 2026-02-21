@@ -7,6 +7,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'CPA Mastery | USCPA Study Platform',
   description: 'A premium study tool for the US CPA examination. Track progress, practice MCQs, and master all four exam sections.',
+  manifest: '/manifest.json',
 }
 
 export const viewport: Viewport = {

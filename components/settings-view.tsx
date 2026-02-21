@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useTheme } from "next-themes"
-import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Lock } from "lucide-react"
+import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Lock, AlertTriangle } from "lucide-react"
 import { SECTION_INFO, type ExamSection, type StudyGoals } from "@/lib/study-data"
 import { useLanguage, type Locale } from "@/lib/i18n"
+import { getNotifPrefs, setNotifPrefs, ensureNotificationPermission, type NotificationPrefs } from "@/lib/notifications"
 
 interface UserProfile {
   name: string
@@ -33,6 +34,30 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
   const [passwordMsg, setPasswordMsg] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const [passwordLoading, setPasswordLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [notifPrefs, setNotifPrefsState] = useState<NotificationPrefs>(getNotifPrefs)
+  const [notifBlocked, setNotifBlocked] = useState(false)
+
+  useEffect(() => {
+    if (typeof Notification !== "undefined" && Notification.permission === "denied") {
+      setNotifBlocked(true)
+    }
+  }, [])
+
+  const handleNotifToggle = async (key: keyof NotificationPrefs, checked: boolean) => {
+    if (checked) {
+      const granted = await ensureNotificationPermission()
+      if (!granted) {
+        if (typeof Notification !== "undefined" && Notification.permission === "denied") {
+          setNotifBlocked(true)
+        }
+        return
+      }
+      setNotifBlocked(false)
+    }
+    const updated = { ...notifPrefs, [key]: checked }
+    setNotifPrefsState(updated)
+    setNotifPrefs(updated)
+  }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -454,16 +479,28 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <Bell className="w-4 h-4 text-muted-foreground" />
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.notifications")}</h3>
         </div>
+        {notifBlocked && (
+          <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 text-xs">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <span>{t("settings.notifBlocked")}</span>
+          </div>
+        )}
         <div className="space-y-3">
           {([
-            { key: "settings.dailyReminder" as const },
-            { key: "settings.weeklyReport" as const },
-            { key: "settings.streakNotifications" as const },
+            { prefKey: "review" as const, labelKey: "settings.reviewAlerts" as const },
+            { prefKey: "weekly" as const, labelKey: "settings.weeklyReport" as const },
+            { prefKey: "streak" as const, labelKey: "settings.streakNotifications" as const },
+            { prefKey: "milestone" as const, labelKey: "settings.milestoneNotifications" as const },
           ]).map((item) => (
-            <label key={item.key} className="flex items-center justify-between py-2 cursor-pointer">
-              <span className="text-sm text-card-foreground">{t(item.key)}</span>
+            <label key={item.prefKey} className="flex items-center justify-between py-2 cursor-pointer">
+              <span className="text-sm text-card-foreground">{t(item.labelKey)}</span>
               <div className="relative">
-                <input type="checkbox" defaultChecked className="sr-only peer" />
+                <input
+                  type="checkbox"
+                  checked={notifPrefs[item.prefKey]}
+                  onChange={(e) => handleNotifToggle(item.prefKey, e.target.checked)}
+                  className="sr-only peer"
+                />
                 <div className="w-9 h-5 rounded-full bg-muted peer-checked:bg-primary transition-colors" />
                 <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-card shadow transition-transform peer-checked:translate-x-4" />
               </div>

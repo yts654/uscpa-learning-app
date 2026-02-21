@@ -20,7 +20,18 @@ import {
   type StudyGoals, type RecallRecord, type RecallRating,
 } from "@/lib/study-data"
 import { computeAllChapterRetentions } from "@/lib/spaced-repetition"
-import { LanguageProvider } from "@/lib/i18n"
+import { LanguageProvider, useLanguage } from "@/lib/i18n"
+import { useNotifications } from "@/hooks/use-notifications"
+
+function NotificationRunner({ chapterRetentions, streak, studyLogs }: {
+  chapterRetentions: import("@/lib/spaced-repetition").ChapterRetention[]
+  streak: number
+  studyLogs: StudyLog[]
+}) {
+  const { t } = useLanguage()
+  useNotifications(chapterRetentions, streak, studyLogs, t)
+  return null
+}
 
 type View = "dashboard" | "chapters" | "study-log" | "mock-exams" | "analytics" | "settings" | "review"
 
@@ -179,6 +190,7 @@ export default function Home() {
         </div>
       </div>
       <OnboardingTour />
+      <NotificationRunner chapterRetentions={chapterRetentions} streak={streak} studyLogs={studyLogs} />
     </LanguageProvider>
   )
 }
