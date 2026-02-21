@@ -1,22 +1,20 @@
-import sgMail from "@sendgrid/mail"
+import { Resend } from "resend"
 
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
-const EMAIL_FROM = process.env.EMAIL_FROM
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
 
 export async function sendVerificationEmail(to: string, token: string) {
-  if (!SENDGRID_API_KEY || !EMAIL_FROM) {
-    console.warn("[email] SendGrid not configured, skipping email send")
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    console.warn("[email] RESEND_API_KEY not configured, skipping email send")
     return
   }
 
-  sgMail.setApiKey(SENDGRID_API_KEY)
-
+  const resend = new Resend(apiKey)
   const verifyUrl = `${APP_URL}/api/auth/verify-email?token=${token}`
 
-  await sgMail.send({
+  await resend.emails.send({
+    from: "CPA Mastery <onboarding@resend.dev>",
     to,
-    from: EMAIL_FROM,
     subject: "CPA Mastery - Verify Your Email",
     html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
