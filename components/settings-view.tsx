@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { useTheme } from "next-themes"
-import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Monitor, Languages, Lock } from "lucide-react"
+import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Languages, Lock } from "lucide-react"
 import { SECTION_INFO, type ExamSection, type StudyGoals } from "@/lib/study-data"
 import { useLanguage, type Locale } from "@/lib/i18n"
 
@@ -257,11 +257,10 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
         </div>
         <div>
           <label className="text-sm font-medium text-card-foreground block mb-3">{t("settings.theme")}</label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {([
               { value: "light", labelKey: "settings.light" as const, icon: Sun },
               { value: "dark", labelKey: "settings.dark" as const, icon: Moon },
-              { value: "system", labelKey: "settings.system" as const, icon: Monitor },
             ] as const).map((opt) => {
               const Icon = opt.icon
               const isActive = theme === opt.value
