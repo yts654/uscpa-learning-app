@@ -14,16 +14,20 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [ready, setReady] = useState(false)
 
   // Always sign out any existing session when login page is visited
   useEffect(() => {
     if (status === "authenticated") {
-      signOut({ redirect: false })
+      signOut({ redirect: false }).then(() => setReady(true))
+    } else if (status === "unauthenticated") {
+      setReady(true)
     }
   }, [status])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!ready) return
     setError("")
     setLoading(true)
 
@@ -100,7 +104,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !ready}
               className="w-full py-2.5 rounded-lg bg-white text-[hsl(232,47%,8%)] text-sm font-bold hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
