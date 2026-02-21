@@ -88,6 +88,7 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
               key={item.id}
               ref={isActive ? activeRef : undefined}
               onClick={() => onViewChange(item.id)}
+              data-tour={item.id === "chapters" ? "nav-chapters" : item.id === "study-log" ? "nav-study-log" : item.id === "review" ? "nav-review" : undefined}
               className={cn(
                 "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 min-h-[40px]",
                 isActive
