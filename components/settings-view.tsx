@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { useTheme } from "next-themes"
-import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Languages, Lock } from "lucide-react"
+import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Lock } from "lucide-react"
 import { SECTION_INFO, type ExamSection, type StudyGoals } from "@/lib/study-data"
 import { useLanguage, type Locale } from "@/lib/i18n"
 
@@ -285,10 +285,9 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <label className="text-sm font-medium text-card-foreground block mb-3">{t("settings.language")}</label>
           <div className="grid grid-cols-2 gap-3">
             {([
-              { value: "en" as Locale, label: "English", icon: Languages },
-              { value: "es" as Locale, label: "Español", icon: Languages },
+              { value: "en" as Locale, label: "English", flag: "EN" },
+              { value: "es" as Locale, label: "Español", flag: "ES" },
             ]).map((opt) => {
-              const Icon = opt.icon
               const isActive = locale === opt.value
               return (
                 <button
@@ -300,7 +299,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                       : "border-border text-muted-foreground hover:border-border/80 hover:bg-muted/30"
                   }`}
                 >
-                  <Icon className="w-5 h-5" />
+                  <span className="text-base font-bold">{opt.flag}</span>
                   {opt.label}
                 </button>
               )
