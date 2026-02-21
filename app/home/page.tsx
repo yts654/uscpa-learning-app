@@ -12,6 +12,7 @@ import { AnalyticsView } from "@/components/analytics-view"
 import { SettingsView } from "@/components/settings-view"
 import { ReviewView } from "@/components/review-view"
 import { MockExamsView } from "@/components/mock-exams-view"
+import { OnboardingTour } from "@/components/onboarding-tour"
 import {
   INITIAL_PROGRESS, CHAPTERS, STUDY_LOGS, INITIAL_ESSENCE_NOTES, INITIAL_MOCK_EXAMS,
   DEFAULT_STUDY_GOALS,
@@ -177,6 +178,7 @@ export default function Home() {
           </footer>
         </div>
       </div>
+      <OnboardingTour />
     </LanguageProvider>
   )
 }

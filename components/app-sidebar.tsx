@@ -41,7 +41,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark")
 
   return (
-    <aside className={cn(
+    <aside data-tour="sidebar" className={cn(
       "hidden lg:flex flex-col bg-[hsl(232_47%_8%)] text-[hsl(230_15%_82%)] h-screen flex-shrink-0 transition-all duration-300",
       collapsed ? "w-16" : "w-64"
     )}>
@@ -110,6 +110,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
               key={item.id}
               onClick={() => onViewChange(item.id)}
               title={collapsed ? t(item.labelKey) : undefined}
+              data-tour={item.id === "chapters" ? "nav-chapters" : item.id === "study-log" ? "nav-study-log" : item.id === "review" ? "nav-review" : undefined}
               className={cn(
                 "flex rounded-lg font-bold transition-all duration-200",
                 collapsed

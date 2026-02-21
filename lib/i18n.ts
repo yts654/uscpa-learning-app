@@ -292,18 +292,18 @@ const translations = {
 
   // Mock Exams — nav
   "nav.mockExams.desc": {
-    en: "Track mock exam scores by section",
-    es: "Registra las puntuaciones de simulacros por sección",
+    en: "Track practice exam scores by section",
+    es: "Registra las puntuaciones de exámenes de práctica por sección",
   },
 
   // Mock Exams — header
   "mockExams.title": {
-    en: "Mock Exams",
-    es: "Simulacros",
+    en: "Practice Exam",
+    es: "Examen de práctica",
   },
   "mockExams.subtitle": {
-    en: "Track your mock exam results across all sections",
-    es: "Registra los resultados de tus simulacros en todas las secciones",
+    en: "Track your practice exam results across all sections",
+    es: "Registra los resultados de tus exámenes de práctica en todas las secciones",
   },
 
   // Mock Exams — form
@@ -400,8 +400,8 @@ const translations = {
     es: "Precisión (%)",
   },
   "mockExams.chart.noData": {
-    en: "No chart data yet. Add mock exam results to see trends.",
-    es: "Aún no hay datos del gráfico. Agrega resultados de simulacros para ver tendencias.",
+    en: "No chart data yet. Add practice exam results to see trends.",
+    es: "Aún no hay datos del gráfico. Agrega resultados de exámenes de práctica para ver tendencias.",
   },
 
   // Mock Exams — results
@@ -410,8 +410,8 @@ const translations = {
     es: "Resultados",
   },
   "mockExams.results.empty": {
-    en: "No mock exam results yet. Click \"Add Result\" to record your first exam.",
-    es: "Aún no hay resultados de simulacros. Haz clic en \"Agregar resultado\" para registrar tu primer examen.",
+    en: "No practice exam results yet. Click \"Add Result\" to record your first exam.",
+    es: "Aún no hay resultados de exámenes de práctica. Haz clic en \"Agregar resultado\" para registrar tu primer examen.",
   },
   "mockExams.results.delete": {
     en: "Delete",
@@ -586,13 +586,13 @@ const translations = {
   "nav.dashboard": { en: "Dashboard", es: "Panel" },
   "nav.chapters": { en: "Chapters", es: "Capítulos" },
   "nav.studyLog": { en: "Study Log", es: "Registro" },
-  "nav.mockExams": { en: "Mock Exams", es: "Simulacros" },
+  "nav.mockExams": { en: "Practice Exam", es: "Examen de práctica" },
   "nav.review": { en: "Review", es: "Repaso" },
   "nav.analytics": { en: "Analytics", es: "Analíticas" },
   "nav.settings": { en: "Settings", es: "Ajustes" },
   "nav.home": { en: "Home", es: "Inicio" },
   "nav.log": { en: "Log", es: "Registro" },
-  "nav.mock": { en: "Mock", es: "Simul." },
+  "nav.mock": { en: "Practice", es: "Práctica" },
   "sidebar.studyPlatform": { en: "Study Platform", es: "Plataforma de estudio" },
   "sidebar.studyStreak": { en: "Study Streak", es: "Racha de estudio" },
   "sidebar.days": { en: "days", es: "días" },
@@ -873,6 +873,22 @@ const translations = {
   "day.thu": { en: "Thu", es: "Jue" },
   "day.fri": { en: "Fri", es: "Vie" },
   "day.sat": { en: "Sat", es: "Sáb" },
+
+  // ── Onboarding Tour ──────────────────────────────────────────
+  "tour.step1.title": { en: "Navigation Menu", es: "Menú de navegación" },
+  "tour.step1.desc": { en: "Use the sidebar to switch between different sections of the app. Each section helps you track a different aspect of your study.", es: "Usa la barra lateral para cambiar entre las diferentes secciones de la app. Cada sección te ayuda a rastrear un aspecto diferente de tu estudio." },
+  "tour.step2.title": { en: "Your Study Stats", es: "Tus estadísticas" },
+  "tour.step2.desc": { en: "Track your total study hours and current streak here. Consistent daily study builds long-term retention.", es: "Consulta tus horas totales de estudio y tu racha actual aquí. Estudiar consistentemente a diario mejora la retención a largo plazo." },
+  "tour.step3.title": { en: "Chapters", es: "Capítulos" },
+  "tour.step3.desc": { en: "Start by selecting a chapter to study. Each chapter includes detailed content and a study log to track your progress.", es: "Comienza seleccionando un capítulo para estudiar. Cada capítulo incluye contenido detallado y un registro de estudio para seguir tu progreso." },
+  "tour.step4.title": { en: "Study Log", es: "Registro de estudio" },
+  "tour.step4.desc": { en: "Record your study sessions here — hours, questions answered, and accuracy. This data powers your analytics and review schedule.", es: "Registra tus sesiones de estudio aquí — horas, preguntas respondidas y precisión. Estos datos alimentan tus analíticas y calendario de repaso." },
+  "tour.step5.title": { en: "Review Schedule", es: "Calendario de repaso" },
+  "tour.step5.desc": { en: "Based on the Ebbinghaus forgetting curve, this shows you which chapters need review and when, so you retain more with less effort.", es: "Basado en la curva del olvido de Ebbinghaus, te muestra qué capítulos necesitan repaso y cuándo, para retener más con menos esfuerzo." },
+  "tour.next": { en: "Next", es: "Siguiente" },
+  "tour.skip": { en: "Skip", es: "Omitir" },
+  "tour.finish": { en: "Got it!", es: "¡Entendido!" },
+  "tour.stepOf": { en: "of", es: "de" },
 } as const
 
 export type TranslationKey = keyof typeof translations

@@ -5,6 +5,7 @@ import { ArrowUpRight, Clock, Flame, Lightbulb, NotebookPen, ChevronDown, BookOp
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { type StudyProgress, type Chapter, type StudyLog, type EssenceNote, SECTION_INFO, type ExamSection } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { type ChapterRetention, getReviewQueueForDashboard, getMasteryLevelInfo, getRetentionColor } from "@/lib/spaced-repetition"
 
@@ -21,8 +22,20 @@ interface DashboardViewProps {
   chapterRetentions: ChapterRetention[]
 }
 
+// Lighten an HSL color for dark-mode text readability
+function getLightColor(hslColor: string): string {
+  const match = hslColor.match(/hsl\((\d+)[,\s]+(\d+)%[,\s]+(\d+)%\)/)
+  if (!match) return hslColor
+  const [, h, s, l] = match
+  // Bump lightness to at least 55% for readability
+  const newL = Math.max(Number(l), 55)
+  return `hsl(${h}, ${s}%, ${newL}%)`
+}
+
 export function DashboardView({ chapters, onViewChange, completedSections = [], studyLogs, essenceNotes, streak, chapterRetentions }: DashboardViewProps) {
   const { t, locale } = useLanguage()
+  const { theme } = useTheme()
+  const isDark = theme === "dark"
   const [openSection, setOpenSection] = useState<ExamSection | null>(null)
   const [guideHidden, setGuideHidden] = useState(true)
 
@@ -168,7 +181,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
       )}
 
       {/* 2 Stat Cards: Study Hours (with section breakdown) + Streak */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div data-tour="stats-cards" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Total Study Hours with per-section breakdown */}
         <div className="bg-card rounded-xl border border-border p-5 hover:shadow-md transition-shadow overflow-hidden relative">
           <div className="absolute top-0 left-0 w-1 h-full rounded-r" style={{ backgroundColor: "hsl(225, 50%, 22%)" }} />
@@ -422,7 +435,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                             <button
                               onClick={() => onViewChange("chapters")}
                               className="mt-2 text-xs font-medium hover:underline transition-colors"
-                              style={{ color: data.info.color }}
+                              style={{ color: isDark ? getLightColor(data.info.color) : data.info.color }}
                             >
                               {t("dashboard.section.openChapters")} →
                             </button>
@@ -440,7 +453,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                                     <span className="text-xs text-card-foreground truncate flex-1">{log.chapterTitle}</span>
                                     <span className="text-xs text-muted-foreground flex-shrink-0">{log.studyHours}h</span>
                                     {log.questionsAnswered > 0 && (
-                                      <span className="text-xs flex-shrink-0" style={{ color: acc >= 75 ? data.info.color : "hsl(0, 72%, 51%)" }}>{acc}%</span>
+                                      <span className="text-xs flex-shrink-0" style={{ color: acc >= 75 ? (isDark ? getLightColor(data.info.color) : data.info.color) : "hsl(0, 72%, 51%)" }}>{acc}%</span>
                                     )}
                                   </div>
                                 )
@@ -450,7 +463,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                         <button
                           onClick={() => onViewChange("study-log")}
                           className="mt-3 text-xs font-medium hover:underline transition-colors"
-                          style={{ color: data.info.color }}
+                          style={{ color: isDark ? getLightColor(data.info.color) : data.info.color }}
                         >
                           {t("dashboard.viewAllLogs")} →
                         </button>
@@ -479,7 +492,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                         <button
                           onClick={() => onViewChange("chapters")}
                           className="mt-3 text-xs font-medium hover:underline transition-colors"
-                          style={{ color: data.info.color }}
+                          style={{ color: isDark ? getLightColor(data.info.color) : data.info.color }}
                         >
                           {t("dashboard.viewChapters")} →
                         </button>

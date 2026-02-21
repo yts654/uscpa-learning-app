@@ -76,6 +76,7 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
       {/* Scrollable tab bar */}
       <div
         ref={scrollRef}
+        data-tour="mobile-tabs"
         className="flex overflow-x-auto scrollbar-hide px-2 py-2 gap-1"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
