@@ -67,6 +67,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null)
   const [criteriaOpen, setCriteriaOpen] = useState(false)
+  const [alertsOpen, setAlertsOpen] = useState(true)
   const [ratedChapters, setRatedChapters] = useState<Record<string, RecallRating>>({})
 
   const filtered = useMemo(() => {
@@ -305,13 +306,18 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         const alertItems = filtered.filter((r) => r.reviewCount > 0 && (r.isOverdue || r.isDueToday))
         if (alertItems.length === 0) return null
         return (
-          <div className="bg-red-50 dark:bg-red-950/20 rounded-xl border border-red-200 dark:border-red-900/40 p-4">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="bg-red-50 dark:bg-red-950/20 rounded-xl border border-red-200 dark:border-red-900/40 overflow-hidden">
+            <button
+              onClick={() => setAlertsOpen(!alertsOpen)}
+              className="w-full flex items-center gap-2 p-4 text-left hover:bg-red-100/50 dark:hover:bg-red-950/30 transition-colors"
+            >
               <Bell className="w-4 h-4 text-[hsl(0,65%,45%)]" />
-              <h3 className="text-sm font-semibold text-red-700 dark:text-red-400">{t("review.alert.title")}</h3>
+              <h3 className="text-sm font-semibold text-red-700 dark:text-red-400 flex-1">{t("review.alert.title")}</h3>
               <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-red-500 text-white">{alertItems.length}</span>
-            </div>
-            <div className="space-y-2">
+              <ChevronDown className={cn("w-4 h-4 text-red-400 transition-transform ml-1", alertsOpen && "rotate-180")} />
+            </button>
+            {alertsOpen && (
+            <div className="space-y-2 px-4 pb-4">
               {alertItems.sort((a, b) => a.retention - b.retention).map((item) => {
                 const info = SECTION_INFO[item.section]
                 const retColor = getRetentionColor(item.retention)
@@ -343,6 +349,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                 )
               })}
             </div>
+            )}
           </div>
         )
       })()}

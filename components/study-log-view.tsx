@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3 } from "lucide-react"
+import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
 import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
@@ -80,6 +80,7 @@ const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
   const [chartMode, setChartMode] = useState<"weekly" | "monthly">("weekly")
+  const [showHelp, setShowHelp] = useState(false)
 
   // Weekly chart data: hours per day of the current week, stacked by section
   const weeklyData = useMemo(() => {
@@ -93,14 +94,14 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
       const dateStr = d.toISOString().split("T")[0]
       const dayLogs = logs.filter(l => l.date === dateStr)
       const entry: Record<string, number | string> = { name: label }
-      let totalQ = 0, totalC = 0
+      let dayTotal = 0
       for (const s of ALL_SECTIONS) {
         const sLogs = dayLogs.filter(l => l.section === s)
-        entry[s] = parseFloat(sLogs.reduce((a, b) => a + b.studyHours, 0).toFixed(1))
-        totalQ += sLogs.reduce((a, b) => a + b.questionsAnswered, 0)
-        totalC += sLogs.reduce((a, b) => a + b.correctAnswers, 0)
+        const h = parseFloat(sLogs.reduce((a, b) => a + b.studyHours, 0).toFixed(1))
+        entry[s] = h
+        dayTotal += h
       }
-      entry.accuracy = totalQ > 0 ? Math.round((totalC / totalQ) * 100) : 0
+      entry.totalHours = parseFloat(dayTotal.toFixed(1))
       return entry
     })
   }, [logs])
@@ -129,14 +130,14 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
         return d >= weekStart && d <= weekEnd
       })
       const entry: Record<string, number | string> = { name }
-      let totalQ = 0, totalC = 0
+      let dayTotal = 0
       for (const s of ALL_SECTIONS) {
         const sLogs = weekLogs.filter(l => l.section === s)
-        entry[s] = parseFloat(sLogs.reduce((a, b) => a + b.studyHours, 0).toFixed(1))
-        totalQ += sLogs.reduce((a, b) => a + b.questionsAnswered, 0)
-        totalC += sLogs.reduce((a, b) => a + b.correctAnswers, 0)
+        const h = parseFloat(sLogs.reduce((a, b) => a + b.studyHours, 0).toFixed(1))
+        entry[s] = h
+        dayTotal += h
       }
-      entry.accuracy = totalQ > 0 ? Math.round((totalC / totalQ) * 100) : 0
+      entry.totalHours = parseFloat(dayTotal.toFixed(1))
       return entry
     })
   }, [logs, locale])
@@ -155,6 +156,13 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
             {chartMode === "weekly" ? "This Week" : "Last 8 Weeks"}
           </h3>
         </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowHelp(!showHelp)}
+            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+          >
+            {showHelp ? <X className="w-3.5 h-3.5" /> : <HelpCircle className="w-3.5 h-3.5" />}
+          </button>
         <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
           <button
             onClick={() => setChartMode("weekly")}
@@ -175,7 +183,23 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
             Monthly
           </button>
         </div>
+        </div>
       </div>
+
+      {showHelp && (
+        <div className="px-5 py-4 border-b border-border bg-muted/20">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-card-foreground">
+              {locale === "es" ? "Visualiza tus patrones de estudio:" : "Visualize your study patterns:"}
+            </p>
+            <div className="space-y-1.5 text-xs text-muted-foreground">
+              <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Barras apiladas" : "Stacked Bars"}</span> — {locale === "es" ? "Horas de estudio por sección (FAR, AUD, REG, etc.) apiladas por día o semana." : "Study hours by section (FAR, AUD, REG, etc.) stacked per day or week."}</p>
+              <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Línea de tendencia" : "Trend Line"}</span> — {locale === "es" ? "Total de horas de estudio por período para ver tu consistencia." : "Total study hours per period to track your consistency."}</p>
+              <p><span className="font-semibold text-card-foreground">Weekly / Monthly</span> — {locale === "es" ? "Cambia entre vista semanal (7 días) y mensual (8 semanas)." : "Switch between weekly (7 days) and monthly (8 weeks) view."}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="p-5 space-y-6">
         {/* Study Hours Stacked Bar Chart */}
@@ -203,21 +227,21 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
           )}
         </div>
 
-        {/* Accuracy Line Chart */}
+        {/* Study Hours Line Chart */}
         <div>
-          <p className="text-xs font-medium text-muted-foreground mb-3">Accuracy Trend (%)</p>
+          <p className="text-xs font-medium text-muted-foreground mb-3">Study Hours Trend</p>
           {hasData ? (
             <ResponsiveContainer width="100%" height={160}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" domain={[0, 100]} unit="%" width={40} />
+                <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" unit="h" width={35} />
                 <Tooltip
                   contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
                   labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
-                  formatter={(value: number) => [`${value}%`, "Accuracy"]}
+                  formatter={(value: number) => [`${value}h`, "Study Hours"]}
                 />
-                <Line type="monotone" dataKey="accuracy" stroke="hsl(175 45% 40%)" strokeWidth={2} dot={{ r: 4, fill: "hsl(175 45% 40%)" }} connectNulls />
+                <Line type="monotone" dataKey="totalHours" stroke="hsl(175 45% 40%)" strokeWidth={2} dot={{ r: 4, fill: "hsl(175 45% 40%)" }} connectNulls />
               </LineChart>
             </ResponsiveContainer>
           ) : (

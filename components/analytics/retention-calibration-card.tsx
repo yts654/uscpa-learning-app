@@ -1,26 +1,51 @@
 "use client"
 
+import { useState } from "react"
 import { type CalibrationEntry } from "@/lib/analytics-engine"
 import { SECTION_INFO } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
-import { Brain } from "lucide-react"
+import { Brain, HelpCircle, X } from "lucide-react"
 
 interface RetentionCalibrationCardProps {
   entries: CalibrationEntry[]
 }
 
 export function RetentionCalibrationCard({ entries }: RetentionCalibrationCardProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const [showHelp, setShowHelp] = useState(false)
 
   return (
     <div className="bg-card rounded-xl border border-border p-6">
       <div className="flex items-center gap-3 mb-4">
         <Brain className="w-4 h-4 text-muted-foreground" />
-        <div>
+        <div className="flex-1">
           <h3 className="text-sm font-semibold text-card-foreground">{t("analytics.retention.title")}</h3>
           <p className="text-xs text-muted-foreground">{t("analytics.retention.subtitle")}</p>
         </div>
+        <button
+          onClick={() => setShowHelp(!showHelp)}
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        >
+          {showHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
+        </button>
       </div>
+
+      {showHelp && (
+        <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
+          <p className="text-xs font-semibold text-card-foreground">
+            {locale === "es" ? "Compara la retención predicha con tu recuerdo real:" : "Compares predicted retention with your actual recall:"}
+          </p>
+          <div className="space-y-1.5 text-xs text-muted-foreground">
+            <p><span className="font-semibold text-card-foreground">Predicted</span> — {locale === "es" ? "Retención estimada por la curva del olvido." : "Estimated retention based on the forgetting curve algorithm."}</p>
+            <p><span className="font-semibold text-card-foreground">Actual</span> — {locale === "es" ? "Tu calificación real al repasar en la pestaña Review." : "Your actual self-rating when reviewing in the Review tab."}</p>
+            <p><span className="font-semibold text-card-foreground">Gap</span> — {locale === "es" ? "Diferencia entre predicho y real. Positivo = mejor de lo esperado." : "Difference between predicted and actual. Positive = better than expected."}</p>
+            <p><span className="font-semibold text-card-foreground">Action</span> — {locale === "es" ? "Acortar intervalo (recuerdas menos), extender (recuerdas más), o en camino." : "Shorten interval (you remember less), extend (you remember more), or on track."}</p>
+          </div>
+          <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
+            {locale === "es" ? "Califica tu recuerdo en la pestaña Review para generar estos datos." : "Rate your recall in the Review tab to generate this data."}
+          </p>
+        </div>
+      )}
 
       {entries.length === 0 ? (
         <div className="flex items-center justify-center py-10 text-sm text-muted-foreground">

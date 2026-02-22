@@ -60,6 +60,7 @@ export default function Home() {
   const [studyGoals, setStudyGoals] = useState<StudyGoals>(DEFAULT_STUDY_GOALS)
   const [recallRecords, setRecallRecords] = useState<RecallRecord[]>(INITIAL_RECALL_RECORDS)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [tourActive, setTourActive] = useState(false)
 
   const handleSelectChapter = useCallback((chapter: Chapter) => {
     setSelectedChapter(chapter)
@@ -134,7 +135,7 @@ export default function Home() {
           <MobileHeader currentView={currentView} onViewChange={handleViewChange} />
           <main className="flex-1 p-4 md:p-8 lg:p-10 max-w-6xl w-full mx-auto overflow-x-hidden">
             {currentView === "dashboard" && (
-              <DashboardView progress={progress} chapters={chapters} onViewChange={handleViewChange} completedSections={completedSections} studyLogs={studyLogs} essenceNotes={essenceNotes} streak={streak} chapterRetentions={chapterRetentions} />
+              <DashboardView progress={progress} chapters={chapters} onViewChange={handleViewChange} completedSections={completedSections} studyLogs={studyLogs} essenceNotes={essenceNotes} streak={streak} chapterRetentions={chapterRetentions} onStartTour={() => setTourActive(true)} />
             )}
             {currentView === "chapters" && !selectedChapter && (
               <ChaptersView chapters={chapters} onSelectChapter={handleSelectChapter} studyLogs={studyLogs} completedSections={completedSections} chapterRetentions={chapterRetentions} />
@@ -189,7 +190,7 @@ export default function Home() {
           </footer>
         </div>
       </div>
-      <OnboardingTour />
+      <OnboardingTour onViewChange={handleViewChange} externalStart={tourActive} onTourEnd={() => setTourActive(false)} />
       <NotificationRunner chapterRetentions={chapterRetentions} streak={streak} studyLogs={studyLogs} />
     </LanguageProvider>
   )

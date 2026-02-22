@@ -1,16 +1,18 @@
 "use client"
 
+import { useState } from "react"
 import { type AllocationRecommendation } from "@/lib/analytics-engine"
 import { SECTION_INFO } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
-import { Lightbulb, ArrowUp, ArrowDown, Minus } from "lucide-react"
+import { Lightbulb, ArrowUp, ArrowDown, Minus, HelpCircle, X } from "lucide-react"
 
 interface AllocationCardProps {
   allocations: AllocationRecommendation[]
 }
 
 export function AllocationCard({ allocations }: AllocationCardProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const [showHelp, setShowHelp] = useState(false)
 
   const changeIcon = (change: AllocationRecommendation["change"]) => {
     if (change === "increase") return <ArrowUp className="w-3 h-3" style={{ color: "hsl(145, 45%, 35%)" }} />
@@ -28,11 +30,33 @@ export function AllocationCard({ allocations }: AllocationCardProps) {
     <div className="bg-card rounded-xl border border-border p-6">
       <div className="flex items-center gap-3 mb-4">
         <Lightbulb className="w-4 h-4 text-muted-foreground" />
-        <div>
+        <div className="flex-1">
           <h3 className="text-sm font-semibold text-card-foreground">{t("analytics.allocation.title")}</h3>
           <p className="text-xs text-muted-foreground">{t("analytics.allocation.subtitle")}</p>
         </div>
+        <button
+          onClick={() => setShowHelp(!showHelp)}
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        >
+          {showHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
+        </button>
       </div>
+
+      {showHelp && (
+        <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
+          <p className="text-xs font-semibold text-card-foreground">
+            {locale === "es" ? "Recomienda cómo distribuir tu tiempo de estudio:" : "Recommends how to distribute your study time:"}
+          </p>
+          <div className="space-y-1.5 text-xs text-muted-foreground">
+            <p><span className="font-semibold text-card-foreground">Current</span> — {locale === "es" ? "Horas por semana que actualmente dedicas a cada sección." : "Hours per week you currently spend on each section."}</p>
+            <p><span className="font-semibold text-card-foreground">Recommended</span> — {locale === "es" ? "Horas sugeridas basadas en tu progreso y retención." : "Suggested hours based on your progress and retention."}</p>
+            <p><span className="font-semibold text-card-foreground">Change</span> — <span style={{ color: "hsl(145, 45%, 35%)" }}>Increase</span>{locale === "es" ? " = dedicar más tiempo, " : " = spend more time, "}<span style={{ color: "hsl(0, 65%, 45%)" }}>Decrease</span>{locale === "es" ? " = reducir, Maintain = mantener." : " = reduce, Maintain = keep same."}</p>
+          </div>
+          <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
+            {locale === "es" ? "Las recomendaciones se basan en repasos pendientes, cobertura y ritmo del objetivo." : "Recommendations are based on overdue reviews, coverage gaps, and goal pace."}
+          </p>
+        </div>
+      )}
 
       <div className="space-y-0">
         {/* Table header */}

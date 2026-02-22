@@ -3,81 +3,88 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useLanguage, type TranslationKey } from "@/lib/i18n"
 
+type View = "dashboard" | "chapters" | "study-log" | "mock-exams" | "analytics" | "settings" | "review"
+
 interface TourStep {
   target: string
-  mobileTarget?: string
+  view: View
   titleKey: TranslationKey
   descKey: TranslationKey
-  placement: "right" | "bottom" | "center"
-  mobilePlacement?: "right" | "bottom" | "center"
+  placement: "bottom" | "center"
 }
 
 const TOUR_STEPS: TourStep[] = [
-  { target: "sidebar", mobileTarget: "mobile-tabs", titleKey: "tour.step1.title", descKey: "tour.step1.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "stats-cards", titleKey: "tour.step2.title", descKey: "tour.step2.desc", placement: "bottom" },
-  { target: "nav-chapters", titleKey: "tour.step3.title", descKey: "tour.step3.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "nav-study-log", titleKey: "tour.step4.title", descKey: "tour.step4.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "nav-mock-exams", titleKey: "tour.step5.title", descKey: "tour.step5.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "nav-review", titleKey: "tour.step6.title", descKey: "tour.step6.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "nav-analytics", titleKey: "tour.step7.title", descKey: "tour.step7.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "nav-settings", titleKey: "tour.step8.title", descKey: "tour.step8.desc", placement: "right", mobilePlacement: "bottom" },
-  { target: "stats-cards", titleKey: "tour.step9.title", descKey: "tour.step9.desc", placement: "bottom" },
-  { target: "", titleKey: "tour.step10.title", descKey: "tour.step10.desc", placement: "center" },
+  { view: "dashboard", target: "",            titleKey: "tour.step1.title", descKey: "tour.step1.desc", placement: "center" },
+  { view: "dashboard", target: "stats-cards", titleKey: "tour.step2.title", descKey: "tour.step2.desc", placement: "bottom" },
+  { view: "chapters",  target: "",            titleKey: "tour.step3.title", descKey: "tour.step3.desc", placement: "center" },
+  { view: "study-log", target: "",            titleKey: "tour.step4.title", descKey: "tour.step4.desc", placement: "center" },
+  { view: "mock-exams",target: "",            titleKey: "tour.step5.title", descKey: "tour.step5.desc", placement: "center" },
+  { view: "review",    target: "",            titleKey: "tour.step6.title", descKey: "tour.step6.desc", placement: "center" },
+  { view: "analytics", target: "",            titleKey: "tour.step7.title", descKey: "tour.step7.desc", placement: "center" },
+  { view: "settings",  target: "",            titleKey: "tour.step8.title", descKey: "tour.step8.desc", placement: "center" },
+  { view: "dashboard", target: "",            titleKey: "tour.step9.title", descKey: "tour.step9.desc", placement: "center" },
 ]
 
-const STORAGE_KEY = "onboarding-tour-v3"
+const STORAGE_KEY = "onboarding-tour-v4"
 
-export function OnboardingTour() {
+interface OnboardingTourProps {
+  onViewChange: (view: View) => void
+  externalStart?: boolean
+  onTourEnd?: () => void
+}
+
+export function OnboardingTour({ onViewChange, externalStart, onTourEnd }: OnboardingTourProps) {
   const { t } = useLanguage()
   const [active, setActive] = useState(false)
   const [step, setStep] = useState(0)
   const [hole, setHole] = useState({ top: 0, left: 0, width: 0, height: 0 })
-  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, width: 320 })
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, width: 360 })
   const [visible, setVisible] = useState(false)
-  const isMobileRef = useRef(false)
   const positioningRef = useRef(false)
+  const prevExternalStart = useRef(false)
 
-  // Check if tour should show
+  // Auto-start on first visit
   useEffect(() => {
     const completed = localStorage.getItem(STORAGE_KEY)
     if (completed !== "true") {
-      const timer = setTimeout(() => setActive(true), 1000)
+      const timer = setTimeout(() => {
+        setActive(true)
+        setStep(0)
+        onViewChange("dashboard")
+      }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Track mobile
+  // External trigger (from "Take the Tour" button)
   useEffect(() => {
-    const check = () => { isMobileRef.current = window.innerWidth < 1024 }
-    check()
-    window.addEventListener("resize", check)
-    return () => window.removeEventListener("resize", check)
-  }, [])
+    if (externalStart && !prevExternalStart.current) {
+      setStep(0)
+      setActive(true)
+      onViewChange("dashboard")
+    }
+    prevExternalStart.current = !!externalStart
+  }, [externalStart]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Check if the current step has no target (center display)
   const isCenterStep = useCallback((idx: number): boolean => {
     return !TOUR_STEPS[idx].target
   }, [])
 
-  // Get the target element for a given step
   const getTarget = useCallback((idx: number): HTMLElement | null => {
     const s = TOUR_STEPS[idx]
     if (!s.target) return null
-    const attr = isMobileRef.current && s.mobileTarget ? s.mobileTarget : s.target
-    return document.querySelector(`[data-tour="${attr}"]`)
+    return document.querySelector(`[data-tour="${s.target}"]`)
   }, [])
 
-  // Position the spotlight and tooltip around the target element
   const position = useCallback(() => {
     if (!active || positioningRef.current) return
     positioningRef.current = true
 
-    // Center display — no target element needed
     if (isCenterStep(step)) {
-      const tw = Math.min(360, window.innerWidth - 32)
+      const tw = Math.min(400, window.innerWidth - 32)
       setHole({ top: 0, left: 0, width: 0, height: 0 })
       setTooltipPos({
-        top: Math.max(16, window.innerHeight / 2 - 120),
+        top: Math.max(16, window.innerHeight / 2 - 160),
         left: Math.max(16, window.innerWidth / 2 - tw / 2),
         width: tw,
       })
@@ -93,7 +100,6 @@ export function OnboardingTour() {
       return
     }
 
-    // Scroll into view if needed, then position after scroll settles
     const rect = el.getBoundingClientRect()
     const inViewport = rect.top >= 0 && rect.bottom <= window.innerHeight
     if (!inViewport) {
@@ -106,10 +112,6 @@ export function OnboardingTour() {
     }
 
     const pad = 8
-    const s = TOUR_STEPS[step]
-    const placement = isMobileRef.current && s.mobilePlacement ? s.mobilePlacement : s.placement
-
-    // Hole
     setHole({
       top: rect.top - pad,
       left: rect.left - pad,
@@ -117,39 +119,27 @@ export function OnboardingTour() {
       height: rect.height + pad * 2,
     })
 
-    // Tooltip
-    const tw = Math.min(320, window.innerWidth - 32)
-    let top = 0
-    let left = 0
-
-    if (placement === "right") {
-      top = Math.max(16, rect.top)
-      left = rect.right + pad + 16
-      // Fall back to bottom if no space on right
-      if (left + tw > window.innerWidth - 16) {
-        top = rect.bottom + pad + 16
-        left = Math.max(16, Math.min(rect.left, window.innerWidth - tw - 16))
-      }
-    } else {
-      top = rect.bottom + pad + 16
-      left = Math.max(16, Math.min(rect.left + rect.width / 2 - tw / 2, window.innerWidth - tw - 16))
-    }
-
-    // Clamp to viewport
-    if (top + 220 > window.innerHeight) top = Math.max(16, window.innerHeight - 240)
+    const tw = Math.min(400, window.innerWidth - 32)
+    let top = rect.bottom + pad + 16
+    let left = Math.max(16, Math.min(rect.left + rect.width / 2 - tw / 2, window.innerWidth - tw - 16))
+    if (top + 280 > window.innerHeight) top = Math.max(16, rect.top - pad - 280)
 
     setTooltipPos({ top, left, width: tw })
     setVisible(true)
     positioningRef.current = false
   }, [active, step, getTarget, isCenterStep])
 
-  // Re-position when step changes
+  // Re-position on step change
   useEffect(() => {
     if (!active) return
     setVisible(false)
-    const timer = setTimeout(position, 150)
+    // Navigate to the correct view for this step
+    const targetView = TOUR_STEPS[step].view
+    onViewChange(targetView)
+    // Wait for DOM to update after view change, then position
+    const timer = setTimeout(position, 350)
     return () => clearTimeout(timer)
-  }, [active, step, position])
+  }, [active, step]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Re-position on resize
   useEffect(() => {
@@ -165,7 +155,9 @@ export function OnboardingTour() {
   const finish = useCallback(() => {
     localStorage.setItem(STORAGE_KEY, "true")
     setActive(false)
-  }, [])
+    onViewChange("dashboard")
+    onTourEnd?.()
+  }, [onViewChange, onTourEnd])
 
   const next = useCallback(() => {
     if (step < TOUR_STEPS.length - 1) {
@@ -175,11 +167,22 @@ export function OnboardingTour() {
     }
   }, [step, finish])
 
+  const prev = useCallback(() => {
+    if (step > 0) {
+      setStep(s => s - 1)
+    }
+  }, [step])
+
   if (!active) return null
 
   const currentStep = TOUR_STEPS[step]
   const isLast = step === TOUR_STEPS.length - 1
+  const isFirst = step === 0
   const isCenter = isCenterStep(step)
+
+  // Render description with line breaks
+  const descText = t(currentStep.descKey)
+  const descLines = descText.split("\n")
 
   return (
     <>
@@ -202,7 +205,7 @@ export function OnboardingTour() {
               )}
             </mask>
           </defs>
-          <rect x="0" y="0" width="100%" height="100%" fill="rgba(0,0,0,0.6)" mask="url(#tour-spotlight)" />
+          <rect x="0" y="0" width="100%" height="100%" fill={isCenter ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.6)"} mask="url(#tour-spotlight)" />
         </svg>
       </div>
 
@@ -217,11 +220,11 @@ export function OnboardingTour() {
       {/* Tooltip */}
       {visible && (
         <div
-          className="fixed z-[10000] bg-white dark:bg-[hsl(232_47%_12%)] rounded-xl shadow-2xl border border-gray-200 dark:border-[hsl(232_35%_20%)] p-5"
+          className="fixed z-[10000] bg-white dark:bg-[hsl(232_47%_12%)] rounded-xl shadow-2xl border border-gray-200 dark:border-[hsl(232_35%_20%)] p-5 max-h-[80vh] overflow-y-auto"
           style={{ top: tooltipPos.top, left: tooltipPos.left, width: tooltipPos.width, transition: "all 300ms" }}
           onClick={e => e.stopPropagation()}
         >
-          {/* Progress dots */}
+          {/* Progress bar */}
           <div className="flex items-center gap-1 mb-3">
             {TOUR_STEPS.map((_, i) => (
               <div
@@ -240,12 +243,29 @@ export function OnboardingTour() {
             </span>
           </div>
 
-          <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
+          {/* Page indicator */}
+          {currentStep.view !== "dashboard" && (
+            <div className="inline-block px-2 py-0.5 rounded-md bg-[hsl(225,50%,22%)]/10 dark:bg-white/10 text-[10px] font-bold uppercase tracking-wider text-[hsl(225,50%,22%)] dark:text-white/70 mb-2">
+              {currentStep.view.replace("-", " ")}
+            </div>
+          )}
+
+          <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">
             {t(currentStep.titleKey)}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-[hsl(230_15%_65%)] leading-relaxed mb-4">
-            {t(currentStep.descKey)}
-          </p>
+          <div className="text-sm text-gray-600 dark:text-[hsl(230_15%_65%)] leading-relaxed mb-4 space-y-1">
+            {descLines.map((line, i) => {
+              if (line.startsWith("• ")) {
+                return (
+                  <div key={i} className="flex items-start gap-2 pl-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[hsl(225,50%,22%)] dark:bg-white/50 mt-1.5 flex-shrink-0" />
+                    <span>{line.slice(2)}</span>
+                  </div>
+                )
+              }
+              return <p key={i}>{line}</p>
+            })}
+          </div>
 
           <div className="flex items-center justify-between">
             <button
@@ -254,12 +274,22 @@ export function OnboardingTour() {
             >
               {t("tour.skip")}
             </button>
-            <button
-              onClick={next}
-              className="px-4 py-2 rounded-lg bg-[hsl(225,50%,22%)] text-white text-sm font-medium hover:bg-[hsl(225,50%,28%)] transition-colors"
-            >
-              {isLast ? t("tour.finish") : t("tour.next")}
-            </button>
+            <div className="flex items-center gap-2">
+              {!isFirst && (
+                <button
+                  onClick={prev}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-[hsl(230_15%_55%)] hover:bg-gray-100 dark:hover:bg-[hsl(232_35%_18%)] transition-colors"
+                >
+                  Back
+                </button>
+              )}
+              <button
+                onClick={next}
+                className="px-4 py-2 rounded-lg bg-[hsl(225,50%,22%)] text-white text-sm font-medium hover:bg-[hsl(225,50%,28%)] transition-colors"
+              >
+                {isLast ? t("tour.finish") : t("tour.next")}
+              </button>
+            </div>
           </div>
         </div>
       )}

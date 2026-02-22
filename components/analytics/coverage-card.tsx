@@ -1,16 +1,18 @@
 "use client"
 
+import { useState } from "react"
 import { type CoverageItem } from "@/lib/analytics-engine"
 import { SECTION_INFO, type ExamSection } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
-import { Eye, AlertTriangle } from "lucide-react"
+import { Eye, AlertTriangle, HelpCircle, X } from "lucide-react"
 
 interface CoverageCardProps {
   items: CoverageItem[]
 }
 
 export function CoverageCard({ items }: CoverageCardProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const [showHelp, setShowHelp] = useState(false)
 
   if (items.length === 0) {
     return (
@@ -46,6 +48,12 @@ export function CoverageCard({ items }: CoverageCardProps) {
           <h3 className="text-sm font-semibold text-card-foreground">{t("analytics.coverage.title")}</h3>
           <p className="text-xs text-muted-foreground">{t("analytics.coverage.subtitle")}</p>
         </div>
+        <button
+          onClick={() => setShowHelp(!showHelp)}
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        >
+          {showHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
+        </button>
         <div className="flex items-center gap-2">
           {fragile.length > 0 && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400">
@@ -57,6 +65,21 @@ export function CoverageCard({ items }: CoverageCardProps) {
           </span>
         </div>
       </div>
+
+      {showHelp && (
+        <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
+          <p className="text-xs font-semibold text-card-foreground">
+            {locale === "es" ? "Identifica capítulos que necesitan atención:" : "Identifies chapters that need attention:"}
+          </p>
+          <div className="space-y-1.5 text-xs text-muted-foreground">
+            <p><span className="font-semibold text-[hsl(0,65%,45%)]">Fragile</span> — {locale === "es" ? "Capítulos estudiados pero con retención muy baja (<30%). Necesitan repaso urgente." : "Chapters studied but with very low retention (<30%). Need urgent review."}</p>
+            <p><span className="font-semibold text-card-foreground">Untouched</span> — {locale === "es" ? "Capítulos que aún no has estudiado. Los marcados como 'Urgent' tienen examen próximo." : "Chapters you haven't studied yet. Those marked 'Urgent' have an upcoming exam."}</p>
+          </div>
+          <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
+            {locale === "es" ? "Organizado por sección. Usa esta información para priorizar tu estudio." : "Organized by section. Use this to prioritize your study plan."}
+          </p>
+        </div>
+      )}
 
       <div className="space-y-3 max-h-80 overflow-y-auto">
         {/* Fragile chapters first */}

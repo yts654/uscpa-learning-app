@@ -1,17 +1,19 @@
 "use client"
 
+import { useState } from "react"
 import { SECTION_INFO, type ExamSection } from "@/lib/study-data"
 import { type PaceResult } from "@/lib/analytics-engine"
 import { useLanguage } from "@/lib/i18n"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts"
-import { Target } from "lucide-react"
+import { Target, HelpCircle, X } from "lucide-react"
 
 interface PaceEngineCardProps {
   paces: PaceResult[]
 }
 
 export function PaceEngineCard({ paces }: PaceEngineCardProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const [showHelp, setShowHelp] = useState(false)
   const hasGoals = paces.some(p => p.status !== "no-goal")
 
   if (!hasGoals) {
@@ -42,11 +44,33 @@ export function PaceEngineCard({ paces }: PaceEngineCardProps) {
     <div className="bg-card rounded-xl border border-border p-6">
       <div className="flex items-center gap-3 mb-4">
         <Target className="w-4 h-4 text-muted-foreground" />
-        <div>
+        <div className="flex-1">
           <h3 className="text-sm font-semibold text-card-foreground">{t("analytics.pace.title")}</h3>
           <p className="text-xs text-muted-foreground">{t("analytics.pace.subtitle")}</p>
         </div>
+        <button
+          onClick={() => setShowHelp(!showHelp)}
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        >
+          {showHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
+        </button>
       </div>
+
+      {showHelp && (
+        <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
+          <p className="text-xs font-semibold text-card-foreground">
+            {locale === "es" ? "Goal Pace compara tu ritmo actual con el necesario para tu examen:" : "Goal Pace compares your current pace vs what's needed for your exam:"}
+          </p>
+          <div className="space-y-1.5 text-xs text-muted-foreground">
+            <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Gráfico de barras" : "Bar Chart"}</span> — {locale === "es" ? "Las barras claras son horas semanales requeridas, las oscuras son tus horas reales." : "Light bars show required weekly hours, dark bars show your actual hours."}</p>
+            <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Capítulos restantes" : "Remaining Chapters"}</span> — {locale === "es" ? "Cuántos capítulos te quedan por estudiar en cada sección." : "How many chapters you still need to study in each section."}</p>
+            <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Estado" : "Status"}</span> — {locale === "es" ? "On Track (en camino), Ahead (adelantado) o Behind (atrasado) respecto a tu fecha de examen." : "On Track, Ahead, or Behind relative to your exam date."}</p>
+          </div>
+          <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
+            {locale === "es" ? "Establece una fecha de examen en Settings para activar este análisis." : "Set an exam date in Settings to enable this analysis."}
+          </p>
+        </div>
+      )}
 
       {/* Chart */}
       <div className="h-48 mb-4">

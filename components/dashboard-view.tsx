@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowUpRight, Clock, Flame, Lightbulb, NotebookPen, ChevronDown, BookOpen, Target, Brain, X, BookMarked, ClipboardList, RefreshCw } from "lucide-react"
+import { ArrowUpRight, Clock, Flame, Lightbulb, NotebookPen, ChevronDown, BookOpen, Target, Brain, X, BookMarked, ClipboardList, RefreshCw, Play, HelpCircle } from "lucide-react"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { type StudyProgress, type Chapter, type StudyLog, type EssenceNote, SECTION_INFO, type ExamSection } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
@@ -20,6 +20,7 @@ interface DashboardViewProps {
   essenceNotes: EssenceNote[]
   streak: number
   chapterRetentions: ChapterRetention[]
+  onStartTour?: () => void
 }
 
 // Lighten an HSL color for dark-mode text readability
@@ -32,12 +33,13 @@ function getLightColor(hslColor: string): string {
   return `hsl(${h}, ${s}%, ${newL}%)`
 }
 
-export function DashboardView({ chapters, onViewChange, completedSections = [], studyLogs, essenceNotes, streak, chapterRetentions }: DashboardViewProps) {
+export function DashboardView({ chapters, onViewChange, completedSections = [], studyLogs, essenceNotes, streak, chapterRetentions, onStartTour }: DashboardViewProps) {
   const { t, locale } = useLanguage()
   const { theme } = useTheme()
   const isDark = theme === "dark"
   const [openSection, setOpenSection] = useState<ExamSection | null>(null)
   const [guideHidden, setGuideHidden] = useState(true)
+  const [showReviewHelp, setShowReviewHelp] = useState(false)
 
   useEffect(() => {
     setGuideHidden(localStorage.getItem("guide-dismissed") === "true")
@@ -164,12 +166,15 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
               </div>
             </div>
             <div className="mt-3 flex justify-end">
-              <button
-                onClick={() => onViewChange("chapters")}
-                className="text-xs font-medium text-[hsl(225,50%,22%)] hover:underline transition-colors flex items-center gap-1"
-              >
-                {t("guide.openChapters")} <ArrowUpRight className="w-3 h-3" />
-              </button>
+              {onStartTour && (
+                <button
+                  onClick={onStartTour}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(225,50%,22%)] text-white text-xs font-medium hover:bg-[hsl(225,50%,28%)] transition-colors"
+                >
+                  <Play className="w-3 h-3" />
+                  {t("guide.startTour")}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -261,104 +266,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
         </div>
       </div>
 
-      {/* Weekly Study Hours Chart */}
-      <div className="bg-card rounded-xl border border-border p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="font-semibold text-card-foreground">{t("dashboard.weeklyStudyHours")}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">{t("dashboard.weeklySubtitle")}</p>
-          </div>
-          <button
-            onClick={() => onViewChange("analytics")}
-            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("dashboard.viewDetails")} <ArrowUpRight className="w-3 h-3" />
-          </button>
-        </div>
-        <div className="h-52">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={weeklyData} barSize={28}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(230, 12%, 90%)" />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(230, 8%, 46%)" }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(230, 8%, 46%)" }} unit="h" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(232, 47%, 8%)",
-                  border: "none",
-                  borderRadius: "8px",
-                  color: "white",
-                  fontSize: "12px",
-                }}
-                formatter={(value: number) => [`${value}h`, t("dashboard.studyHours")]}
-                cursor={{ fill: "hsl(230, 10%, 93%, 0.7)" }}
-              />
-              <Bar dataKey="hours" radius={[4, 4, 0, 0]} fill="hsl(225, 50%, 22%)" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Review Queue */}
-      {(() => {
-        const reviewQueue = getReviewQueueForDashboard(chapterRetentions, 5)
-        if (reviewQueue.length === 0) return null
-        return (
-          <div className="bg-card rounded-xl border border-border overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <div className="flex items-center gap-2">
-                <Brain className="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <h3 className="font-semibold text-card-foreground text-sm">{t("dashboard.reviewQueue.title")}</h3>
-                  <p className="text-xs text-muted-foreground">{t("dashboard.reviewQueue.desc")}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => onViewChange("review")}
-                className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t("dashboard.reviewQueue.viewSchedule")} <ArrowUpRight className="w-3 h-3" />
-              </button>
-            </div>
-            {reviewQueue.map((item, idx) => {
-              const info = SECTION_INFO[item.section]
-              const masteryInfo = getMasteryLevelInfo(item.masteryLevel)
-              const retColor = getRetentionColor(item.retention)
-              return (
-                <div key={item.chapterId} className={`px-4 py-3 flex items-center gap-3 ${idx < reviewQueue.length - 1 ? "border-b border-border" : ""}`}>
-                  <div
-                    className="w-8 h-8 rounded flex items-center justify-center text-[9px] font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
-                    style={{ backgroundColor: info.color }}
-                  >
-                    {item.section}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-card-foreground truncate">{item.chapterTitle}</p>
-                    <div className="flex items-center gap-3 mt-1">
-                      <div className="flex items-center gap-1.5 w-24">
-                        <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div className="h-full rounded-full transition-all" style={{ width: `${item.retention}%`, backgroundColor: retColor }} />
-                        </div>
-                        <span className="text-xs font-medium" style={{ color: retColor }}>{item.retention}%</span>
-                      </div>
-                      <span
-                        className="text-xs font-medium px-1.5 py-0.5 rounded"
-                        style={{ color: masteryInfo.color, backgroundColor: masteryInfo.bgColor }}
-                      >
-                        {masteryInfo.label}
-                      </span>
-                      {item.daysSinceLastStudy >= 0 && (
-                        <span className="text-xs text-muted-foreground">{item.daysSinceLastStudy}{t("dashboard.dAgo")}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )
-      })()}
-
-      {/* 5 Section Cards (expandable) */}
+      {/* 6 Section Cards (expandable) */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-foreground">{t("dashboard.sections.title")}</h3>
@@ -500,6 +408,128 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
           })}
         </div>
       </div>
+
+      {/* Weekly Study Hours Chart */}
+      <div className="bg-card rounded-xl border border-border p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="font-semibold text-card-foreground">{t("dashboard.weeklyStudyHours")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("dashboard.weeklySubtitle")}</p>
+          </div>
+          <button
+            onClick={() => onViewChange("analytics")}
+            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {t("dashboard.viewDetails")} <ArrowUpRight className="w-3 h-3" />
+          </button>
+        </div>
+        <div className="h-52">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={weeklyData} barSize={28}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(230, 12%, 90%)" />
+              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(230, 8%, 46%)" }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(230, 8%, 46%)" }} unit="h" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "hsl(232, 47%, 8%)",
+                  border: "none",
+                  borderRadius: "8px",
+                  color: "white",
+                  fontSize: "12px",
+                }}
+                formatter={(value: number) => [`${value}h`, t("dashboard.studyHours")]}
+                cursor={{ fill: "hsl(230, 10%, 93%, 0.7)" }}
+              />
+              <Bar dataKey="hours" radius={[4, 4, 0, 0]} fill="hsl(225, 50%, 22%)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Review Queue */}
+      {(() => {
+        const reviewQueue = getReviewQueueForDashboard(chapterRetentions, 5)
+        if (reviewQueue.length === 0) return null
+        return (
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <div className="flex items-center gap-2">
+                <Brain className="w-4 h-4 text-muted-foreground" />
+                <div>
+                  <h3 className="font-semibold text-card-foreground text-sm">{t("dashboard.reviewQueue.title")}</h3>
+                  <p className="text-xs text-muted-foreground">{t("dashboard.reviewQueue.desc")}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowReviewHelp(!showReviewHelp)}
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  {showReviewHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={() => onViewChange("review")}
+                  className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t("dashboard.reviewQueue.viewSchedule")} <ArrowUpRight className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+            {showReviewHelp && (
+              <div className="px-6 py-4 border-b border-border bg-muted/20">
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-card-foreground">
+                    {locale === "es" ? "Capítulos que más necesitan repaso ahora:" : "Chapters that most need review right now:"}
+                  </p>
+                  <div className="space-y-1.5 text-xs text-muted-foreground">
+                    <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Barra de retención" : "Retention Bar"}</span> — {locale === "es" ? "Cuánto recuerdas del capítulo. Rojo = urgente, verde = bien retenido." : "How much you remember. Red = urgent, green = well retained."}</p>
+                    <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Nivel de dominio" : "Mastery Level"}</span> — {locale === "es" ? "New → Learning → Reviewing → Mastered. Basado en cuántas veces has repasado." : "New → Learning → Reviewing → Mastered. Based on how many times you've reviewed."}</p>
+                    <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Días atrás" : "Days Ago"}</span> — {locale === "es" ? "Cuánto tiempo desde tu último estudio de este capítulo." : "How long since you last studied this chapter."}</p>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
+                    {locale === "es" ? "Ordenados por urgencia — repasa los de arriba primero. Haz clic en 'View Schedule' para ver el calendario completo." : "Sorted by urgency — review the top ones first. Click 'View Schedule' for the full review calendar."}
+                  </p>
+                </div>
+              </div>
+            )}
+            {reviewQueue.map((item, idx) => {
+              const info = SECTION_INFO[item.section]
+              const masteryInfo = getMasteryLevelInfo(item.masteryLevel)
+              const retColor = getRetentionColor(item.retention)
+              return (
+                <div key={item.chapterId} className={`px-4 py-3 flex items-center gap-3 ${idx < reviewQueue.length - 1 ? "border-b border-border" : ""}`}>
+                  <div
+                    className="w-8 h-8 rounded flex items-center justify-center text-[9px] font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
+                    style={{ backgroundColor: info.color }}
+                  >
+                    {item.section}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-card-foreground truncate">{item.chapterTitle}</p>
+                    <div className="flex items-center gap-3 mt-1">
+                      <div className="flex items-center gap-1.5 w-24">
+                        <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: `${item.retention}%`, backgroundColor: retColor }} />
+                        </div>
+                        <span className="text-xs font-medium" style={{ color: retColor }}>{item.retention}%</span>
+                      </div>
+                      <span
+                        className="text-xs font-medium px-1.5 py-0.5 rounded"
+                        style={{ color: masteryInfo.color, backgroundColor: masteryInfo.bgColor }}
+                      >
+                        {masteryInfo.label}
+                      </span>
+                      {item.daysSinceLastStudy >= 0 && (
+                        <span className="text-xs text-muted-foreground">{item.daysSinceLastStudy}{t("dashboard.dAgo")}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )
+      })()}
 
       {/* Today's Study */}
       {(() => {
