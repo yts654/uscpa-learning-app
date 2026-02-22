@@ -36,24 +36,31 @@ interface UrgencyGroup {
   items: ChapterRetention[]
 }
 
-const RECALL_COLORS: Record<RecallRating, string> = {
-  0: "hsl(0, 65%, 45%)",
-  1: "hsl(25, 55%, 40%)",
-  2: "hsl(225, 50%, 45%)",
-  3: "hsl(145, 45%, 35%)",
-}
-const RECALL_BG_COLORS: Record<RecallRating, string> = {
+const RECALL_BG_COLORS_LIGHT: Record<RecallRating, string> = {
   0: "hsl(0, 65%, 95%)",
   1: "hsl(25, 55%, 95%)",
   2: "hsl(225, 50%, 95%)",
   3: "hsl(145, 45%, 95%)",
 }
+const RECALL_BG_COLORS_DARK: Record<RecallRating, string> = {
+  0: "hsl(0, 65%, 15%)",
+  1: "hsl(25, 55%, 15%)",
+  2: "hsl(225, 50%, 15%)",
+  3: "hsl(145, 45%, 15%)",
+}
 
-// Brighten an HSL color for dark mode by increasing lightness
 export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onViewChange, onRecallRating }: ReviewViewProps) {
   const { t, locale } = useLanguage()
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === "dark"
+
+  const RECALL_COLORS: Record<RecallRating, string> = {
+    0: isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)",
+    1: isDark ? "hsl(25, 55%, 65%)" : "hsl(25, 55%, 40%)",
+    2: isDark ? "hsl(225, 50%, 70%)" : "hsl(225, 50%, 45%)",
+    3: isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)",
+  }
+  const RECALL_BG_COLORS = isDark ? RECALL_BG_COLORS_DARK : RECALL_BG_COLORS_LIGHT
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null)
   const [criteriaOpen, setCriteriaOpen] = useState(false)
@@ -89,9 +96,9 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         label: t("review.group.overdue.label"),
         description: t("review.group.overdue.desc"),
         icon: AlertTriangle,
-        color: "hsl(0, 65%, 45%)",
-        bgColor: "hsl(0, 65%, 97%)",
-        borderColor: "hsl(0, 65%, 88%)",
+        color: isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)",
+        bgColor: isDark ? "hsl(0, 65%, 10%)" : "hsl(0, 65%, 97%)",
+        borderColor: isDark ? "hsl(0, 65%, 20%)" : "hsl(0, 65%, 88%)",
         items: overdueItems.sort((a, b) => a.retention - b.retention),
       },
       {
@@ -99,9 +106,9 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         label: t("review.group.dueToday.label"),
         description: t("review.group.dueToday.desc"),
         icon: Clock,
-        color: "hsl(25, 55%, 40%)",
-        bgColor: "hsl(25, 55%, 97%)",
-        borderColor: "hsl(25, 55%, 88%)",
+        color: isDark ? "hsl(25, 55%, 65%)" : "hsl(25, 55%, 40%)",
+        bgColor: isDark ? "hsl(25, 55%, 10%)" : "hsl(25, 55%, 97%)",
+        borderColor: isDark ? "hsl(25, 55%, 20%)" : "hsl(25, 55%, 88%)",
         items: dueTodayItems.sort((a, b) => a.retention - b.retention),
       },
       {
@@ -109,9 +116,9 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         label: t("review.group.comingUp.label"),
         description: t("review.group.comingUp.desc"),
         icon: CalendarCheck,
-        color: "hsl(225, 50%, 35%)",
-        bgColor: "hsl(225, 50%, 97%)",
-        borderColor: "hsl(225, 50%, 88%)",
+        color: isDark ? "hsl(225, 50%, 70%)" : "hsl(225, 50%, 35%)",
+        bgColor: isDark ? "hsl(225, 50%, 10%)" : "hsl(225, 50%, 97%)",
+        borderColor: isDark ? "hsl(225, 50%, 20%)" : "hsl(225, 50%, 88%)",
         items: comingUpItems.sort((a, b) => a.nextReviewDate.localeCompare(b.nextReviewDate)),
       },
       {
@@ -119,9 +126,9 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         label: t("review.group.wellRetained.label"),
         description: t("review.group.wellRetained.desc"),
         icon: Shield,
-        color: "hsl(145, 45%, 30%)",
-        bgColor: "hsl(145, 45%, 97%)",
-        borderColor: "hsl(145, 45%, 88%)",
+        color: isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 30%)",
+        bgColor: isDark ? "hsl(145, 45%, 10%)" : "hsl(145, 45%, 97%)",
+        borderColor: isDark ? "hsl(145, 45%, 20%)" : "hsl(145, 45%, 88%)",
         items: wellRetained.sort((a, b) => b.retention - a.retention),
       },
       {
@@ -129,13 +136,13 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         label: t("review.group.notStudied.label"),
         description: t("review.group.notStudied.desc"),
         icon: BookOpen,
-        color: "hsl(230, 15%, 50%)",
-        bgColor: "hsl(230, 15%, 97%)",
-        borderColor: "hsl(230, 15%, 88%)",
+        color: isDark ? "hsl(230, 15%, 65%)" : "hsl(230, 15%, 50%)",
+        bgColor: isDark ? "hsl(230, 15%, 10%)" : "hsl(230, 15%, 97%)",
+        borderColor: isDark ? "hsl(230, 15%, 20%)" : "hsl(230, 15%, 88%)",
         items: notStudied,
       },
     ]
-  }, [filtered, t])
+  }, [filtered, t, isDark])
 
   const handleChapterClick = (chapterId: string) => {
     const ch = chapters.find((c) => c.id === chapterId)
@@ -147,10 +154,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
   }
 
   const summaryItems = [
-    { label: t("review.summary.studied"), value: studied.length.toString(), color: "hsl(225, 50%, 22%)" },
-    { label: t("review.summary.overdue"), value: overdue.length.toString(), color: "hsl(0, 65%, 45%)" },
-    { label: t("review.summary.avgRetention"), value: `${avgRetention}%`, color: "hsl(175, 45%, 28%)" },
-    { label: t("review.summary.mastered"), value: mastered.length.toString(), color: "hsl(145, 45%, 30%)" },
+    { label: t("review.summary.studied"), value: studied.length.toString(), color: isDark ? "hsl(225, 50%, 55%)" : "hsl(225, 50%, 22%)" },
+    { label: t("review.summary.overdue"), value: overdue.length.toString(), color: isDark ? "hsl(0, 65%, 55%)" : "hsl(0, 65%, 45%)" },
+    { label: t("review.summary.avgRetention"), value: `${avgRetention}%`, color: isDark ? "hsl(175, 45%, 55%)" : "hsl(175, 45%, 28%)" },
+    { label: t("review.summary.mastered"), value: mastered.length.toString(), color: isDark ? "hsl(145, 45%, 55%)" : "hsl(145, 45%, 30%)" },
   ]
 
   return (
@@ -218,8 +225,8 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     <p className="text-xs text-muted-foreground mb-2">{t("review.criteria.alerts.desc")}</p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
-                        <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "hsl(0, 65%, 97%)" }}>
-                          <AlertTriangle className="w-3 h-3" style={{ color: "hsl(0, 65%, 45%)" }} />
+                        <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: isDark ? "hsl(0, 65%, 15%)" : "hsl(0, 65%, 97%)" }}>
+                          <AlertTriangle className="w-3 h-3" style={{ color: isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)" }} />
                         </div>
                         <div>
                           <p className="text-xs font-medium text-card-foreground">{t("review.criteria.alerts.overdue.label")}</p>
@@ -227,8 +234,8 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
-                        <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "hsl(25, 55%, 97%)" }}>
-                          <Clock className="w-3 h-3" style={{ color: "hsl(25, 55%, 40%)" }} />
+                        <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: isDark ? "hsl(25, 55%, 15%)" : "hsl(25, 55%, 97%)" }}>
+                          <Clock className="w-3 h-3" style={{ color: isDark ? "hsl(25, 55%, 65%)" : "hsl(25, 55%, 40%)" }} />
                         </div>
                         <div>
                           <p className="text-xs font-medium text-card-foreground">{t("review.criteria.alerts.dueToday.label")}</p>
@@ -236,8 +243,8 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
-                        <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "hsl(225, 50%, 97%)" }}>
-                          <CalendarCheck className="w-3 h-3" style={{ color: "hsl(225, 50%, 35%)" }} />
+                        <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: isDark ? "hsl(225, 50%, 15%)" : "hsl(225, 50%, 97%)" }}>
+                          <CalendarCheck className="w-3 h-3" style={{ color: isDark ? "hsl(225, 50%, 70%)" : "hsl(225, 50%, 35%)" }} />
                         </div>
                         <div>
                           <p className="text-xs font-medium text-card-foreground">{t("review.criteria.alerts.comingUp.label")}</p>
@@ -252,10 +259,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2.5">{t("review.criteria.mastery.title")}</h4>
                     <div className="space-y-1.5">
                       {[
-                        { level: "New", condition: t("review.criteria.mastery.new"), color: "hsl(230, 15%, 50%)", bg: "hsl(230, 15%, 95%)" },
-                        { level: "Learning", condition: t("review.criteria.mastery.learning"), color: "hsl(25, 55%, 40%)", bg: "hsl(25, 55%, 95%)" },
-                        { level: "Reviewing", condition: t("review.criteria.mastery.reviewing"), color: "hsl(225, 50%, 35%)", bg: "hsl(225, 50%, 95%)" },
-                        { level: "Mastered", condition: t("review.criteria.mastery.mastered"), color: "hsl(145, 45%, 30%)", bg: "hsl(145, 45%, 95%)" },
+                        { level: "New", condition: t("review.criteria.mastery.new"), color: isDark ? "hsl(230, 15%, 65%)" : "hsl(230, 15%, 50%)", bg: isDark ? "hsl(230, 15%, 15%)" : "hsl(230, 15%, 95%)" },
+                        { level: "Learning", condition: t("review.criteria.mastery.learning"), color: isDark ? "hsl(25, 55%, 65%)" : "hsl(25, 55%, 40%)", bg: isDark ? "hsl(25, 55%, 15%)" : "hsl(25, 55%, 95%)" },
+                        { level: "Reviewing", condition: t("review.criteria.mastery.reviewing"), color: isDark ? "hsl(225, 50%, 70%)" : "hsl(225, 50%, 35%)", bg: isDark ? "hsl(225, 50%, 15%)" : "hsl(225, 50%, 95%)" },
+                        { level: "Mastered", condition: t("review.criteria.mastery.mastered"), color: isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 30%)", bg: isDark ? "hsl(145, 45%, 15%)" : "hsl(145, 45%, 95%)" },
                       ].map((item) => (
                         <div key={item.level} className="flex items-center gap-2">
                           <span
@@ -275,10 +282,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2.5">{t("review.criteria.retention.title")}</h4>
                     <div className="space-y-1.5">
                       {[
-                        { range: "70%+", color: "hsl(145, 45%, 35%)", label: t("review.criteria.retention.stable") },
-                        { range: "50-69%", color: "hsl(175, 45%, 32%)", label: t("review.criteria.retention.good") },
-                        { range: "30-49%", color: "hsl(25, 55%, 40%)", label: t("review.criteria.retention.caution") },
-                        { range: "<30%", color: "hsl(0, 65%, 45%)", label: t("review.criteria.retention.needsReview") },
+                        { range: "70%+", color: isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)", label: t("review.criteria.retention.stable") },
+                        { range: "50-69%", color: isDark ? "hsl(175, 45%, 62%)" : "hsl(175, 45%, 32%)", label: t("review.criteria.retention.good") },
+                        { range: "30-49%", color: isDark ? "hsl(25, 55%, 65%)" : "hsl(25, 55%, 40%)", label: t("review.criteria.retention.caution") },
+                        { range: "<30%", color: isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)", label: t("review.criteria.retention.needsReview") },
                       ].map((item) => (
                         <div key={item.range} className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
@@ -312,7 +319,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
             <div className="space-y-2 px-4 pb-4">
               {alertItems.sort((a, b) => a.retention - b.retention).map((item) => {
                 const info = SECTION_INFO[item.section]
-                const retColor = getRetentionColor(item.retention)
+                const retColor = getRetentionColor(item.retention, isDark)
                 return (
                   <button
                     key={item.chapterId}
@@ -444,7 +451,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                       {ch.section.charAt(0)}
                     </span>
                     <span className="truncate max-w-[120px] text-card-foreground">Ch.{ch.chapterNumber}</span>
-                    <span className="text-[9px] font-semibold" style={{ color: isDark ? brightenForDark(getRetentionColor(ch.retention), true) : getRetentionColor(ch.retention) }}>{ch.retention}%</span>
+                    <span className="text-[9px] font-semibold" style={{ color: getRetentionColor(ch.retention, isDark) }}>{ch.retention}%</span>
                     {isAlert && <AlertTriangle className="w-3 h-3" style={{ color: isDark ? "hsl(0,65%,65%)" : "hsl(0,65%,45%)" }} />}
                   </button>
                 )
@@ -539,7 +546,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="bg-muted/30 rounded-lg p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.retention")}</p>
-                    <p className="text-lg font-bold mt-0.5" style={{ color: getRetentionColor(selected.retention) }}>{selected.retention}%</p>
+                    <p className="text-lg font-bold mt-0.5" style={{ color: getRetentionColor(selected.retention, isDark) }}>{selected.retention}%</p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.reviewCount")}</p>
@@ -644,8 +651,8 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
             <div className="bg-card rounded-xl border overflow-hidden" style={{ borderColor: group.borderColor }}>
               {group.items.map((item, idx) => {
                 const info = SECTION_INFO[item.section]
-                const masteryInfo = getMasteryLevelInfo(item.masteryLevel)
-                const retColor = getRetentionColor(item.retention)
+                const masteryInfo = getMasteryLevelInfo(item.masteryLevel, undefined, isDark)
+                const retColor = getRetentionColor(item.retention, isDark)
 
                 return (
                   <div key={item.chapterId} className={cn(idx < group.items.length - 1 && "border-b border-border")}>

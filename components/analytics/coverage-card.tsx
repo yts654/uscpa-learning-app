@@ -4,6 +4,7 @@ import { useState } from "react"
 import { type CoverageItem } from "@/lib/analytics-engine"
 import { SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import { Eye, AlertTriangle, HelpCircle, X, ChevronDown, ChevronRight } from "lucide-react"
 
 interface CoverageCardProps {
@@ -12,6 +13,9 @@ interface CoverageCardProps {
 
 export function CoverageCard({ items }: CoverageCardProps) {
   const { t, locale } = useLanguage()
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
+  const redColor = isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)"
   const [showHelp, setShowHelp] = useState(false)
 
   // Track collapsed sections
@@ -84,7 +88,7 @@ export function CoverageCard({ items }: CoverageCardProps) {
             {t("analytics.coverage.help.title")}
           </p>
           <div className="space-y-1.5 text-xs text-muted-foreground">
-            <p><span className="font-semibold text-[hsl(0,65%,45%)]">{t("analytics.coverage.fragile")}</span> — {t("analytics.coverage.help.fragileDesc")}</p>
+            <p><span className="font-semibold" style={{ color: redColor }}>{t("analytics.coverage.fragile")}</span> — {t("analytics.coverage.help.fragileDesc")}</p>
             <p><span className="font-semibold text-card-foreground">{t("analytics.coverage.untouched")}</span> — {t("analytics.coverage.help.untouchedDesc")}</p>
           </div>
           <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
@@ -107,10 +111,10 @@ export function CoverageCard({ items }: CoverageCardProps) {
               className="flex items-center gap-1.5 mb-1.5 w-full text-left group"
             >
               {collapsedSections.has("fragile")
-                ? <ChevronRight className="w-3 h-3 text-[hsl(0,65%,45%)]" />
-                : <ChevronDown className="w-3 h-3 text-[hsl(0,65%,45%)]" />
+                ? <ChevronRight className="w-3 h-3" style={{ color: redColor }} />
+                : <ChevronDown className="w-3 h-3" style={{ color: redColor }} />
               }
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-[hsl(0,65%,45%)] group-hover:underline">
+              <h4 className="text-[10px] font-bold uppercase tracking-wider group-hover:underline" style={{ color: redColor }}>
                 {t("analytics.coverage.fragile")} ({fragile.length})
               </h4>
             </button>
@@ -118,7 +122,7 @@ export function CoverageCard({ items }: CoverageCardProps) {
               <div className="space-y-1">
                 {fragile.map(item => (
                   <div key={item.chapterId} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-950/30">
-                    <AlertTriangle className="w-3 h-3 text-[hsl(0,65%,45%)] flex-shrink-0" />
+                    <AlertTriangle className="w-3 h-3 flex-shrink-0" style={{ color: redColor }} />
                     <div
                       className="w-5 h-5 rounded flex items-center justify-center text-[7px] font-bold text-white flex-shrink-0"
                       style={{ backgroundColor: SECTION_INFO[item.section].color }}
@@ -129,7 +133,7 @@ export function CoverageCard({ items }: CoverageCardProps) {
                       Ch.{item.chapterNumber} {locale === "ja" ? CHAPTER_TITLES_JA[item.chapterId] || item.chapterTitle : item.chapterTitle}
                     </span>
                     {item.retention !== undefined && (
-                      <span className="text-[10px] font-medium text-[hsl(0,65%,45%)]">{item.retention}%</span>
+                      <span className="text-[10px] font-medium" style={{ color: redColor }}>{item.retention}%</span>
                     )}
                   </div>
                 ))}

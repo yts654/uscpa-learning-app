@@ -4,6 +4,7 @@ import { useState, useMemo } from "react"
 import { Filter, ChevronRight, BookOpen, Clock, Target, CheckCircle2, Circle, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import { SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
 import { type ChapterRetention, getMasteryLevelInfo, getRetentionColor } from "@/lib/spaced-repetition"
 
@@ -24,6 +25,8 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
 
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
   const { t, locale } = useLanguage()
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
   const filteredChapters = selectedSection === "ALL"
     ? chapters
@@ -215,8 +218,8 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                     {(() => {
                       const ret = retentionMap.get(chapter.id)
                       if (!ret || ret.reviewCount === 0) return null
-                      const masteryInfo = getMasteryLevelInfo(ret.masteryLevel)
-                      const retColor = getRetentionColor(ret.retention)
+                      const masteryInfo = getMasteryLevelInfo(ret.masteryLevel, undefined, isDark)
+                      const retColor = getRetentionColor(ret.retention, isDark)
                       return (
                         <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
                           <span

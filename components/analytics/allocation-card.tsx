@@ -4,6 +4,7 @@ import { useState } from "react"
 import { type AllocationRecommendation } from "@/lib/analytics-engine"
 import { SECTION_INFO } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import { Lightbulb, ArrowUp, ArrowDown, Minus, HelpCircle, X } from "lucide-react"
 
 interface AllocationCardProps {
@@ -12,17 +13,19 @@ interface AllocationCardProps {
 
 export function AllocationCard({ allocations }: AllocationCardProps) {
   const { t, locale } = useLanguage()
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
   const [showHelp, setShowHelp] = useState(false)
 
   const changeIcon = (change: AllocationRecommendation["change"]) => {
-    if (change === "increase") return <ArrowUp className="w-3 h-3" style={{ color: "hsl(145, 45%, 35%)" }} />
-    if (change === "decrease") return <ArrowDown className="w-3 h-3" style={{ color: "hsl(0, 65%, 45%)" }} />
+    if (change === "increase") return <ArrowUp className="w-3 h-3" style={{ color: isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)" }} />
+    if (change === "decrease") return <ArrowDown className="w-3 h-3" style={{ color: isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)" }} />
     return <Minus className="w-3 h-3 text-muted-foreground" />
   }
 
   const changeColor = (change: AllocationRecommendation["change"]) => {
-    if (change === "increase") return "hsl(145, 45%, 35%)"
-    if (change === "decrease") return "hsl(0, 65%, 45%)"
+    if (change === "increase") return isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)"
+    if (change === "decrease") return isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)"
     return "hsl(var(--muted-foreground))"
   }
 

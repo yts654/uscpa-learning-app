@@ -4,6 +4,7 @@ import { useState } from "react"
 import { SECTION_INFO, type ExamSection } from "@/lib/study-data"
 import { type PaceResult } from "@/lib/analytics-engine"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts"
 import { Target, HelpCircle, X } from "lucide-react"
 
@@ -13,6 +14,8 @@ interface PaceEngineCardProps {
 
 export function PaceEngineCard({ paces }: PaceEngineCardProps) {
   const { t, locale } = useLanguage()
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
   const [showHelp, setShowHelp] = useState(false)
   const hasGoals = paces.some(p => p.status !== "no-goal")
 
@@ -106,7 +109,7 @@ export function PaceEngineCard({ paces }: PaceEngineCardProps) {
       {/* Section detail rows */}
       <div className="space-y-2">
         {paces.filter(p => p.status !== "no-goal").map(p => {
-          const statusColor = p.status === "ahead" ? "hsl(145, 45%, 35%)" : p.status === "behind" ? "hsl(0, 65%, 45%)" : "hsl(175, 45%, 32%)"
+          const statusColor = p.status === "ahead" ? (isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)") : p.status === "behind" ? (isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)") : (isDark ? "hsl(175, 45%, 62%)" : "hsl(175, 45%, 32%)")
           const statusLabel = p.status === "ahead" ? t("analytics.pace.ahead") : p.status === "behind" ? t("analytics.pace.behind") : t("analytics.pace.onTrack")
           return (
             <div key={p.section} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-muted/30">

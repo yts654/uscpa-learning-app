@@ -344,7 +344,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                                     <span className="text-xs text-card-foreground truncate flex-1">{locale === "ja" ? CHAPTER_TITLES_JA[log.chapterId] || log.chapterTitle : log.chapterTitle}</span>
                                     <span className="text-xs text-muted-foreground flex-shrink-0">{log.studyHours}h</span>
                                     {log.questionsAnswered > 0 && (
-                                      <span className="text-xs flex-shrink-0" style={{ color: acc >= 75 ? (isDark ? getLightColor(data.info.color) : data.info.color) : "hsl(0, 72%, 51%)" }}>{acc}%</span>
+                                      <span className="text-xs flex-shrink-0" style={{ color: acc >= 75 ? (isDark ? getLightColor(data.info.color) : data.info.color) : (isDark ? "hsl(0, 72%, 65%)" : "hsl(0, 72%, 51%)") }}>{acc}%</span>
                                     )}
                                   </div>
                                 )
@@ -482,8 +482,8 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
             )}
             {reviewQueue.map((item, idx) => {
               const info = SECTION_INFO[item.section]
-              const masteryInfo = getMasteryLevelInfo(item.masteryLevel)
-              const retColor = getRetentionColor(item.retention)
+              const masteryInfo = getMasteryLevelInfo(item.masteryLevel, undefined, isDark)
+              const retColor = getRetentionColor(item.retention, isDark)
               return (
                 <div key={item.chapterId} className={`px-4 py-3 flex items-center gap-3 ${idx < reviewQueue.length - 1 ? "border-b border-border" : ""}`}>
                   <div
@@ -582,7 +582,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                           {log.questionsAnswered > 0 && (
                             <>
                               <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{log.questionsAnswered}Q</span>
-                              <span className="flex items-center gap-1" style={{ color: acc >= 75 ? info.color : "hsl(0, 72%, 51%)" }}>
+                              <span className="flex items-center gap-1" style={{ color: acc >= 75 ? (isDark ? getLightColor(info.color) : info.color) : (isDark ? "hsl(0, 72%, 65%)" : "hsl(0, 72%, 51%)") }}>
                                 <Target className="w-3 h-3" />{acc}%
                               </span>
                             </>

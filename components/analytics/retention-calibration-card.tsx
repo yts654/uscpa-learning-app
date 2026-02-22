@@ -4,6 +4,7 @@ import { useState } from "react"
 import { type CalibrationEntry } from "@/lib/analytics-engine"
 import { SECTION_INFO, CHAPTER_TITLES_JA } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import { Brain, HelpCircle, X } from "lucide-react"
 
 interface RetentionCalibrationCardProps {
@@ -12,6 +13,8 @@ interface RetentionCalibrationCardProps {
 
 export function RetentionCalibrationCard({ entries }: RetentionCalibrationCardProps) {
   const { t, locale } = useLanguage()
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
   const [showHelp, setShowHelp] = useState(false)
 
   return (
@@ -64,10 +67,10 @@ export function RetentionCalibrationCard({ entries }: RetentionCalibrationCardPr
 
           {entries.slice(0, 10).map((entry) => {
             const actionColor = entry.action === "shorten"
-              ? "hsl(0, 65%, 45%)"
+              ? (isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)")
               : entry.action === "extend"
-                ? "hsl(145, 45%, 35%)"
-                : "hsl(175, 45%, 32%)"
+                ? (isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)")
+                : (isDark ? "hsl(175, 45%, 62%)" : "hsl(175, 45%, 32%)")
             const actionLabel = entry.action === "shorten"
               ? t("analytics.retention.shortenInterval")
               : entry.action === "extend"
@@ -89,7 +92,7 @@ export function RetentionCalibrationCard({ entries }: RetentionCalibrationCardPr
                 </div>
                 <div className="text-center text-xs text-muted-foreground">{entry.predictedRetention}%</div>
                 <div className="text-center text-xs text-card-foreground font-medium">{entry.actualRetention}%</div>
-                <div className="text-center text-xs font-medium" style={{ color: entry.gap > 0 ? "hsl(145, 45%, 35%)" : entry.gap < 0 ? "hsl(0, 65%, 45%)" : "hsl(175, 45%, 32%)" }}>
+                <div className="text-center text-xs font-medium" style={{ color: entry.gap > 0 ? (isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)") : entry.gap < 0 ? (isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)") : (isDark ? "hsl(175, 45%, 62%)" : "hsl(175, 45%, 32%)") }}>
                   {entry.gap > 0 ? "+" : ""}{entry.gap}%
                 </div>
                 <div className="text-center">

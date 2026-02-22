@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { ArrowLeft, Clock, Target, BookOpen, Plus, Calendar, ClipboardList } from "lucide-react"
 import { SECTION_INFO, CHAPTER_TITLES_JA, type Chapter, type StudyLog, type EssenceNote } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
+import { useTheme } from "next-themes"
 import { EssenceNotes } from "@/components/essence-notes"
 
 interface ChapterDetailViewProps {
@@ -26,6 +27,8 @@ export function ChapterDetailView({
   onRemoveNote,
 }: ChapterDetailViewProps) {
   const { t, locale } = useLanguage()
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
   const [showLogForm, setShowLogForm] = useState(false)
   // Avoid hydration mismatch: initialize empty, set on client
   const [logDate, setLogDate] = useState("")
@@ -250,7 +253,7 @@ export function ChapterDetailView({
                             <span>TBS: {log.tbsCorrect}/{log.tbsQuestions}</span>
                           )}
                           {log.questionsAnswered > 0 && (
-                            <span className="flex items-center gap-1" style={{ color: logAcc >= 75 ? info.color : logAcc >= 50 ? "hsl(230, 8%, 46%)" : "hsl(0, 72%, 51%)" }}>
+                            <span className="flex items-center gap-1" style={{ color: logAcc >= 75 ? info.color : logAcc >= 50 ? (isDark ? "hsl(230, 8%, 65%)" : "hsl(230, 8%, 46%)") : (isDark ? "hsl(0, 72%, 65%)" : "hsl(0, 72%, 51%)") }}>
                               <Target className="w-3 h-3" />{logAcc}%
                             </span>
                           )}

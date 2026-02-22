@@ -142,7 +142,7 @@ export function getReviewQueueForDashboard(
 
 // ── Display Helpers ────────────────────────────────────────────────────
 
-export function getMasteryLevelInfo(level: MasteryLevel, t?: (key: string) => string): { label: string; color: string; bgColor: string } {
+export function getMasteryLevelInfo(level: MasteryLevel, t?: (key: string) => string, isDark?: boolean): { label: string; color: string; bgColor: string } {
   const labels: Record<MasteryLevel, { en: string; key: string }> = {
     new: { en: "New", key: "mastery.new" },
     learning: { en: "Learning", key: "mastery.learning" },
@@ -152,19 +152,19 @@ export function getMasteryLevelInfo(level: MasteryLevel, t?: (key: string) => st
   const label = t ? t(labels[level].key) : labels[level].en
   switch (level) {
     case "new":
-      return { label, color: "hsl(230, 15%, 50%)", bgColor: "hsl(230, 15%, 95%)" }
+      return { label, color: isDark ? "hsl(230, 15%, 65%)" : "hsl(230, 15%, 50%)", bgColor: isDark ? "hsl(230, 15%, 15%)" : "hsl(230, 15%, 95%)" }
     case "learning":
-      return { label, color: "hsl(25, 55%, 40%)", bgColor: "hsl(25, 55%, 95%)" }
+      return { label, color: isDark ? "hsl(25, 55%, 65%)" : "hsl(25, 55%, 40%)", bgColor: isDark ? "hsl(25, 55%, 15%)" : "hsl(25, 55%, 95%)" }
     case "reviewing":
-      return { label, color: "hsl(225, 50%, 35%)", bgColor: "hsl(225, 50%, 95%)" }
+      return { label, color: isDark ? "hsl(225, 50%, 70%)" : "hsl(225, 50%, 35%)", bgColor: isDark ? "hsl(225, 50%, 15%)" : "hsl(225, 50%, 95%)" }
     case "mastered":
-      return { label, color: "hsl(145, 45%, 30%)", bgColor: "hsl(145, 45%, 95%)" }
+      return { label, color: isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 30%)", bgColor: isDark ? "hsl(145, 45%, 15%)" : "hsl(145, 45%, 95%)" }
   }
 }
 
-export function getRetentionColor(retention: number): string {
-  if (retention >= 70) return "hsl(145, 45%, 35%)"
-  if (retention >= 50) return "hsl(175, 45%, 32%)"
-  if (retention >= 30) return "hsl(25, 55%, 40%)"
-  return "hsl(0, 65%, 45%)"
+export function getRetentionColor(retention: number, isDark?: boolean): string {
+  if (retention >= 70) return isDark ? "hsl(145, 45%, 65%)" : "hsl(145, 45%, 35%)"
+  if (retention >= 50) return isDark ? "hsl(175, 45%, 62%)" : "hsl(175, 45%, 32%)"
+  if (retention >= 30) return isDark ? "hsl(25, 55%, 65%)" : "hsl(25, 55%, 40%)"
+  return isDark ? "hsl(0, 65%, 65%)" : "hsl(0, 65%, 45%)"
 }
