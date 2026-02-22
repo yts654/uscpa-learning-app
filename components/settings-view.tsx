@@ -303,10 +303,11 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
         </div>
         <div className="mt-6">
           <label className="text-sm font-medium text-card-foreground block mb-3">{t("settings.language")}</label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {([
               { value: "en" as Locale, label: "English", flag: "🇺🇸" },
               { value: "es" as Locale, label: "Español", flag: "🇪🇸" },
+              { value: "ja" as Locale, label: "日本語", flag: "🇯🇵" },
             ]).map((opt) => {
               const isActive = locale === opt.value
               return (
