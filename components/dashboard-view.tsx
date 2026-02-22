@@ -33,6 +33,28 @@ function getLightColor(hslColor: string): string {
   return `hsl(${h}, ${s}%, ${newL}%)`
 }
 
+function WeeklyChartTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ dataKey: string; value: number; fill: string }>; label?: string }) {
+  const { t } = useLanguage()
+  if (!active || !payload) return null
+  const total = payload.reduce((sum, p) => sum + (p.value || 0), 0)
+  const items = payload.filter(p => p.value > 0)
+  if (total === 0) return null
+  return (
+    <div style={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "hsl(var(--card-foreground))" }}>
+      <p style={{ fontWeight: 600, marginBottom: 4 }}>{label}</p>
+      {items.map(item => (
+        <div key={item.dataKey} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+          <span style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: item.fill, display: "inline-block", flexShrink: 0 }} />
+          <span>{item.dataKey}: {item.value}h</span>
+        </div>
+      ))}
+      <div style={{ borderTop: "1px solid hsl(var(--border))", marginTop: 4, paddingTop: 4, fontWeight: 600 }}>
+        {t("studyLog.total")}: {total.toFixed(1)}h
+      </div>
+    </div>
+  )
+}
+
 export function DashboardView({ chapters, onViewChange, completedSections = [], studyLogs, essenceNotes, streak, chapterRetentions, onStartTour }: DashboardViewProps) {
   const { t, locale } = useLanguage()
   const { theme } = useTheme()
@@ -52,20 +74,23 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
     color: SECTION_INFO[section].color,
   }))
 
-  // Weekly study hours chart — derive from studyLogs (last 7 days)
+  // Weekly study hours chart — derive from studyLogs (last 7 days), broken down by section
+  const allSections: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
   const weeklyData = (() => {
     const days = [t("day.sun"), t("day.mon"), t("day.tue"), t("day.wed"), t("day.thu"), t("day.fri"), t("day.sat")]
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    const result: { day: string; date: string; hours: number }[] = []
+    const result: Record<string, string | number>[] = []
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today)
       d.setDate(d.getDate() - i)
       const dateStr = d.toISOString().split("T")[0]
-      const dayHours = studyLogs
-        .filter(l => l.date === dateStr)
-        .reduce((a, b) => a + b.studyHours, 0)
-      result.push({ day: days[d.getDay()], date: dateStr, hours: parseFloat(dayHours.toFixed(1)) })
+      const dayLogs = studyLogs.filter(l => l.date === dateStr)
+      const entry: Record<string, string | number> = { day: days[d.getDay()], date: dateStr }
+      for (const sec of allSections) {
+        entry[sec] = parseFloat(dayLogs.filter(l => l.section === sec).reduce((a, b) => a + b.studyHours, 0).toFixed(1))
+      }
+      result.push(entry)
     }
     return result
   })()
@@ -417,18 +442,16 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
               <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} unit="h" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "8px",
-                  color: "hsl(var(--card-foreground))",
-                  fontSize: "12px",
-                }}
-                formatter={(value: number) => [`${value}h`, t("dashboard.studyHours")]}
-                cursor={{ fill: "hsl(var(--muted) / 0.5)" }}
-              />
-              <Bar dataKey="hours" radius={[4, 4, 0, 0]} fill="hsl(var(--primary))" />
+              <Tooltip content={<WeeklyChartTooltip />} cursor={{ fill: "hsl(var(--muted) / 0.5)" }} />
+              {allSections.map((sec, idx) => (
+                <Bar
+                  key={sec}
+                  dataKey={sec}
+                  stackId="a"
+                  fill={isDark ? getLightColor(SECTION_INFO[sec].color) : SECTION_INFO[sec].color}
+                  radius={idx === allSections.length - 1 ? [4, 4, 0, 0] : undefined}
+                />
+              ))}
             </BarChart>
           </ResponsiveContainer>
         </div>
