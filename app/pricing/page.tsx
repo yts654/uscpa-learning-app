@@ -14,7 +14,7 @@ export default function PricingPage() {
   async function handleUpgrade() {
     setLoading(true)
     try {
-      const res = await fetch("/api/stripe/checkout", { method: "POST" })
+      const res = await fetch("/api/lemonsqueezy/checkout", { method: "POST" })
       const data = await res.json()
       if (data.url) {
         window.location.href = data.url
@@ -138,11 +138,18 @@ export default function PricingPage() {
 
               {plan.highlighted ? (
                 <button
-                  disabled
-                  className="w-full py-3 rounded-xl bg-primary/50 text-primary-foreground text-sm font-bold transition-all disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  onClick={session ? handleUpgrade : undefined}
+                  disabled={loading || !session}
+                  className="w-full py-3 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  {t("pricing.comingSoon")}
+                  {loading ? (
+                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      {session ? plan.cta : t("pricing.signUpFirst")}
+                    </>
+                  )}
                 </button>
               ) : (
                 <Link

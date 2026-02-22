@@ -349,12 +349,39 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                 </p>
               )}
             </div>
-            <button
-              disabled
-              className="px-4 py-2 rounded-lg bg-primary/50 text-primary-foreground text-sm font-bold transition-colors disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4" /> {t("settings.comingSoon")}
-            </button>
+            {currentPlan === "pro" ? (
+              <button
+                onClick={async () => {
+                  setPortalLoading(true)
+                  try {
+                    const res = await fetch("/api/lemonsqueezy/portal", { method: "POST" })
+                    const data = await res.json()
+                    if (data.url) window.location.href = data.url
+                  } catch {}
+                  setPortalLoading(false)
+                }}
+                disabled={portalLoading}
+                className="px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors disabled:opacity-50"
+              >
+                {portalLoading ? "..." : t("settings.manageSub")}
+              </button>
+            ) : (
+              <button
+                onClick={async () => {
+                  setCheckoutLoading(true)
+                  try {
+                    const res = await fetch("/api/lemonsqueezy/checkout", { method: "POST" })
+                    const data = await res.json()
+                    if (data.url) window.location.href = data.url
+                  } catch {}
+                  setCheckoutLoading(false)
+                }}
+                disabled={checkoutLoading}
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {checkoutLoading ? "..." : <><Sparkles className="w-4 h-4" /> {t("settings.upgrade")}</>}
+              </button>
+            )}
           </div>
         </div>
       </div>

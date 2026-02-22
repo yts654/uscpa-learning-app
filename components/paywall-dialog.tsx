@@ -19,7 +19,7 @@ export function PaywallDialog({ open, onClose, reason }: PaywallDialogProps) {
   async function handleUpgrade() {
     setLoading(true)
     try {
-      const res = await fetch("/api/stripe/checkout", { method: "POST" })
+      const res = await fetch("/api/lemonsqueezy/checkout", { method: "POST" })
       const data = await res.json()
       if (data.url) {
         window.location.href = data.url
@@ -90,14 +90,21 @@ export function PaywallDialog({ open, onClose, reason }: PaywallDialogProps) {
         {/* CTA */}
         <div className="px-6 pb-6 pt-2">
           <button
-            disabled
-            className="w-full py-3 rounded-xl bg-primary/50 text-primary-foreground text-sm font-bold transition-all disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            onClick={handleUpgrade}
+            disabled={loading}
+            className="w-full py-3 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
           >
-            <Sparkles className="w-4 h-4" />
-            {t("paywall.comingSoon")}
+            {loading ? (
+              <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                {t("paywall.cta")}
+              </>
+            )}
           </button>
           <p className="text-[10px] text-muted-foreground text-center mt-3">
-            {t("paywall.comingSoonDesc")}
+            {t("paywall.price")}
           </p>
         </div>
       </div>
