@@ -4,6 +4,8 @@ import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { BookOpen, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { validatePassword } from "@/lib/password-validation"
+import { PasswordStrengthIndicator } from "@/components/password-strength-indicator"
 
 export default function RegisterPage() {
   const [name, setName] = useState("")
@@ -17,6 +19,13 @@ export default function RegisterPage() {
     e.preventDefault()
     setError("")
     setLoading(true)
+
+    const { score } = validatePassword(password)
+    if (score < 100) {
+      setError("Please meet all password requirements")
+      setLoading(false)
+      return
+    }
 
     try {
       const res = await fetch("/api/auth/register", {
@@ -98,9 +107,8 @@ export default function RegisterPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min. 8 characters"
+                  placeholder="Create a strong password"
                   required
-                  minLength={8}
                   className="w-full px-3 py-2.5 pr-10 rounded-lg bg-[hsl(232,40%,8%)] border border-[hsl(232,35%,22%)] text-white text-sm placeholder:text-[hsl(230,15%,35%)] focus:outline-none focus:ring-2 focus:ring-[hsl(225,50%,40%)] focus:border-transparent transition-all"
                 />
                 <button
@@ -111,6 +119,7 @@ export default function RegisterPage() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              <PasswordStrengthIndicator password={password} />
             </div>
 
             {error && (

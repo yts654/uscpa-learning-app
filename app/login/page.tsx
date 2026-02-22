@@ -1,21 +1,27 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { getCsrfToken } from "next-auth/react"
+import { useState, useEffect } from "react"
+import { signIn } from "next-auth/react"
 import { BookOpen, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 
+const REMEMBERED_EMAIL_KEY = "cpa_remembered_email"
+
 export default function LoginPage() {
-  const [email, setEmail] = useState("admin@cpamastery.com")
-  const [password, setPassword] = useState("CpaMastery2026!")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const csrfRef = useRef<string>("")
 
-  // Pre-fetch CSRF token on page load (warms up serverless function)
+  // Restore remembered email on mount
   useEffect(() => {
-    getCsrfToken().then((t) => { csrfRef.current = t || "" }).catch(() => {})
+    const saved = localStorage.getItem(REMEMBERED_EMAIL_KEY)
+    if (saved) {
+      setEmail(saved)
+      setRememberMe(true)
+    }
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,30 +30,27 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Get CSRF token (already cached from warm-up)
-      const csrf = csrfRef.current || await getCsrfToken() || ""
-
-      // Direct POST — skips next-auth/react overhead (providers fetch etc.)
-      const res = await fetch("/api/auth/callback/credentials", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          email,
-          password,
-          csrfToken: csrf,
-          json: "true",
-        }),
-        redirect: "follow",
+      const result = await signIn("credentials", {
+        email,
+        password,
+        rememberMe: rememberMe ? "true" : "false",
+        redirect: false,
       })
 
-      const data = await res.json()
-
-      if (data?.url) {
-        window.location.href = "/home"
-      } else {
+      if (result?.error) {
         setError("Invalid email or password")
         setLoading(false)
+        return
       }
+
+      // Save or clear remembered email
+      if (rememberMe) {
+        localStorage.setItem(REMEMBERED_EMAIL_KEY, email)
+      } else {
+        localStorage.removeItem(REMEMBERED_EMAIL_KEY)
+      }
+
+      window.location.href = "/home"
     } catch {
       setError("Something went wrong")
       setLoading(false)
@@ -76,9 +79,11 @@ export default function LoginPage() {
               <label className="block text-xs font-medium text-[hsl(230,15%,65%)] mb-1.5">Email</label>
               <input
                 type="email"
+                name="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@cpamastery.com"
+                placeholder="you@example.com"
                 required
                 className="w-full px-3 py-2.5 rounded-lg bg-[hsl(232,40%,8%)] border border-[hsl(232,35%,22%)] text-white text-sm placeholder:text-[hsl(230,15%,35%)] focus:outline-none focus:ring-2 focus:ring-[hsl(225,50%,40%)] focus:border-transparent transition-all"
               />
@@ -88,6 +93,8 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="password"
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
@@ -103,6 +110,17 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+
+            {/* Remember Me */}
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-3.5 h-3.5 rounded border-[hsl(232,35%,22%)] bg-[hsl(232,40%,8%)] text-[hsl(225,50%,50%)] focus:ring-[hsl(225,50%,40%)] focus:ring-offset-0"
+              />
+              <span className="text-xs text-[hsl(230,15%,55%)]">Remember me</span>
+            </label>
 
             {error && (
               <div className="text-xs text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">

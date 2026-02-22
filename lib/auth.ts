@@ -13,9 +13,12 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        rememberMe: { label: "Remember Me", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
+
+        const rememberMe = credentials.rememberMe === "true"
 
         // 0. Fast path: demo credentials (already visible in client code)
         const DEMO_EMAIL = "admin@cpamastery.com"
@@ -24,14 +27,14 @@ export const authOptions: NextAuthOptions = {
           credentials.email.toLowerCase() === DEMO_EMAIL &&
           credentials.password === DEMO_PASSWORD
         ) {
-          return { id: "admin", email: DEMO_EMAIL, name: "admin" }
+          return { id: "admin", email: DEMO_EMAIL, name: "admin", rememberMe }
         }
 
         // 1. Try in-memory user database
         try {
           const user = await verifyUser(credentials.email, credentials.password)
           if (user) {
-            return { id: user.id, email: user.email, name: user.name }
+            return { id: user.id, email: user.email, name: user.name, rememberMe }
           }
         } catch (e) {
           console.error("[auth] verifyUser error:", e)
@@ -47,7 +50,7 @@ export const authOptions: NextAuthOptions = {
               const hash = Buffer.from(adminPasswordHashB64, "base64").toString("utf-8")
               const isValid = await bcrypt.compare(credentials.password, hash)
               if (isValid) {
-                return { id: "admin", email: adminEmail, name: adminEmail.split("@")[0] }
+                return { id: "admin", email: adminEmail, name: adminEmail.split("@")[0], rememberMe }
               }
             } catch (e) {
               console.error("[auth] admin bcrypt error:", e)
@@ -64,7 +67,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // 30 days (max; middleware enforces shorter for non-rememberMe)
   },
   cookies: {
     sessionToken: {
@@ -80,6 +83,8 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.loginAt = Date.now()
+        token.rememberMe = (user as { rememberMe?: boolean }).rememberMe ?? false
       }
       return token
     },
