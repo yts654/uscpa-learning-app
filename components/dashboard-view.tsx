@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ArrowUpRight, Clock, Flame, Lightbulb, NotebookPen, ChevronDown, BookOpen, Target, Brain, X, BookMarked, ClipboardList, RefreshCw, Play, HelpCircle } from "lucide-react"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { type StudyProgress, type Chapter, type StudyLog, type EssenceNote, SECTION_INFO, type ExamSection } from "@/lib/study-data"
@@ -38,17 +38,8 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
   const { theme } = useTheme()
   const isDark = theme === "dark"
   const [openSection, setOpenSection] = useState<ExamSection | null>(null)
-  const [guideHidden, setGuideHidden] = useState(true)
+  const [guideOpen, setGuideOpen] = useState(false)
   const [showReviewHelp, setShowReviewHelp] = useState(false)
-
-  useEffect(() => {
-    setGuideHidden(localStorage.getItem("guide-dismissed") === "true")
-  }, [])
-
-  function dismissGuide() {
-    localStorage.setItem("guide-dismissed", "true")
-    setGuideHidden(true)
-  }
 
   // Compute stats from studyLogs
   const totalHours = studyLogs.reduce((a, b) => a + b.studyHours, 0)
@@ -128,21 +119,18 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
         <p className="text-muted-foreground mt-1">{t("dashboard.subtitle")}</p>
       </div>
 
-      {/* Getting Started Guide */}
-      {!guideHidden && (
-        <div className={`bg-card rounded-xl border border-border overflow-hidden transition-all ${studyLogs.length === 0 ? "ring-2 ring-[hsl(225,50%,22%)]/20" : ""}`}>
-          <div className="flex items-center justify-between px-5 pt-4 pb-2">
-            <h3 className="text-sm font-semibold text-card-foreground">{t("guide.title")}</h3>
-            <button
-              onClick={dismissGuide}
-              className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              aria-label="Close guide"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="px-5 pb-5">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {/* Getting Started Guide (collapsible) */}
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <button
+          onClick={() => setGuideOpen(!guideOpen)}
+          className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/20 transition-colors"
+        >
+          <h3 className="text-sm font-semibold text-card-foreground">{t("guide.title")}</h3>
+          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${guideOpen ? "rotate-180" : ""}`} />
+        </button>
+        {guideOpen && (
+          <div className="px-5 pb-5 border-t border-border">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[hsl(225,50%,22%)] text-white text-xs font-bold flex-shrink-0">1</span>
                 <div>
@@ -177,8 +165,8 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
               )}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* 2 Stat Cards: Study Hours (with section breakdown) + Streak */}
       <div data-tour="stats-cards" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
