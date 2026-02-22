@@ -4,6 +4,7 @@ import { useState, useRef } from "react"
 import {
   Plus, X, Image as ImageIcon, Lightbulb, ChevronDown, ChevronUp,
   Sparkles, Loader2, Trash2, Brain, AlertTriangle, BookOpen, Bookmark, Type,
+  HelpCircle, ArrowRight,
 } from "lucide-react"
 import { type EssenceNote, type Insight, type InsightType } from "@/lib/study-data"
 import { useLanguage, type TranslationKey } from "@/lib/i18n"
@@ -23,8 +24,31 @@ interface EssenceNotesProps {
   accentColor: string
 }
 
+// Example insights shown in the guide
+const EXAMPLE_INSIGHTS: { type: InsightType; title: string; body: string; example?: string }[] = [
+  {
+    type: "concept",
+    title: "ASC 606 Revenue Recognition",
+    body: "Revenue is recognized when a performance obligation is satisfied — i.e., when control transfers to the customer, not when cash is received. The 5-step model separates the PROMISE from the PAYMENT.",
+    example: "Step 1: Identify contract → Step 2: Identify obligations → Step 3: Determine price → Step 4: Allocate → Step 5: Recognize",
+  },
+  {
+    type: "trap",
+    title: "Goodwill Impairment: Old vs New",
+    body: "TRAP: ASC 350 no longer uses the 2-step impairment test. It's now a single-step: compare carrying amount of reporting unit to fair value. Many prep materials still show the old method.",
+    example: "If FV ($900K) < Carrying ($1M), impairment = $100K. No more 'implied goodwill' calculation.",
+  },
+  {
+    type: "rule",
+    title: "Lease Classification (OWNES)",
+    body: "Finance lease if ANY one criterion met: O=Ownership transfer, W=Written purchase option, N=Ninety% (PV ≥ 90% FV), E=Economic life (≥75%), S=Specialized asset.",
+    example: "Mnemonic: \"OWNES\" — if the lessee essentially OWNS it, it's a finance lease.",
+  },
+]
+
 export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accentColor }: EssenceNotesProps) {
   const { t, locale } = useLanguage()
+  const [showGuide, setShowGuide] = useState(false)
   const [inputMode, setInputMode] = useState<"image" | "text">("image")
   const [images, setImages] = useState<string[]>([])
   const [pastedText, setPastedText] = useState("")
@@ -186,10 +210,130 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
           <Lightbulb className="w-3.5 h-3.5" style={{ color: accentColor }} />
         </div>
         <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("essence.title")}</h3>
+        <button
+          type="button"
+          onClick={() => setShowGuide(!showGuide)}
+          className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        >
+          {showGuide ? <X className="w-3.5 h-3.5" /> : <HelpCircle className="w-3.5 h-3.5" />}
+        </button>
         <span className="ml-auto text-[10px] font-bold text-[hsl(0,0%,100%)] px-2 py-0.5 rounded-full" style={{ backgroundColor: accentColor }}>
           {allInsights.length}
         </span>
       </div>
+
+      {/* Guide / How-to-use */}
+      {showGuide && (
+        <div className="px-5 py-4 border-b border-border bg-muted/10 space-y-4">
+          {/* What is Essence Notes */}
+          <div>
+            <h4 className="text-sm font-bold text-card-foreground flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4" style={{ color: accentColor }} />
+              {locale === "es" ? "¿Qué es Essence Notes?" : "What is Essence Notes?"}
+            </h4>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {locale === "es"
+                ? "Essence Notes usa IA para analizar tus materiales de estudio (capturas de pantalla o texto) y extraer automáticamente los conceptos clave, trampas de examen y marcos de decisión que necesitas para aprobar el CPA. En lugar de tomar notas manualmente, la IA identifica exactamente qué es importante para el examen."
+                : "Essence Notes uses AI to analyze your study materials (screenshots or text) and automatically extract the key concepts, exam traps, and decision frameworks you need to pass the CPA exam. Instead of taking notes manually, AI identifies exactly what matters for exam day."}
+            </p>
+          </div>
+
+          {/* How to use - 3 steps */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+              {locale === "es" ? "Cómo usar" : "How to Use"}
+            </h4>
+            <div className="space-y-2">
+              {[
+                {
+                  step: "1",
+                  en: "Upload a screenshot of your textbook, MCQ, or TBS — or paste the text directly",
+                  es: "Sube una captura de tu libro, MCQ o TBS — o pega el texto directamente",
+                },
+                {
+                  step: "2",
+                  en: "Click \"Extract Insights with AI\" — AI reads the content and identifies exam-critical insights",
+                  es: "Haz clic en \"Extraer con IA\" — la IA lee el contenido e identifica ideas críticas para el examen",
+                },
+                {
+                  step: "3",
+                  en: "Review the results and save the insights you want. They're organized by type for easy review",
+                  es: "Revisa los resultados y guarda las ideas que quieras. Se organizan por tipo para repaso fácil",
+                },
+              ].map((item) => (
+                <div key={item.step} className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0 mt-0.5" style={{ backgroundColor: accentColor }}>
+                    {item.step}
+                  </div>
+                  <p className="text-xs text-card-foreground leading-relaxed">{locale === "es" ? item.es : item.en}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 4 Insight Types */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+              {locale === "es" ? "4 tipos de insights" : "4 Insight Types"}
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              {(Object.entries(INSIGHT_CONFIG) as [InsightType, typeof INSIGHT_CONFIG[InsightType]][]).map(([type, config]) => {
+                const Icon = config.icon
+                const descriptions: Record<InsightType, { en: string; es: string }> = {
+                  concept: { en: "The WHY behind accounting rules", es: "El PORQUÉ detrás de las reglas contables" },
+                  framework: { en: "Step-by-step decision trees", es: "Árboles de decisión paso a paso" },
+                  trap: { en: "Where candidates lose points", es: "Donde los candidatos pierden puntos" },
+                  rule: { en: "Thresholds & mnemonics", es: "Umbrales y mnemotécnicos" },
+                }
+                return (
+                  <div key={type} className="flex items-start gap-2 p-2 rounded-lg" style={{ backgroundColor: config.bgColor }}>
+                    <Icon className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: config.color }} />
+                    <div>
+                      <p className="text-[10px] font-bold uppercase" style={{ color: config.color }}>{t(config.labelKey)}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">{locale === "es" ? descriptions[type].es : descriptions[type].en}</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Example Notes */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+              {locale === "es" ? "Ejemplos de notas generadas" : "Example Generated Notes"}
+            </h4>
+            <div className="space-y-2">
+              {EXAMPLE_INSIGHTS.map((insight, i) => {
+                const config = INSIGHT_CONFIG[insight.type]
+                const Icon = config.icon
+                return (
+                  <div key={i} className="rounded-lg border overflow-hidden" style={{ borderColor: `${config.color}30` }}>
+                    <div className="px-3 py-1.5 flex items-center gap-2" style={{ backgroundColor: config.bgColor }}>
+                      <Icon className="w-3 h-3" style={{ color: config.color }} />
+                      <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: config.color }}>{t(config.labelKey)}</span>
+                      <span className="text-[11px] font-bold text-card-foreground">{insight.title}</span>
+                    </div>
+                    <div className="px-3 py-2 bg-background">
+                      <p className="text-[11px] text-card-foreground leading-relaxed">{insight.body}</p>
+                      {insight.example && (
+                        <p className="text-[10px] text-muted-foreground mt-1 pl-2.5 border-l-2" style={{ borderColor: `${config.color}40` }}>
+                          {insight.example}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-2 italic">
+              {locale === "es"
+                ? "↑ Estos son ejemplos. Tu contenido real generará insights específicos para el material que subas."
+                : "↑ These are examples. Your actual content will generate insights specific to the material you upload."}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Input Mode Tabs + Content */}
       <div className="p-5 border-b border-border bg-muted/10 space-y-3">
