@@ -177,7 +177,7 @@ const translations = {
   // Mock Exams — chart
   "mockExams.chart.title": { en: "Score Trend", es: "Tendencia de puntuación", ja: "スコア推移" },
   "mockExams.chart.accuracy": { en: "Accuracy (%)", es: "Precisión (%)", ja: "正答率（%）" },
-  "mockExams.chart.noData": { en: "No chart data yet. Add practice exam results to see trends.", es: "Aún no hay datos del gráfico. Agrega resultados de exámenes de práctica para ver tendencias.", ja: "グラフデータがまだありません。模擬試験の結果を追加すると推移が表示されます。" },
+  "mockExams.chart.noData": { en: "No chart data yet. Add practice exam results to see trends.", es: "Aún no hay datos del gráfico. Agrega resultados de exámenes de práctica para ver tendencias.", ja: "グラフデータがまだありません。模擬試験の結果を追加するとトレンドが表示されます。" },
 
   // Mock Exams — results
   "mockExams.results.title": { en: "Results", es: "Resultados", ja: "結果一覧" },
@@ -214,7 +214,7 @@ const translations = {
   // Dashboard — sections
   "dashboard.sections.title": { en: "Exam Sections", es: "Secciones del examen", ja: "試験セクション" },
   "dashboard.sections.viewAll": { en: "View All Chapters", es: "Ver todos los capítulos", ja: "全チャプターを見る" },
-  "dashboard.recentActivity.title": { en: "Recent Activity", es: "Actividad reciente", ja: "最近の学習" },
+  "dashboard.recentActivity.title": { en: "Recent Activity", es: "Actividad reciente", ja: "最近のアクティビティ" },
   "dashboard.recentActivity.viewLog": { en: "View Study Log", es: "Ver registro de estudio", ja: "学習記録を見る" },
 
   // Settings language
@@ -261,7 +261,7 @@ const translations = {
   "analytics.retention.predicted": { en: "Predicted", es: "Predicho", ja: "予測" },
   "analytics.retention.actual": { en: "Actual", es: "Real", ja: "実際" },
   "analytics.retention.gap": { en: "Gap", es: "Brecha", ja: "差分" },
-  "analytics.retention.action": { en: "Action", es: "Acción", ja: "対応" },
+  "analytics.retention.action": { en: "Action", es: "Acción", ja: "アクション" },
   "analytics.retention.shortenInterval": { en: "Shorten interval", es: "Acortar intervalo", ja: "間隔を短縮" },
   "analytics.retention.extendInterval": { en: "Extend interval", es: "Extender intervalo", ja: "間隔を延長" },
   "analytics.retention.onTrack": { en: "On track", es: "En camino", ja: "順調" },
@@ -367,7 +367,7 @@ const translations = {
   "chapters.chaptersCount": { en: "chapters", es: "capítulos", ja: "チャプター" },
   "chapters.studiedSuffix": { en: "studied", es: "estudiados", ja: "学習済み" },
   "chapters.accuracy": { en: "Accuracy", es: "Precisión", ja: "正答率" },
-  "chapters.studyHoursSummary": { en: "Study Hours Summary by Chapter", es: "Resumen de horas de estudio por capítulo", ja: "チャプター別学習時間まとめ" },
+  "chapters.studyHoursSummary": { en: "Study Hours Summary by Chapter", es: "Resumen de horas de estudio por capítulo", ja: "チャプター別学習時間サマリー" },
   "chapters.grandTotal": { en: "Grand Total", es: "Total general", ja: "総合計" },
 
   // ── Chapter Detail ──────────────────────────────────────────────
@@ -417,7 +417,7 @@ const translations = {
   "studyLog.memoPlaceholder": { en: "What did you study? What needs more review?", es: "¿Qué estudiaste? ¿Qué necesita más repaso?", ja: "何を学習しましたか？復習が必要な点は？" },
   "studyLog.addEntry": { en: "Add Study Log Entry", es: "Agregar entrada", ja: "学習記録を追加" },
   "studyLog.allSections": { en: "All Sections", es: "Todas las secciones", ja: "全セクション" },
-  "studyLog.weeklySummary": { en: "Weekly Summary", es: "Resumen semanal", ja: "週間まとめ" },
+  "studyLog.weeklySummary": { en: "Weekly Summary", es: "Resumen semanal", ja: "週間サマリー" },
   "studyLog.hTotal": { en: "h total", es: "h total", ja: "時間合計" },
   "studyLog.vsPrev": { en: "prev", es: "anterior", ja: "前週" },
   "studyLog.noLogs": { en: "No study logs yet. Click \"New Entry\" to start recording.", es: "Aún no hay registros. Haz clic en \"Nueva entrada\" para comenzar.", ja: "学習記録がまだありません。「新規記録」をクリックして始めましょう。" },
@@ -470,7 +470,7 @@ const translations = {
 
   // ── Essence Notes ───────────────────────────────────────────────
   "essence.coreConcept": { en: "Core Concept", es: "Concepto clave", ja: "重要概念" },
-  "essence.framework": { en: "Framework", es: "Marco", ja: "判断フロー" },
+  "essence.framework": { en: "Framework", es: "Marco", ja: "フレームワーク" },
   "essence.pitfall": { en: "Pitfall", es: "Trampa", ja: "落とし穴" },
   "essence.memoryRule": { en: "Memory Rule", es: "Regla mnemotécnica", ja: "記憶術" },
   "essence.title": { en: "Essence Notes", es: "Notas esenciales", ja: "エッセンスノート" },
@@ -503,7 +503,7 @@ const translations = {
   "essence.other": { en: "Other", es: "Otro", ja: "その他" },
   "essence.extractingText": { en: "Extracting text...", es: "Extrayendo texto...", ja: "テキスト抽出中..." },
   "essence.loadingImages": { en: "Loading images...", es: "Cargando imágenes...", ja: "画像読み込み中..." },
-  "essence.aiAnalyzing": { en: "AI analyzing content...", es: "IA analizando contenido...", ja: "AIが内容を分析中..." },
+  "essence.aiAnalyzing": { en: "AI analyzing content...", es: "IA analizando contenido...", ja: "AIがコンテンツを分析中..." },
   "essence.extractingInsights": { en: "Extracting key insights...", es: "Extrayendo ideas clave...", ja: "重要な要点を抽出中..." },
   "essence.structuringInsights": { en: "Structuring insights...", es: "Estructurando ideas...", ja: "要点を整理中..." },
   "essence.almostThere": { en: "Almost there...", es: "Casi listo...", ja: "もうすぐ完了..." },
@@ -512,14 +512,14 @@ const translations = {
   "essence.guide.whatTitle": { en: "What is Essence Notes?", es: "¿Qué es Essence Notes?", ja: "Essence Notesとは？" },
   "essence.guide.whatDesc": { en: "Essence Notes uses AI to analyze your study materials (screenshots or text) and automatically extract the key concepts, exam traps, and decision frameworks you need to pass the CPA exam. Instead of taking notes manually, AI identifies exactly what matters for exam day.", es: "Essence Notes usa IA para analizar tus materiales de estudio (capturas de pantalla o texto) y extraer automáticamente los conceptos clave, trampas de examen y marcos de decisión que necesitas para aprobar el CPA. En lugar de tomar notas manualmente, la IA identifica exactamente qué es importante para el examen.", ja: "AIが学習教材（スクリーンショットやテキスト）を分析し、CPA試験に必要な重要概念、出題の落とし穴、判断の枠組みを自動抽出します。手動でノートを取る代わりに、AIが試験の要点を正確に特定します。" },
   "essence.guide.howTitle": { en: "How to Use", es: "Cómo usar", ja: "使い方" },
-  "essence.guide.step1": { en: "Upload a screenshot of your textbook, MCQ, or TBS — or paste the text directly", es: "Sube una captura de tu libro, MCQ o TBS — o pega el texto directamente", ja: "テキスト、MCQ、TBSのスクリーンショットをアップロード、またはテキストを直接貼り付け" },
+  "essence.guide.step1": { en: "Upload a screenshot of your textbook, MCQ, or TBS — or paste the text directly", es: "Sube una captura de tu libro, MCQ o TBS — o pega el texto directamente", ja: "テキストブック、MCQ、TBSのスクリーンショットをアップロード、またはテキストを直接貼り付け" },
   "essence.guide.step2": { en: "Click \"Extract Insights with AI\" — AI reads the content and identifies exam-critical insights", es: "Haz clic en \"Extraer con IA\" — la IA lee el contenido e identifica ideas críticas para el examen", ja: "「AIで要点を抽出」をクリック — AIが内容を分析し、試験に重要な要点を特定" },
   "essence.guide.step3": { en: "Review the results and save the insights you want. They're organized by type for easy review", es: "Revisa los resultados y guarda las ideas que quieras. Se organizan por tipo para repaso fácil", ja: "結果を確認して保存したい要点を選択。種類別に整理され復習しやすい" },
   "essence.guide.insightTypesTitle": { en: "4 Insight Types", es: "4 tipos de insights", ja: "4つのカテゴリ" },
   "essence.guide.conceptDesc": { en: "The WHY behind accounting rules", es: "El PORQUÉ detrás de las reglas contables", ja: "会計ルールの「なぜ」" },
   "essence.guide.frameworkDesc": { en: "Step-by-step decision trees", es: "Árboles de decisión paso a paso", ja: "ステップバイステップの判断フロー" },
   "essence.guide.trapDesc": { en: "Where candidates lose points", es: "Donde los candidatos pierden puntos", ja: "受験者が失点しやすいポイント" },
-  "essence.guide.ruleDesc": { en: "Thresholds & mnemonics", es: "Umbrales y mnemotécnicos", ja: "数値基準と暗記法" },
+  "essence.guide.ruleDesc": { en: "Thresholds & mnemonics", es: "Umbrales y mnemotécnicos", ja: "閾値と記憶術" },
   "essence.guide.examplesTitle": { en: "Example Generated Notes", es: "Ejemplos de notas generadas", ja: "生成されたノートの例" },
   "essence.guide.examplesFooter": { en: "↑ These are examples. Your actual content will generate insights specific to the material you upload.", es: "↑ Estos son ejemplos. Tu contenido real generará insights específicos para el material que subas.", ja: "↑ これらは例です。実際にアップロードした教材に応じた要点が生成されます。" },
 
@@ -558,7 +558,7 @@ const translations = {
   "settings.reviewAlerts": { en: "Review alerts", es: "Alertas de repaso", ja: "復習アラート" },
   "settings.weeklyReport": { en: "Weekly progress report", es: "Informe semanal de progreso", ja: "週間進捗レポート" },
   "settings.streakNotifications": { en: "Streak notifications", es: "Notificaciones de racha", ja: "連続学習の通知" },
-  "settings.milestoneNotifications": { en: "Milestone notifications", es: "Notificaciones de hitos", ja: "達成通知" },
+  "settings.milestoneNotifications": { en: "Milestone notifications", es: "Notificaciones de hitos", ja: "マイルストーン通知" },
   "settings.notifBlocked": { en: "Notifications are blocked. Please enable them in your browser settings.", es: "Las notificaciones están bloqueadas. Habilítalas en la configuración de tu navegador.", ja: "通知がブロックされています。ブラウザの設定で有効にしてください。" },
 
   // Notification content
@@ -566,11 +566,11 @@ const translations = {
   "notif.review.body": { en: "{count} chapters need review. Lowest: {chapter} at {retention}%", es: "{count} capítulos necesitan repaso. Más bajo: {chapter} al {retention}%", ja: "{count}チャプターの復習が必要。最低: {chapter}（{retention}%）" },
   "notif.streak.title": { en: "Streak at Risk!", es: "Racha en riesgo!", ja: "連続記録が危険！" },
   "notif.streak.body": { en: "Your {streak}-day streak is at risk! Study today to keep it going.", es: "Tu racha de {streak} días está en riesgo! Estudia hoy para mantenerla.", ja: "{streak}日連続の記録が途切れそうです！今日学習して継続しましょう。" },
-  "notif.weekly.title": { en: "Weekly Summary", es: "Resumen semanal", ja: "週間まとめ" },
+  "notif.weekly.title": { en: "Weekly Summary", es: "Resumen semanal", ja: "週間サマリー" },
   "notif.weekly.body": { en: "Last week: {hours}h, {sessions} sessions, {accuracy}% accuracy", es: "Semana pasada: {hours}h, {sessions} sesiones, {accuracy}% precisión", ja: "先週: {hours}時間、{sessions}セッション、正答率{accuracy}%" },
   "notif.milestone.streak": { en: "You've maintained a {n}-day streak!", es: "Has mantenido una racha de {n} días!", ja: "{n}日連続学習を達成しました！" },
   "notif.milestone.hours": { en: "You've studied for {n} hours total!", es: "Has estudiado {n} horas en total!", ja: "累計{n}時間の学習を達成しました！" },
-  "notif.milestone.title": { en: "Milestone Reached!", es: "Hito alcanzado!", ja: "目標達成！" },
+  "notif.milestone.title": { en: "Milestone Reached!", es: "Hito alcanzado!", ja: "マイルストーン達成！" },
   "settings.saved": { en: "Saved!", es: "¡Guardado!", ja: "保存しました！" },
   "settings.saveChanges": { en: "Save Changes", es: "Guardar cambios", ja: "変更を保存" },
   "settings.changePassword": { en: "Change Password", es: "Cambiar contraseña", ja: "パスワード変更" },
@@ -672,7 +672,7 @@ const translations = {
   "analytics.retention.help.predicted": { en: "Predicted", es: "Predicho", ja: "予測値" },
   "analytics.retention.help.actual": { en: "Actual", es: "Real", ja: "実際値" },
   "analytics.retention.help.gap": { en: "Gap", es: "Diferencia", ja: "差分" },
-  "analytics.retention.help.action": { en: "Action", es: "Acción", ja: "対応" },
+  "analytics.retention.help.action": { en: "Action", es: "Acción", ja: "アクション" },
   "analytics.retention.help.predictedDesc": { en: "Estimated retention based on the forgetting curve algorithm.", es: "Retención estimada por la curva del olvido.", ja: "忘却曲線に基づく推定値。" },
   "analytics.retention.help.actualDesc": { en: "Your actual self-rating when reviewing in the Review tab.", es: "Tu calificación real al repasar en la pestaña Review.", ja: "復習タブでの自己評価の結果。" },
   "analytics.retention.help.gapDesc": { en: "Difference between predicted and actual. Positive = better than expected.", es: "Diferencia entre predicho y real. Positivo = mejor de lo esperado.", ja: "予測と実際の差。プラスなら予想より良い結果。" },
@@ -709,7 +709,7 @@ const translations = {
   "tour.step3.title": { en: "Chapters — Your Study Hub", es: "Capítulos — Tu centro de estudio", ja: "チャプター — 学習の中心" },
   "tour.step3.desc": { en: "All chapters organized by exam section (FAR, AUD, REG, etc.). Tap any chapter to open its detail page where you can:\n• Record study sessions (hours, MC/TBS questions)\n• Save key insights with AI-powered Essence Notes\n• Track accuracy and study time per chapter", es: "Todos los capítulos organizados por sección (FAR, AUD, REG, etc.). Toca cualquier capítulo para:\n• Registrar sesiones de estudio (horas, preguntas MC/TBS)\n• Guardar ideas clave con Notas Esenciales con IA\n• Rastrear precisión y tiempo por capítulo", ja: "試験セクション別（FAR、AUD、REGなど）に整理された全チャプター。チャプターをタップして詳細ページを開くと：\n• 学習セッションの記録（時間、MC/TBS問題数）\n• AI搭載のエッセンスノートで重要ポイントを保存\n• チャプター別の正答率と学習時間を追跡" },
   "tour.step4.title": { en: "Study Log — Record Every Session", es: "Registro — Registra cada sesión", ja: "学習記録 — すべてのセッションを記録" },
-  "tour.step4.desc": { en: "Your complete study history. Each entry tracks date, hours, MC/TBS questions, and accuracy.\n• Click \"New Entry\" to add a session\n• Weekly Summary shows study patterns and trends\n• Charts visualize your study hours by section", es: "Tu historial completo de estudio. Cada entrada registra fecha, horas, preguntas MC/TBS y precisión.\n• Haz clic en \"Nueva entrada\" para agregar una sesión\n• El Resumen Semanal muestra patrones y tendencias\n• Los gráficos visualizan tus horas por sección", ja: "完全な学習履歴。各記録は日付、時間、MC/TBS問題数、正答率を記録。\n• 「新規記録」をクリックしてセッションを追加\n• 週間まとめで学習パターンと傾向を確認\n• チャートでセクション別の学習時間を可視化" },
+  "tour.step4.desc": { en: "Your complete study history. Each entry tracks date, hours, MC/TBS questions, and accuracy.\n• Click \"New Entry\" to add a session\n• Weekly Summary shows study patterns and trends\n• Charts visualize your study hours by section", es: "Tu historial completo de estudio. Cada entrada registra fecha, horas, preguntas MC/TBS y precisión.\n• Haz clic en \"Nueva entrada\" para agregar una sesión\n• El Resumen Semanal muestra patrones y tendencias\n• Los gráficos visualizan tus horas por sección", ja: "完全な学習履歴。各エントリーは日付、時間、MC/TBS問題数、正答率を記録。\n• 「新規記録」をクリックしてセッションを追加\n• 週間サマリーで学習パターンとトレンドを確認\n• チャートでセクション別の学習時間を可視化" },
   "tour.step5.title": { en: "Practice Exam — Simulate Test Day", es: "Examen de práctica — Simula el día del examen", ja: "模擬試験 — 本番をシミュレーション" },
   "tour.step5.desc": { en: "Log your mock exam scores by section, tracking MC and TBS results separately.\n• Click \"Add Result\" to record a practice exam\n• Score trend chart shows improvement over time\n• Aim for 75+ on practice exams to be exam-ready!", es: "Registra tus puntuaciones por sección, con resultados MC y TBS separados.\n• Haz clic en \"Agregar resultado\" para registrar un examen\n• El gráfico de tendencia muestra tu mejora\n• ¡Apunta a 75+ en exámenes de práctica!", ja: "セクション別の模擬試験スコアをMCとTBSに分けて記録。\n• 「結果を追加」をクリックして模擬試験を記録\n• スコア推移チャートで改善を確認\n• 模擬試験で75以上を目指しましょう！" },
   "tour.step6.title": { en: "Review — Beat the Forgetting Curve", es: "Repaso — Vence la curva del olvido", ja: "復習 — 忘却曲線に打ち勝つ" },
