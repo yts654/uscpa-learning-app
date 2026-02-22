@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { type RiskItem, type RiskLevel } from "@/lib/analytics-engine"
 import { useLanguage } from "@/lib/i18n"
-import { AlertTriangle, AlertCircle, Info, ShieldCheck } from "lucide-react"
+import { AlertTriangle, AlertCircle, Info, ShieldCheck, HelpCircle, X } from "lucide-react"
 
 interface RiskRadarCardProps {
   risks: RiskItem[]
@@ -30,17 +31,64 @@ const LEVEL_CONFIG: Record<RiskLevel, { icon: typeof AlertTriangle; color: strin
 }
 
 export function RiskRadarCard({ risks }: RiskRadarCardProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const [showHelp, setShowHelp] = useState(false)
+
+  const helpItems = locale === "es" ? [
+    { icon: AlertTriangle, color: "hsl(0, 65%, 45%)", label: "Deuda de repaso", desc: "Capítulos con retención <30% que necesitan revisión urgente." },
+    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Riesgo de atracón", desc: "Demasiado material nuevo sin suficiente repaso." },
+    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Estancamiento", desc: "Capítulos sin mejora de precisión a pesar de repasos repetidos." },
+    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Capítulos sin tocar", desc: "Porcentaje alto de capítulos aún no estudiados." },
+    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Variación de estudio", desc: "Horario de estudio inconsistente semana a semana." },
+  ] : [
+    { icon: AlertTriangle, color: "hsl(0, 65%, 45%)", label: "Review Debt", desc: "Chapters with retention below 30% that need urgent review." },
+    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Cramming Risk", desc: "Too much new material without enough review sessions." },
+    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Stagnation", desc: "Chapters with no accuracy improvement despite repeated reviews." },
+    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Untouched Chapters", desc: "High percentage of chapters not yet studied before exam." },
+    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Study Variance", desc: "Inconsistent weekly study schedule (high hour variation)." },
+  ]
 
   return (
     <div className="bg-card rounded-xl border border-border p-6">
       <div className="flex items-center gap-3 mb-4">
         <AlertTriangle className="w-4 h-4 text-muted-foreground" />
-        <div>
+        <div className="flex-1">
           <h3 className="text-sm font-semibold text-card-foreground">{t("analytics.risk.title")}</h3>
           <p className="text-xs text-muted-foreground">{t("analytics.risk.subtitle")}</p>
         </div>
+        <button
+          onClick={() => setShowHelp(!showHelp)}
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+          title={locale === "es" ? "Ver guía" : "How to read"}
+        >
+          {showHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
+        </button>
       </div>
+
+      {showHelp && (
+        <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-3">
+          <p className="text-xs font-semibold text-card-foreground">
+            {locale === "es" ? "Risk Radar analiza tus patrones de estudio y detecta 5 tipos de riesgo:" : "Risk Radar analyzes your study patterns and detects 5 risk types:"}
+          </p>
+          {helpItems.map((item) => {
+            const Icon = item.icon
+            return (
+              <div key={item.label} className="flex items-start gap-2">
+                <Icon className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style={{ color: item.color }} />
+                <div>
+                  <span className="text-xs font-semibold text-card-foreground">{item.label}</span>
+                  <p className="text-xs text-muted-foreground">{item.desc}</p>
+                </div>
+              </div>
+            )
+          })}
+          <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
+            {locale === "es"
+              ? "Los niveles van de Critical (rojo) → Warning (naranja) → Info (azul). Cada riesgo incluye una acción recomendada."
+              : "Severity levels: Critical (red) → Warning (orange) → Info (blue). Each risk includes a recommended action."}
+          </p>
+        </div>
+      )}
 
       {risks.length === 0 ? (
         <div className="flex items-center gap-3 py-8 justify-center">
