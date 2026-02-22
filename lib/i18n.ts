@@ -741,6 +741,8 @@ const translations = {
   "paywall.benefit3Desc": { en: "Personalized study schedule optimized for your exam date", es: "Horario personalizado optimizado para tu fecha de examen", ja: "試験日に合わせた最適な学習スケジュール" },
   "paywall.cta": { en: "Upgrade to Pro", es: "Actualizar a Pro", ja: "Proにアップグレード" },
   "paywall.price": { en: "¥980/month — Cancel anytime", es: "¥980/mes — Cancela cuando quieras", ja: "月額980円 — いつでも解約可能" },
+  "paywall.comingSoon": { en: "Pro Plan — Coming Soon", es: "Plan Pro — Próximamente", ja: "Proプラン — 近日公開" },
+  "paywall.comingSoonDesc": { en: "Pro subscriptions will be available soon. Stay tuned!", es: "Las suscripciones Pro estarán disponibles pronto.", ja: "Proプランは近日公開予定です。お楽しみに！" },
 
   // ─── Pricing Page ───
   "pricing.perMonth": { en: "month", es: "mes", ja: "月" },
@@ -765,6 +767,7 @@ const translations = {
   "pricing.backToApp": { en: "Back to app", es: "Volver a la app", ja: "アプリに戻る" },
   "pricing.login": { en: "Log in", es: "Iniciar sesión", ja: "ログイン" },
   "pricing.signUpFirst": { en: "Sign up to subscribe", es: "Regístrate para suscribirte", ja: "登録してサブスク開始" },
+  "pricing.comingSoon": { en: "Coming Soon", es: "Próximamente", ja: "近日公開" },
 
   // ─── Landing Page ───
   "lp.features": { en: "Features", es: "Funciones", ja: "機能" },
@@ -802,6 +805,7 @@ const translations = {
   "settings.usageThisMonth": { en: "This month", es: "Este mes", ja: "今月の使用量" },
   "settings.manageSub": { en: "Manage", es: "Gestionar", ja: "管理" },
   "settings.upgrade": { en: "Upgrade", es: "Actualizar", ja: "アップグレード" },
+  "settings.comingSoon": { en: "Pro — Coming Soon", es: "Pro — Próximamente", ja: "Pro — 近日公開" },
 
   // ─── Legal ───
   "legal.backHome": { en: "Back", es: "Volver", ja: "戻る" },

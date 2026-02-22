@@ -90,21 +90,14 @@ export function PaywallDialog({ open, onClose, reason }: PaywallDialogProps) {
         {/* CTA */}
         <div className="px-6 pb-6 pt-2">
           <button
-            onClick={handleUpgrade}
-            disabled={loading}
-            className="w-full py-3 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+            disabled
+            className="w-full py-3 rounded-xl bg-primary/50 text-primary-foreground text-sm font-bold transition-all disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {loading ? (
-              <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4" />
-                {t("paywall.cta")}
-              </>
-            )}
+            <Sparkles className="w-4 h-4" />
+            {t("paywall.comingSoon")}
           </button>
           <p className="text-[10px] text-muted-foreground text-center mt-3">
-            {t("paywall.price")}
+            {t("paywall.comingSoonDesc")}
           </p>
         </div>
       </div>

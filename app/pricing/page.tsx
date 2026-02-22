@@ -138,18 +138,11 @@ export default function PricingPage() {
 
               {plan.highlighted ? (
                 <button
-                  onClick={session ? handleUpgrade : undefined}
-                  disabled={loading}
-                  className="w-full py-3 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                  disabled
+                  className="w-full py-3 rounded-xl bg-primary/50 text-primary-foreground text-sm font-bold transition-all disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {loading ? (
-                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      {session ? plan.cta : t("pricing.signUpFirst")}
-                    </>
-                  )}
+                  <Sparkles className="w-4 h-4" />
+                  {t("pricing.comingSoon")}
                 </button>
               ) : (
                 <Link
