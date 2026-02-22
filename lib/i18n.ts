@@ -30,7 +30,7 @@ const translations = {
   "nav.analytics.desc": {
     en: "Performance analysis and trends",
     es: "Análisis de rendimiento y tendencias",
-    ja: "パフォーマンス分析とトレンド",
+    ja: "学習成績の分析と傾向",
   },
   "nav.settings.desc": {
     en: "Profile and configuration",
@@ -74,8 +74,8 @@ const translations = {
 
   // Alert criteria
   "review.criteria.alerts.title": { en: "Alert Criteria", es: "Criterios de alerta", ja: "アラート基準" },
-  "review.criteria.alerts.desc": { en: "Retention is calculated automatically from review count and elapsed days", es: "La retención se calcula automáticamente a partir del número de repasos y los días transcurridos", ja: "保持率は復習回数と経過日数から自動計算されます" },
-  "review.criteria.alerts.overdue.label": { en: "Overdue — Retention below 30%", es: "Vencido — Retención por debajo del 30%", ja: "期限超過 — 保持率30%未満" },
+  "review.criteria.alerts.desc": { en: "Retention is calculated automatically from review count and elapsed days", es: "La retención se calcula automáticamente a partir del número de repasos y los días transcurridos", ja: "定着率は復習回数と経過日数から自動計算されます" },
+  "review.criteria.alerts.overdue.label": { en: "Overdue — Retention below 30%", es: "Vencido — Retención por debajo del 30%", ja: "期限超過 — 定着率30%未満" },
   "review.criteria.alerts.overdue.desc": { en: "Memory has significantly faded. Review immediately.", es: "La memoria se ha debilitado significativamente. Repasa de inmediato.", ja: "記憶が大幅に薄れています。すぐに復習してください。" },
   "review.criteria.alerts.dueToday.label": { en: "Due Today — Next review date is today or earlier", es: "Para hoy — La próxima fecha de repaso es hoy o anterior", ja: "本日期限 — 次の復習日が今日以前" },
   "review.criteria.alerts.dueToday.desc": { en: "Scheduled review timing has arrived.", es: "Ha llegado el momento programado de repaso.", ja: "予定された復習のタイミングです。" },
@@ -86,11 +86,11 @@ const translations = {
   "review.criteria.mastery.title": { en: "Mastery Levels", es: "Niveles de dominio", ja: "習熟レベル" },
   "review.criteria.mastery.new": { en: "Not studied", es: "No estudiado", ja: "未学習" },
   "review.criteria.mastery.learning": { en: "1-2 reviews", es: "1-2 repasos", ja: "1〜2回復習" },
-  "review.criteria.mastery.reviewing": { en: "3-4 reviews or 5+ with retention ≤50%", es: "3-4 repasos o 5+ con retención ≤50%", ja: "3〜4回復習、または5回以上で保持率50%以下" },
-  "review.criteria.mastery.mastered": { en: "5+ reviews and retention >50%", es: "5+ repasos y retención >50%", ja: "5回以上復習かつ保持率50%超" },
+  "review.criteria.mastery.reviewing": { en: "3-4 reviews or 5+ with retention ≤50%", es: "3-4 repasos o 5+ con retención ≤50%", ja: "3〜4回復習、または5回以上で定着率50%以下" },
+  "review.criteria.mastery.mastered": { en: "5+ reviews and retention >50%", es: "5+ repasos y retención >50%", ja: "5回以上復習かつ定着率50%超" },
 
   // Retention colors
-  "review.criteria.retention.title": { en: "Retention Color Scale", es: "Escala de colores de retención", ja: "保持率カラースケール" },
+  "review.criteria.retention.title": { en: "Retention Color Scale", es: "Escala de colores de retención", ja: "定着率の色分け" },
   "review.criteria.retention.stable": { en: "Stable", es: "Estable", ja: "安定" },
   "review.criteria.retention.good": { en: "Good", es: "Bueno", ja: "良好" },
   "review.criteria.retention.caution": { en: "Caution", es: "Precaución", ja: "注意" },
@@ -98,7 +98,7 @@ const translations = {
 
   // Review alerts
   "review.alert.title": { en: "Review Alert", es: "Alerta de repaso", ja: "復習アラート" },
-  "review.alert.retention": { en: "Retention", es: "Retención", ja: "保持率" },
+  "review.alert.retention": { en: "Retention", es: "Retención", ja: "定着率" },
   "review.alert.daysAgo": { en: "days ago", es: "días atrás", ja: "日前" },
   "review.alert.overdue": { en: "Needs review", es: "Necesita repaso", ja: "要復習" },
   "review.alert.dueToday": { en: "Review today", es: "Repasar hoy", ja: "今日復習" },
@@ -115,16 +115,16 @@ const translations = {
 
   // Forgetting Curve help
   "review.curveHelp.whatTitle": { en: "What is this chart?", es: "¿Qué es este gráfico?", ja: "このグラフについて" },
-  "review.curveHelp.whatDesc": { en: "This shows how your memory of each chapter fades over time (the \"forgetting curve\"). The Y-axis is retention %, and the X-axis is days since your last study session. Each line represents one chapter.", es: "Muestra cómo tu memoria de cada capítulo se desvanece con el tiempo (la \"curva del olvido\"). El eje Y es el % de retención y el eje X son los días desde tu última sesión de estudio. Cada línea representa un capítulo.", ja: "各チャプターの記憶が時間とともにどのように薄れていくか（「忘却曲線」）を示しています。Y軸は保持率（%）、X軸は最後の学習からの経過日数です。各線が1つのチャプターを表します。" },
+  "review.curveHelp.whatDesc": { en: "This shows how your memory of each chapter fades over time (the \"forgetting curve\"). The Y-axis is retention %, and the X-axis is days since your last study session. Each line represents one chapter.", es: "Muestra cómo tu memoria de cada capítulo se desvanece con el tiempo (la \"curva del olvido\"). El eje Y es el % de retención y el eje X son los días desde tu última sesión de estudio. Cada línea representa un capítulo.", ja: "各チャプターの記憶が時間とともにどのように薄れていくか（「忘却曲線」）を示しています。Y軸は定着率（%）、X軸は最後の学習からの経過日数です。各線が1つのチャプターを表します。" },
   "review.curveHelp.howTitle": { en: "How to read it", es: "Cómo interpretarlo", ja: "読み方" },
   "review.curveHelp.how1": { en: "• Click a chapter chip below to see its individual curve. The solid line shows your current decay rate; the dashed line shows how it would improve after one more review.", es: "• Haz clic en un chip de capítulo para ver su curva individual. La línea sólida muestra tu tasa de decaimiento actual; la línea punteada muestra cómo mejoraría después de un repaso más.", ja: "• 下のチャプターチップをクリックすると個別の曲線が表示されます。実線は現在の減衰率、破線は次の復習後の改善予測です。" },
-  "review.curveHelp.how2": { en: "• The colored dot marks where you are today — your current retention level and how many days have passed since you last studied that chapter.", es: "• El punto de color marca dónde estás hoy: tu nivel de retención actual y cuántos días han pasado desde que estudiaste ese capítulo.", ja: "• 色付きのドットは現在の位置を示します — 現在の保持率と最後にそのチャプターを学習してからの経過日数です。" },
+  "review.curveHelp.how2": { en: "• The colored dot marks where you are today — your current retention level and how many days have passed since you last studied that chapter.", es: "• El punto de color marca dónde estás hoy: tu nivel de retención actual y cuántos días han pasado desde que estudiaste ese capítulo.", ja: "• 色付きのドットは現在の位置を示します — 現在の定着率と最後にそのチャプターを学習してからの経過日数です。" },
   "review.curveHelp.how3": { en: "• Chapters with more reviews have flatter curves (slower forgetting). Each review strengthens memory and extends the time before the next review is needed.", es: "• Los capítulos con más repasos tienen curvas más planas (olvido más lento). Cada repaso fortalece la memoria y extiende el tiempo antes de que se necesite el siguiente repaso.", ja: "• 復習回数が多いチャプターほど曲線が緩やかになります（忘却が遅い）。復習するたびに記憶が強化され、次の復習までの時間が延びます。" },
   "review.curveHelp.actionTitle": { en: "What should I do?", es: "¿Qué debo hacer?", ja: "何をすべき？" },
-  "review.curveHelp.actionDesc": { en: "Review chapters before they drop below 30% retention (the danger zone). Chapters marked with a warning icon are overdue or due today — prioritize those first. Use the Recall Rating buttons to log how well you remember each chapter.", es: "Repasa los capítulos antes de que caigan por debajo del 30% de retención (zona de peligro). Los capítulos marcados con icono de advertencia están vencidos o vencen hoy — prioriza esos primero. Usa los botones de Recall Rating para registrar qué tan bien recuerdas cada capítulo.", ja: "保持率が30%（危険ゾーン）を下回る前にチャプターを復習しましょう。警告アイコンが付いているチャプターは期限超過または本日期限です — それらを優先してください。Recall Ratingボタンで各チャプターの記憶度を記録しましょう。" },
+  "review.curveHelp.actionDesc": { en: "Review chapters before they drop below 30% retention (the danger zone). Chapters marked with a warning icon are overdue or due today — prioritize those first. Use the Recall Rating buttons to log how well you remember each chapter.", es: "Repasa los capítulos antes de que caigan por debajo del 30% de retención (zona de peligro). Los capítulos marcados con icono de advertencia están vencidos o vencen hoy — prioriza esos primero. Usa los botones de Recall Rating para registrar qué tan bien recuerdas cada capítulo.", ja: "定着率が30%（危険ゾーン）を下回る前にチャプターを復習しましょう。警告アイコンが付いているチャプターは期限超過または本日期限です — それらを優先してください。Recall Ratingボタンで各チャプターの記憶度を記録しましょう。" },
 
   // Review detail labels
-  "review.detail.retention": { en: "Retention", es: "Retención", ja: "保持率" },
+  "review.detail.retention": { en: "Retention", es: "Retención", ja: "定着率" },
   "review.detail.reviewCount": { en: "Review Count", es: "Número de repasos", ja: "復習回数" },
   "review.detail.reviewCountUnit": { en: "times", es: "veces", ja: "回" },
   "review.detail.lastStudied": { en: "Last Studied", es: "Último estudio", ja: "最終学習" },
@@ -133,13 +133,13 @@ const translations = {
   "review.detail.reviewsSuffix": { en: " reviews", es: " repasos", ja: "回復習" },
 
   // Review header
-  "review.header.desc": { en: "Based on the Ebbinghaus forgetting curve. Chapters are ranked by memory retention — review overdue items first to maximize long-term recall.", es: "Basado en la curva del olvido de Ebbinghaus. Los capítulos se ordenan por retención de memoria — repasa primero los vencidos para maximizar la retención a largo plazo.", ja: "エビングハウスの忘却曲線に基づいています。チャプターは記憶保持率順に並んでいます — 長期記憶を最大化するため、期限超過のものから優先的に復習しましょう。" },
+  "review.header.desc": { en: "Based on the Ebbinghaus forgetting curve. Chapters are ranked by memory retention — review overdue items first to maximize long-term recall.", es: "Basado en la curva del olvido de Ebbinghaus. Los capítulos se ordenan por retención de memoria — repasa primero los vencidos para maximizar la retención a largo plazo.", ja: "エビングハウスの忘却曲線に基づいています。チャプターは記憶定着率順に並んでいます — 長期記憶を最大化するため、期限超過のものから優先的に復習しましょう。" },
 
   // Review urgency groups
-  "review.group.overdue.desc": { en: "Retention below 30% — review immediately", es: "Retención por debajo del 30% — repasa de inmediato", ja: "保持率30%未満 — すぐに復習" },
+  "review.group.overdue.desc": { en: "Retention below 30% — review immediately", es: "Retención por debajo del 30% — repasa de inmediato", ja: "定着率30%未満 — すぐに復習" },
   "review.group.dueToday.desc": { en: "Scheduled for review today", es: "Programado para repasar hoy", ja: "本日復習予定" },
   "review.group.comingUp.desc": { en: "Due within the next 7 days", es: "Pendiente en los próximos 7 días", ja: "7日以内に復習予定" },
-  "review.group.wellRetained.desc": { en: "Retention above 70% — no rush", es: "Retención por encima del 70% — sin prisa", ja: "保持率70%以上 — 急ぎません" },
+  "review.group.wellRetained.desc": { en: "Retention above 70% — no rush", es: "Retención por encima del 70% — sin prisa", ja: "定着率70%以上 — 急ぎません" },
   "review.group.notStudied.desc": { en: "Start studying to begin tracking retention", es: "Comienza a estudiar para empezar a rastrear la retención", ja: "学習を始めると定着度の確認ができます" },
 
   // Mock Exams — nav
@@ -192,14 +192,14 @@ const translations = {
   // Review — summary strip labels
   "review.summary.studied": { en: "Studied", es: "Estudiado", ja: "学習済み" },
   "review.summary.overdue": { en: "Overdue", es: "Vencido", ja: "期限超過" },
-  "review.summary.avgRetention": { en: "Avg Retention", es: "Retención prom.", ja: "平均保持率" },
+  "review.summary.avgRetention": { en: "Avg Retention", es: "Retención prom.", ja: "平均定着率" },
   "review.summary.mastered": { en: "Mastered", es: "Dominado", ja: "習得済み" },
 
   // Review — urgency group labels
   "review.group.overdue.label": { en: "Overdue", es: "Vencido", ja: "期限超過" },
   "review.group.dueToday.label": { en: "Due Today", es: "Para hoy", ja: "本日期限" },
   "review.group.comingUp.label": { en: "Coming Up", es: "Próximamente", ja: "まもなく" },
-  "review.group.wellRetained.label": { en: "Well Retained", es: "Bien retenido", ja: "良好な保持" },
+  "review.group.wellRetained.label": { en: "Well Retained", es: "Bien retenido", ja: "定着良好" },
   "review.group.notStudied.label": { en: "Not Yet Studied", es: "Aún no estudiado", ja: "未学習" },
 
   // Review — alert section
@@ -222,11 +222,11 @@ const translations = {
 
   // ── Analytics ─────────────────────────────────────────────────
   "analytics.title": { en: "Analytics", es: "Analíticas", ja: "分析" },
-  "analytics.subtitle": { en: "Strategic insights to guide your study decisions.", es: "Información estratégica para guiar tus decisiones de estudio.", ja: "学習の意思決定をガイドする戦略的インサイト。" },
+  "analytics.subtitle": { en: "Strategic insights to guide your study decisions.", es: "Información estratégica para guiar tus decisiones de estudio.", ja: "学習方針に役立つ分析データ。" },
 
   // Pace Engine
   "analytics.pace.title": { en: "Goal Pace", es: "Ritmo del objetivo", ja: "目標ペース" },
-  "analytics.pace.subtitle": { en: "Required vs actual weekly pace toward your exam date", es: "Ritmo semanal requerido vs real hacia tu fecha de examen", ja: "試験日に向けた必要ペースと実際のペースの比較" },
+  "analytics.pace.subtitle": { en: "Required vs actual weekly pace toward your exam date", es: "Ritmo semanal requerido vs real hacia tu fecha de examen", ja: "試験日までに必要な学習量と実績の比較" },
   "analytics.pace.remaining": { en: "Remaining", es: "Restante", ja: "残り" },
   "analytics.pace.chapters": { en: "chapters", es: "capítulos", ja: "チャプター" },
   "analytics.pace.estimatedHours": { en: "Est. hours left", es: "Horas est. restantes", ja: "推定残り時間" },
@@ -269,7 +269,7 @@ const translations = {
 
   // Allocation Optimizer
   "analytics.allocation.title": { en: "Weekly Strategy", es: "Estrategia semanal", ja: "週間戦略" },
-  "analytics.allocation.subtitle": { en: "Recommended time allocation adjustments", es: "Ajustes recomendados de distribución de tiempo", ja: "推奨される時間配分の調整" },
+  "analytics.allocation.subtitle": { en: "Recommended time allocation adjustments", es: "Ajustes recomendados de distribución de tiempo", ja: "おすすめの時間配分" },
   "analytics.allocation.section": { en: "Section", es: "Sección", ja: "セクション" },
   "analytics.allocation.current": { en: "Current", es: "Actual", ja: "現在" },
   "analytics.allocation.recommended": { en: "Recommended", es: "Recomendado", ja: "推奨" },
@@ -290,7 +290,7 @@ const translations = {
 
   // Drill-Down
   "analytics.drilldown.title": { en: "Chapter Detail", es: "Detalle del capítulo", ja: "チャプター詳細" },
-  "analytics.drilldown.subtitle": { en: "Accuracy trend per chapter over time", es: "Tendencia de precisión por capítulo a lo largo del tiempo", ja: "チャプター別の正答率推移" },
+  "analytics.drilldown.subtitle": { en: "Accuracy trend per chapter over time", es: "Tendencia de precisión por capítulo a lo largo del tiempo", ja: "チャプターごとの正答率の推移" },
 
   // ── Review Recall Rating ──────────────────────────────────────
   "review.recall.title": { en: "How well did you recall?", es: "¿Qué tan bien recordaste?", ja: "どのくらい覚えていましたか？" },
@@ -324,7 +324,7 @@ const translations = {
 
   // ── Dashboard ───────────────────────────────────────────────────
   "dashboard.title": { en: "Study Overview", es: "Resumen de estudio", ja: "学習概要" },
-  "dashboard.subtitle": { en: "Track your USCPA exam preparation progress across all sections.", es: "Sigue el progreso de tu preparación para el examen USCPA en todas las secciones.", ja: "全セクションにわたるUSCPA試験準備の進捗を確認。" },
+  "dashboard.subtitle": { en: "Track your USCPA exam preparation progress across all sections.", es: "Sigue el progreso de tu preparación para el examen USCPA en todas las secciones.", ja: "USCPA全セクションの学習進捗をまとめて確認。" },
   "dashboard.totalStudyHours": { en: "Total Study Hours", es: "Horas totales de estudio", ja: "合計学習時間" },
   "dashboard.daysActive": { en: "days active", es: "días activos", ja: "日間学習" },
   "dashboard.studyStreak": { en: "Study Streak", es: "Racha de estudio", ja: "連続学習日数" },
@@ -339,7 +339,7 @@ const translations = {
   "dashboard.chaptersStudied": { en: "chapters studied", es: "capítulos estudiados", ja: "チャプター学習済み" },
   "dashboard.recentStudySessions": { en: "Recent Study Sessions", es: "Sesiones de estudio recientes", ja: "最近の学習セッション" },
   "dashboard.viewAllLogs": { en: "View all study logs", es: "Ver todos los registros", ja: "すべての学習記録を見る" },
-  "dashboard.recentInsights": { en: "Recent Insights", es: "Notas recientes", ja: "最近のインサイト" },
+  "dashboard.recentInsights": { en: "Recent Insights", es: "Notas recientes", ja: "最近の重要ポイント" },
   "dashboard.noEssenceNotes": { en: "No essence notes yet for this section.", es: "Aún no hay notas para esta sección.", ja: "このセクションのエッセンスノートはまだありません。" },
   "dashboard.viewChapters": { en: "View chapters", es: "Ver capítulos", ja: "チャプターを見る" },
   "dashboard.today": { en: "Today", es: "Hoy", ja: "今日" },
@@ -347,7 +347,7 @@ const translations = {
 
   // Dashboard review help
   "dashboard.reviewHelp.title": { en: "Chapters that most need review right now:", es: "Capítulos que más necesitan repaso ahora:", ja: "今すぐ復習が必要なチャプター:" },
-  "dashboard.reviewHelp.retentionBar": { en: "Retention Bar", es: "Barra de retención", ja: "保持率バー" },
+  "dashboard.reviewHelp.retentionBar": { en: "Retention Bar", es: "Barra de retención", ja: "定着率ゲージ" },
   "dashboard.reviewHelp.retentionBarDesc": { en: "How much you remember. Red = urgent, green = well retained.", es: "Cuánto recuerdas del capítulo. Rojo = urgente, verde = bien retenido.", ja: "どれくらい覚えているか。赤 = 緊急、緑 = よく保持。" },
   "dashboard.reviewHelp.masteryLevel": { en: "Mastery Level", es: "Nivel de dominio", ja: "習熟度" },
   "dashboard.reviewHelp.masteryLevelDesc": { en: "New → Learning → Reviewing → Mastered. Based on how many times you've reviewed.", es: "New → Learning → Reviewing → Mastered. Basado en cuántas veces has repasado.", ja: "New → Learning → Reviewing → Mastered。復習回数に基づく。" },
@@ -485,7 +485,7 @@ const translations = {
   "essence.pastePlaceholder": { en: "Paste the question, options, and explanation as-is.\nExample:\nWhich of the following is correct regarding...\nA. ...\nB. ...\nC. ...\nD. ...\n\nExplanation: The correct answer is B because...", es: "Pega la pregunta, opciones y explicación tal cual.\nEjemplo:\n¿Cuál de las siguientes es correcta respecto a...?\nA. ...\nB. ...\nC. ...\nD. ...\n\nExplicación: La respuesta correcta es B porque...", ja: "問題文、選択肢、解説をそのまま貼り付けてください。\n例:\n次のうち正しいものはどれか...\nA. ...\nB. ...\nC. ...\nD. ...\n\n解説: 正解はBです。なぜなら..." },
   "essence.chars": { en: "chars", es: "caracteres", ja: "文字" },
   "essence.analyzing": { en: "Analyzing...", es: "Analizando...", ja: "分析中..." },
-  "essence.extractInsights": { en: "Extract Insights with AI", es: "Extraer con IA", ja: "AIでインサイトを抽出" },
+  "essence.extractInsights": { en: "Extract Insights with AI", es: "Extraer con IA", ja: "AIで要点を抽出" },
   "essence.imageTime": { en: "(1-2 min)", es: "(1-2 min)", ja: "（1〜2分）" },
   "essence.textTime": { en: "(30s-1 min)", es: "(30s-1 min)", ja: "（30秒〜1分）" },
   "essence.aiResults": { en: "AI Results", es: "Resultados de IA", ja: "AI分析結果" },
@@ -494,34 +494,34 @@ const translations = {
   "essence.save": { en: "Save", es: "Guardar", ja: "保存" },
   "essence.all": { en: "All", es: "Todos", ja: "すべて" },
   "essence.noNotes": { en: "No notes yet", es: "Sin notas aún", ja: "ノートはまだありません" },
-  "essence.noNotesDesc": { en: "Upload screenshots to extract key insights with AI", es: "Sube capturas para extraer ideas clave con IA", ja: "スクリーンショットをアップロードしてAIで重要なインサイトを抽出" },
+  "essence.noNotesDesc": { en: "Upload screenshots to extract key insights with AI", es: "Sube capturas para extraer ideas clave con IA", ja: "スクリーンショットをアップロードしてAIで要点を抽出" },
   "essence.hide": { en: "Hide", es: "Ocultar", ja: "非表示" },
-  "essence.source": { en: "Source", es: "Fuente", ja: "ソース" },
-  "essence.textbook": { en: "Textbook", es: "Libro de texto", ja: "テキストブック" },
+  "essence.source": { en: "Source", es: "Fuente", ja: "出典" },
+  "essence.textbook": { en: "Textbook", es: "Libro de texto", ja: "テキスト" },
   "essence.mcq": { en: "MCQ", es: "MCQ", ja: "MCQ" },
   "essence.tbsSim": { en: "TBS Simulation", es: "Simulación TBS", ja: "TBSシミュレーション" },
   "essence.other": { en: "Other", es: "Otro", ja: "その他" },
   "essence.extractingText": { en: "Extracting text...", es: "Extrayendo texto...", ja: "テキスト抽出中..." },
   "essence.loadingImages": { en: "Loading images...", es: "Cargando imágenes...", ja: "画像読み込み中..." },
   "essence.aiAnalyzing": { en: "AI analyzing content...", es: "IA analizando contenido...", ja: "AIがコンテンツを分析中..." },
-  "essence.extractingInsights": { en: "Extracting key insights...", es: "Extrayendo ideas clave...", ja: "重要なインサイトを抽出中..." },
-  "essence.structuringInsights": { en: "Structuring insights...", es: "Estructurando ideas...", ja: "インサイトを構造化中..." },
+  "essence.extractingInsights": { en: "Extracting key insights...", es: "Extrayendo ideas clave...", ja: "重要な要点を抽出中..." },
+  "essence.structuringInsights": { en: "Structuring insights...", es: "Estructurando ideas...", ja: "要点を整理中..." },
   "essence.almostThere": { en: "Almost there...", es: "Casi listo...", ja: "もうすぐ完了..." },
 
   // Essence notes guide
   "essence.guide.whatTitle": { en: "What is Essence Notes?", es: "¿Qué es Essence Notes?", ja: "Essence Notesとは？" },
-  "essence.guide.whatDesc": { en: "Essence Notes uses AI to analyze your study materials (screenshots or text) and automatically extract the key concepts, exam traps, and decision frameworks you need to pass the CPA exam. Instead of taking notes manually, AI identifies exactly what matters for exam day.", es: "Essence Notes usa IA para analizar tus materiales de estudio (capturas de pantalla o texto) y extraer automáticamente los conceptos clave, trampas de examen y marcos de decisión que necesitas para aprobar el CPA. En lugar de tomar notas manualmente, la IA identifica exactamente qué es importante para el examen.", ja: "Essence NotesはAIを使って学習教材（スクリーンショットやテキスト）を分析し、CPA試験合格に必要な重要概念、出題の落とし穴、判断フレームワークを自動抽出します。手動でノートを取る代わりに、AIが試験に重要なポイントを正確に特定します。" },
+  "essence.guide.whatDesc": { en: "Essence Notes uses AI to analyze your study materials (screenshots or text) and automatically extract the key concepts, exam traps, and decision frameworks you need to pass the CPA exam. Instead of taking notes manually, AI identifies exactly what matters for exam day.", es: "Essence Notes usa IA para analizar tus materiales de estudio (capturas de pantalla o texto) y extraer automáticamente los conceptos clave, trampas de examen y marcos de decisión que necesitas para aprobar el CPA. En lugar de tomar notas manualmente, la IA identifica exactamente qué es importante para el examen.", ja: "AIが学習教材（スクリーンショットやテキスト）を分析し、CPA試験に必要な重要概念、出題の落とし穴、判断の枠組みを自動抽出します。手動でノートを取る代わりに、AIが試験の要点を正確に特定します。" },
   "essence.guide.howTitle": { en: "How to Use", es: "Cómo usar", ja: "使い方" },
   "essence.guide.step1": { en: "Upload a screenshot of your textbook, MCQ, or TBS — or paste the text directly", es: "Sube una captura de tu libro, MCQ o TBS — o pega el texto directamente", ja: "テキストブック、MCQ、TBSのスクリーンショットをアップロード、またはテキストを直接貼り付け" },
-  "essence.guide.step2": { en: "Click \"Extract Insights with AI\" — AI reads the content and identifies exam-critical insights", es: "Haz clic en \"Extraer con IA\" — la IA lee el contenido e identifica ideas críticas para el examen", ja: "「AIでインサイトを抽出」をクリック — AIがコンテンツを分析し、試験に重要なインサイトを特定" },
-  "essence.guide.step3": { en: "Review the results and save the insights you want. They're organized by type for easy review", es: "Revisa los resultados y guarda las ideas que quieras. Se organizan por tipo para repaso fácil", ja: "結果を確認して保存したいインサイトを選択。タイプ別に整理され復習しやすい" },
-  "essence.guide.insightTypesTitle": { en: "4 Insight Types", es: "4 tipos de insights", ja: "4つのインサイトタイプ" },
+  "essence.guide.step2": { en: "Click \"Extract Insights with AI\" — AI reads the content and identifies exam-critical insights", es: "Haz clic en \"Extraer con IA\" — la IA lee el contenido e identifica ideas críticas para el examen", ja: "「AIで要点を抽出」をクリック — AIが内容を分析し、試験に重要な要点を特定" },
+  "essence.guide.step3": { en: "Review the results and save the insights you want. They're organized by type for easy review", es: "Revisa los resultados y guarda las ideas que quieras. Se organizan por tipo para repaso fácil", ja: "結果を確認して保存したい要点を選択。種類別に整理され復習しやすい" },
+  "essence.guide.insightTypesTitle": { en: "4 Insight Types", es: "4 tipos de insights", ja: "4つのカテゴリ" },
   "essence.guide.conceptDesc": { en: "The WHY behind accounting rules", es: "El PORQUÉ detrás de las reglas contables", ja: "会計ルールの「なぜ」" },
   "essence.guide.frameworkDesc": { en: "Step-by-step decision trees", es: "Árboles de decisión paso a paso", ja: "ステップバイステップの判断フロー" },
   "essence.guide.trapDesc": { en: "Where candidates lose points", es: "Donde los candidatos pierden puntos", ja: "受験者が失点しやすいポイント" },
   "essence.guide.ruleDesc": { en: "Thresholds & mnemonics", es: "Umbrales y mnemotécnicos", ja: "閾値と記憶術" },
   "essence.guide.examplesTitle": { en: "Example Generated Notes", es: "Ejemplos de notas generadas", ja: "生成されたノートの例" },
-  "essence.guide.examplesFooter": { en: "↑ These are examples. Your actual content will generate insights specific to the material you upload.", es: "↑ Estos son ejemplos. Tu contenido real generará insights específicos para el material que subas.", ja: "↑ これらは例です。実際のコンテンツからは、アップロードした教材に固有のインサイトが生成されます。" },
+  "essence.guide.examplesFooter": { en: "↑ These are examples. Your actual content will generate insights specific to the material you upload.", es: "↑ Estos son ejemplos. Tu contenido real generará insights específicos para el material que subas.", ja: "↑ これらは例です。実際にアップロードした教材に応じた要点が生成されます。" },
 
   // ── Settings ────────────────────────────────────────────────────
   "settings.title": { en: "Settings", es: "Ajustes", ja: "設定" },
@@ -604,7 +604,7 @@ const translations = {
 
   // ── Analytics Engine (risk texts) ───────────────────────────────
   "risk.reviewDebt.critical.title": { en: "{n} chapters overdue", es: "{n} capítulos vencidos", ja: "{n}チャプターが期限超過" },
-  "risk.reviewDebt.critical.desc": { en: "{n} chapters have retention below 30%. Memory is fading rapidly.", es: "{n} capítulos tienen retención por debajo del 30%. La memoria se deteriora rápidamente.", ja: "{n}チャプターの保持率が30%未満です。記憶が急速に薄れています。" },
+  "risk.reviewDebt.critical.desc": { en: "{n} chapters have retention below 30%. Memory is fading rapidly.", es: "{n} capítulos tienen retención por debajo del 30%. La memoria se deteriora rápidamente.", ja: "{n}チャプターの定着率が30%未満です。記憶が急速に薄れています。" },
   "risk.reviewDebt.critical.rx": { en: "Prioritize reviewing overdue chapters before studying new material.", es: "Prioriza repasar los capítulos vencidos antes de estudiar material nuevo.", ja: "新しい教材に取り組む前に、期限超過のチャプターの復習を優先してください。" },
   "risk.reviewDebt.warning.title": { en: "{n} chapters overdue", es: "{n} capítulos vencidos", ja: "{n}チャプターが期限超過" },
   "risk.reviewDebt.warning.desc": { en: "{n} chapters need review soon to prevent forgetting.", es: "{n} capítulos necesitan repaso pronto para evitar el olvido.", ja: "{n}チャプターの忘却を防ぐため、早めの復習が必要です。" },
@@ -658,38 +658,38 @@ const translations = {
   "analytics.pace.help.footer": { en: "Set an exam date in Settings to enable this analysis.", es: "Establece una fecha de examen en Settings para activar este análisis.", ja: "設定で試験日を登録すると利用できます。" },
   "analytics.risk.help.title": { en: "Risk Radar analyzes your study patterns and detects 5 risk types:", es: "Risk Radar analiza tus patrones de estudio y detecta 5 tipos de riesgo:", ja: "学習パターンを分析し、5つのリスクを検出します：" },
   "analytics.risk.help.reviewDebt": { en: "Review Debt", es: "Deuda de repaso", ja: "復習の溜まり" },
-  "analytics.risk.help.reviewDebtDesc": { en: "Chapters with retention below 30% that need urgent review.", es: "Capítulos con retención <30% que necesitan revisión urgente.", ja: "保持率30%未満で緊急復習が必要なチャプター。" },
+  "analytics.risk.help.reviewDebtDesc": { en: "Chapters with retention below 30% that need urgent review.", es: "Capítulos con retención <30% que necesitan revisión urgente.", ja: "定着率30%未満で緊急復習が必要なチャプター。" },
   "analytics.risk.help.cramming": { en: "Cramming Risk", es: "Riesgo de atracón", ja: "詰め込みリスク" },
-  "analytics.risk.help.crammingDesc": { en: "Too much new material without enough review sessions.", es: "Demasiado material nuevo sin suficiente repaso.", ja: "復習が不十分なまま新しい教材を進めすぎ。" },
+  "analytics.risk.help.crammingDesc": { en: "Too much new material without enough review sessions.", es: "Demasiado material nuevo sin suficiente repaso.", ja: "復習が追いつかないまま新しい教材を進めすぎている状態。" },
   "analytics.risk.help.stagnation": { en: "Stagnation", es: "Estancamiento", ja: "停滞" },
   "analytics.risk.help.stagnationDesc": { en: "Chapters with no accuracy improvement despite repeated reviews.", es: "Capítulos sin mejora de precisión a pesar de repasos repetidos.", ja: "繰り返し復習しても正答率が改善しないチャプター。" },
   "analytics.risk.help.untouched": { en: "Untouched Chapters", es: "Capítulos sin tocar", ja: "未着手チャプター" },
   "analytics.risk.help.untouchedDesc": { en: "High percentage of chapters not yet studied before exam.", es: "Porcentaje alto de capítulos aún no estudiados.", ja: "試験前にまだ学習していないチャプターの割合が高い。" },
   "analytics.risk.help.variance": { en: "Study Variance", es: "Variación de estudio", ja: "学習のばらつき" },
-  "analytics.risk.help.varianceDesc": { en: "Inconsistent weekly study schedule (high hour variation).", es: "Horario de estudio inconsistente semana a semana.", ja: "週ごとの学習時間が不安定。" },
-  "analytics.risk.help.footer": { en: "Severity levels: Critical (red) → Warning (orange) → Info (blue). Each risk includes a recommended action.", es: "Los niveles van de Critical (rojo) → Warning (naranja) → Info (azul). Cada riesgo incluye una acción recomendada.", ja: "深刻度: Critical（赤）→ Warning（橙）→ Info（青）。各リスクに推奨アクションが含まれます。" },
-  "analytics.retention.help.title": { en: "Compares predicted retention with your actual recall:", es: "Compara la retención predicha con tu recuerdo real:", ja: "予測保持率と実際の想起率を比較：" },
+  "analytics.risk.help.varianceDesc": { en: "Inconsistent weekly study schedule (high hour variation).", es: "Horario de estudio inconsistente semana a semana.", ja: "週ごとの学習時間にばらつきがある状態。" },
+  "analytics.risk.help.footer": { en: "Severity levels: Critical (red) → Warning (orange) → Info (blue). Each risk includes a recommended action.", es: "Los niveles van de Critical (rojo) → Warning (naranja) → Info (azul). Cada riesgo incluye una acción recomendada.", ja: "深刻度: 重大（赤）→ 警告（橙）→ 情報（青）。各リスクに対処法が含まれます。" },
+  "analytics.retention.help.title": { en: "Compares predicted retention with your actual recall:", es: "Compara la retención predicha con tu recuerdo real:", ja: "予測定着率と実際の想起率を比較：" },
   "analytics.retention.help.predicted": { en: "Predicted", es: "Predicho", ja: "予測値" },
   "analytics.retention.help.actual": { en: "Actual", es: "Real", ja: "実際値" },
   "analytics.retention.help.gap": { en: "Gap", es: "Diferencia", ja: "差分" },
   "analytics.retention.help.action": { en: "Action", es: "Acción", ja: "アクション" },
-  "analytics.retention.help.predictedDesc": { en: "Estimated retention based on the forgetting curve algorithm.", es: "Retención estimada por la curva del olvido.", ja: "忘却曲線アルゴリズムに基づく推定保持率。" },
-  "analytics.retention.help.actualDesc": { en: "Your actual self-rating when reviewing in the Review tab.", es: "Tu calificación real al repasar en la pestaña Review.", ja: "復習タブでの実際の自己評価。" },
-  "analytics.retention.help.gapDesc": { en: "Difference between predicted and actual. Positive = better than expected.", es: "Diferencia entre predicho y real. Positivo = mejor de lo esperado.", ja: "予測と実際の差。プラス = 予想より良い。" },
-  "analytics.retention.help.actionDesc": { en: "Shorten interval (you remember less), extend (you remember more), or on track.", es: "Acortar intervalo (recuerdas menos), extender (recuerdas más), o en camino.", ja: "間隔を短縮（記憶が弱い）、延長（記憶が強い）、または順調。" },
+  "analytics.retention.help.predictedDesc": { en: "Estimated retention based on the forgetting curve algorithm.", es: "Retención estimada por la curva del olvido.", ja: "忘却曲線に基づく推定値。" },
+  "analytics.retention.help.actualDesc": { en: "Your actual self-rating when reviewing in the Review tab.", es: "Tu calificación real al repasar en la pestaña Review.", ja: "復習タブでの自己評価の結果。" },
+  "analytics.retention.help.gapDesc": { en: "Difference between predicted and actual. Positive = better than expected.", es: "Diferencia entre predicho y real. Positivo = mejor de lo esperado.", ja: "予測と実際の差。プラスなら予想より良い結果。" },
+  "analytics.retention.help.actionDesc": { en: "Shorten interval (you remember less), extend (you remember more), or on track.", es: "Acortar intervalo (recuerdas menos), extender (recuerdas más), o en camino.", ja: "記憶が弱い→間隔を短く、強い→間隔を長く、問題なし→順調。" },
   "analytics.retention.help.footer": { en: "Rate your recall in the Review tab to generate this data.", es: "Califica tu recuerdo en la pestaña Review para generar estos datos.", ja: "復習タブで想起度を評価するとデータが生成されます。" },
-  "analytics.allocation.help.title": { en: "Recommends how to distribute your study time:", es: "Recomienda cómo distribuir tu tiempo de estudio:", ja: "学習時間の配分を推奨：" },
+  "analytics.allocation.help.title": { en: "Recommends how to distribute your study time:", es: "Recomienda cómo distribuir tu tiempo de estudio:", ja: "学習時間の配分をアドバイス：" },
   "analytics.allocation.help.current": { en: "Current", es: "Actual", ja: "現在" },
   "analytics.allocation.help.recommended": { en: "Recommended", es: "Recomendado", ja: "推奨" },
   "analytics.allocation.help.change": { en: "Change", es: "Cambio", ja: "変更" },
   "analytics.allocation.help.currentDesc": { en: "Hours per week you currently spend on each section.", es: "Horas por semana que actualmente dedicas a cada sección.", ja: "各セクションに現在費やしている週間学習時間。" },
-  "analytics.allocation.help.recommendedDesc": { en: "Suggested hours based on your progress and retention.", es: "Horas sugeridas basadas en tu progreso y retención.", ja: "進捗と保持率に基づく推奨学習時間。" },
-  "analytics.allocation.help.changeDesc": { en: "Increase = spend more time, Decrease = reduce, Maintain = keep same.", es: "Increase = dedicar más tiempo, Decrease = reducir, Maintain = mantener.", ja: "増加 = 時間を増やす、減少 = 減らす、維持 = 現状維持。" },
-  "analytics.allocation.help.footer": { en: "Recommendations are based on overdue reviews, coverage gaps, and goal pace.", es: "Las recomendaciones se basan en repasos pendientes, cobertura y ritmo del objetivo.", ja: "推奨は復習の遅れ、カバレッジのギャップ、目標ペースに基づいています。" },
-  "analytics.coverage.help.title": { en: "Identifies chapters that need attention:", es: "Identifica capítulos que necesitan atención:", ja: "注意が必要なチャプターを特定：" },
+  "analytics.allocation.help.recommendedDesc": { en: "Suggested hours based on your progress and retention.", es: "Horas sugeridas basadas en tu progreso y retención.", ja: "進捗と定着率に基づくおすすめの学習時間。" },
+  "analytics.allocation.help.changeDesc": { en: "Increase = spend more time, Decrease = reduce, Maintain = keep same.", es: "Increase = dedicar más tiempo, Decrease = reducir, Maintain = mantener.", ja: "増加→時間を増やす、減少→減らす、維持→現状維持。" },
+  "analytics.allocation.help.footer": { en: "Recommendations are based on overdue reviews, coverage gaps, and goal pace.", es: "Las recomendaciones se basan en repasos pendientes, cobertura y ritmo del objetivo.", ja: "復習の遅れ、未対策チャプター、目標ペースに基づいて算出しています。" },
+  "analytics.coverage.help.title": { en: "Identifies chapters that need attention:", es: "Identifica capítulos que necesitan atención:", ja: "対策が必要なチャプターを特定：" },
   "analytics.coverage.help.fragileDesc": { en: "Chapters studied but with very low retention (<30%). Need urgent review.", es: "Capítulos estudiados pero con retención muy baja (<30%). Necesitan repaso urgente.", ja: "学習済みだが定着度が非常に低い（30%未満）。緊急の復習が必要。" },
   "analytics.coverage.help.untouchedDesc": { en: "Chapters you haven't studied yet. Those marked 'Urgent' have an upcoming exam.", es: "Capítulos que aún no has estudiado. Los marcados como 'Urgent' tienen examen próximo.", ja: "まだ学習していないチャプター。「Urgent」は試験が近いもの。" },
-  "analytics.coverage.help.footer": { en: "Organized by section. Use this to prioritize your study plan.", es: "Organizado por sección. Usa esta información para priorizar tu estudio.", ja: "セクション別に整理。学習計画の優先順位付けに活用してください。" },
+  "analytics.coverage.help.footer": { en: "Organized by section. Use this to prioritize your study plan.", es: "Organizado por sección. Usa esta información para priorizar tu estudio.", ja: "セクション別に整理。学習の優先順位を決めるのに活用してください。" },
   "analytics.coverage.desc": { en: "Shows chapters you haven't started yet or whose retention has dropped below 30%. Chapters marked \"Urgent\" have an exam within 60 days.", es: "Muestra capítulos que aún no has empezado o cuya retención ha caído por debajo del 30%. Los capítulos marcados \"Urgent\" tienen un examen dentro de 60 días.", ja: "未着手または定着度が30%以下に低下したチャプターを表示。「Urgent」は試験まで60日以内のチャプター。" },
 
   // ── Week days ───────────────────────────────────────────────────
@@ -713,8 +713,8 @@ const translations = {
   "tour.step5.title": { en: "Practice Exam — Simulate Test Day", es: "Examen de práctica — Simula el día del examen", ja: "模擬試験 — 本番をシミュレーション" },
   "tour.step5.desc": { en: "Log your mock exam scores by section, tracking MC and TBS results separately.\n• Click \"Add Result\" to record a practice exam\n• Score trend chart shows improvement over time\n• Aim for 75+ on practice exams to be exam-ready!", es: "Registra tus puntuaciones por sección, con resultados MC y TBS separados.\n• Haz clic en \"Agregar resultado\" para registrar un examen\n• El gráfico de tendencia muestra tu mejora\n• ¡Apunta a 75+ en exámenes de práctica!", ja: "セクション別の模擬試験スコアをMCとTBSに分けて記録。\n• 「結果を追加」をクリックして模擬試験を記録\n• スコア推移チャートで改善を確認\n• 模擬試験で75以上を目指しましょう！" },
   "tour.step6.title": { en: "Review — Beat the Forgetting Curve", es: "Repaso — Vence la curva del olvido", ja: "復習 — 忘却曲線に打ち勝つ" },
-  "tour.step6.desc": { en: "Powered by spaced repetition (Ebbinghaus forgetting curve). Chapters are ranked by memory retention.\n• Red = Overdue — review immediately!\n• Yellow = Due Today — scheduled review time\n• Green = Well Retained — no rush\nTap any chapter to see its forgetting curve and rate your recall.", es: "Basado en la repetición espaciada (curva de Ebbinghaus). Los capítulos se ordenan por retención.\n• Rojo = Vencido — ¡repasa ahora!\n• Amarillo = Para hoy — momento de repaso\n• Verde = Bien retenido — sin prisa\nToca cualquier capítulo para ver su curva y calificar tu recuerdo.", ja: "間隔反復学習（エビングハウスの忘却曲線）に基づくシステム。チャプターは記憶保持率順にランク付け。\n• 赤 = 期限超過 — すぐに復習！\n• 黄 = 本日期限 — 復習のタイミング\n• 緑 = 良好な保持 — 急ぎません\nチャプターをタップして忘却曲線を確認し、想起度を評価。" },
-  "tour.step7.title": { en: "Analytics — Strategic Insights", es: "Analíticas — Información estratégica", ja: "分析 — 戦略的インサイト" },
+  "tour.step6.desc": { en: "Powered by spaced repetition (Ebbinghaus forgetting curve). Chapters are ranked by memory retention.\n• Red = Overdue — review immediately!\n• Yellow = Due Today — scheduled review time\n• Green = Well Retained — no rush\nTap any chapter to see its forgetting curve and rate your recall.", es: "Basado en la repetición espaciada (curva de Ebbinghaus). Los capítulos se ordenan por retención.\n• Rojo = Vencido — ¡repasa ahora!\n• Amarillo = Para hoy — momento de repaso\n• Verde = Bien retenido — sin prisa\nToca cualquier capítulo para ver su curva y calificar tu recuerdo.", ja: "間隔反復学習（エビングハウスの忘却曲線）に基づくシステム。チャプターは記憶定着率順にランク付け。\n• 赤 = 期限超過 — すぐに復習！\n• 黄 = 本日期限 — 復習のタイミング\n• 緑 = 良好な保持 — 急ぎません\nチャプターをタップして忘却曲線を確認し、想起度を評価。" },
+  "tour.step7.title": { en: "Analytics — Strategic Insights", es: "Analíticas — Información estratégica", ja: "分析 — 学習戦略" },
   "tour.step7.desc": { en: "Data-driven guidance for smarter studying:\n• Goal Pace — Are you on track for your exam date?\n• Risk Radar — Detects cramming, review debt, stagnation\n• Retention Calibration — Predicted vs actual recall\n• Coverage Gaps — Untouched or fragile chapters\nSet exam dates in Settings to unlock full analysis.", es: "Orientación basada en datos:\n• Ritmo del objetivo — ¿Estás al día para tu examen?\n• Radar de riesgos — Detecta atracón, deuda de repaso\n• Calibración — Recuerdo predicho vs real\n• Brechas — Capítulos sin tocar o frágiles\nEstablece fechas de examen en Ajustes.", ja: "データに基づく効率的な学習ガイダンス：\n• 目標ペース — 試験日に間に合うペースですか？\n• リスク分析 — 詰め込み、復習の遅れ、停滞を検出\n• 記憶の定着度 — 予測と実際の想起率を比較\n• 未対策チャプター — 未着手・定着不足のチャプター\n設定で試験日を登録すると完全な分析が利用できます。" },
   "tour.step8.title": { en: "Settings — Set Your Goals", es: "Ajustes — Configura tus metas", ja: "設定 — 目標を設定" },
   "tour.step8.desc": { en: "Configure your study experience:\n• Set exam dates and target scores per section\n• Adjust daily study goals\n• Manage notification preferences (review alerts, streak protection)\n• Your exam dates power the Goal Pace analysis in Analytics", es: "Configura tu experiencia de estudio:\n• Establece fechas de examen y metas por sección\n• Ajusta metas diarias de estudio\n• Gestiona notificaciones (alertas de repaso, racha)\n• Tus fechas de examen alimentan el análisis de ritmo", ja: "学習体験をカスタマイズ：\n• セクション別の試験日と目標スコアを設定\n• 毎日の学習目標を調整\n• 通知設定を管理（復習アラート、連続記録の保護）\n• 試験日の設定が分析の目標ペース機能に反映" },
