@@ -42,7 +42,7 @@ export default function PricingPage() {
     },
     {
       name: "Pro",
-      price: "¥980",
+      price: "—",
       period: t("pricing.perMonth"),
       description: t("pricing.proDesc"),
       features: [

@@ -27,6 +27,7 @@ export function LandingPage() {
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t("lp.features")}</a>
+            <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t("lp.pricing")}</Link>
             <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t("lp.login")}</Link>
             <Link href="/home" className="text-sm font-medium px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
               {t("lp.signUp")}
@@ -58,6 +59,12 @@ export function LandingPage() {
           >
             {t("lp.getStarted")}
             <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/pricing"
+            className="px-8 py-3.5 rounded-xl border border-border text-foreground font-bold text-sm hover:bg-muted/50 transition-all"
+          >
+            {t("lp.viewPricing")}
           </Link>
         </div>
       </section>
@@ -131,6 +138,9 @@ export function LandingPage() {
             </Link>
             <Link href="/legal/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               {t("lp.privacy")}
+            </Link>
+            <Link href="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              {t("lp.pricing")}
             </Link>
           </div>
         </div>
