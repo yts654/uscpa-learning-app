@@ -97,20 +97,20 @@
     background-image:
       /* Warm blue glow - top right */
       radial-gradient(
-        ellipse 55% 50% at 80% 0%,
-        hsla(220, 50%, 88%, 0.5) 0%,
+        ellipse 70% 60% at 85% 0%,
+        hsla(220, 60%, 82%, 0.7) 0%,
         transparent 70%
       ),
       /* Cool indigo accent - bottom left */
       radial-gradient(
-        ellipse 50% 45% at 10% 95%,
-        hsla(240, 40%, 90%, 0.4) 0%,
+        ellipse 65% 55% at 5% 100%,
+        hsla(245, 50%, 85%, 0.6) 0%,
         transparent 70%
       ),
-      /* Subtle center warmth */
+      /* Soft lavender wash - center */
       radial-gradient(
-        ellipse 40% 35% at 50% 50%,
-        hsla(210, 30%, 92%, 0.3) 0%,
+        ellipse 50% 40% at 50% 45%,
+        hsla(230, 40%, 90%, 0.45) 0%,
         transparent 70%
       );
     background-size: 100% 100%;

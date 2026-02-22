@@ -25,9 +25,9 @@ export interface StudyGoals {
 export const DEFAULT_STUDY_GOALS: StudyGoals = {
   sections: {
     FAR: { examDate: "2026-03-05", targetScore: 80 },
-    AUD: { examDate: null, targetScore: 75 },
+    AUD: { examDate: "2026-08-01", targetScore: 75 },
     REG: { examDate: "2026-05-15", targetScore: 75 },
-    BEC: { examDate: null, targetScore: 75 },
+    BEC: { examDate: "2026-10-01", targetScore: 75 },
     TCP: { examDate: null, targetScore: 75 },
     ISC: { examDate: null, targetScore: 75 },
   },
@@ -188,9 +188,9 @@ export const CHAPTERS: Chapter[] = [
   { id: "far-ch19", section: "FAR", number: 19, title: "Financial Statement Ratios and Performance Metrics", totalQuestions: 28, correctAnswers: 21, studyHours: 4.5, lastStudied: "2026-02-15", status: "completed", essenceNotes: [] },
   { id: "far-ch20", section: "FAR", number: 20, title: "Nongovernmental Not-for-profit Organizations", totalQuestions: 35, correctAnswers: 24, studyHours: 6, lastStudied: "2026-02-16", status: "completed", essenceNotes: [] },
   { id: "far-ch21", section: "FAR", number: 21, title: "Governmental Accounting", totalQuestions: 40, correctAnswers: 26, studyHours: 7.5, lastStudied: "2026-02-17", status: "completed", essenceNotes: [] },
-  // AUD Chapters
-  { id: "aud-ch1", section: "AUD", number: 1, title: "Overview of Financial Statements Audits", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "aud-ch2", section: "AUD", number: 2, title: "Important Concepts in Financial Statements Audits", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  // AUD Chapters — 2 started, 21 remaining
+  { id: "aud-ch1", section: "AUD", number: 1, title: "Overview of Financial Statements Audits", totalQuestions: 25, correctAnswers: 19, studyHours: 5.5, lastStudied: "2026-02-21", status: "completed", essenceNotes: [] },
+  { id: "aud-ch2", section: "AUD", number: 2, title: "Important Concepts in Financial Statements Audits", totalQuestions: 15, correctAnswers: 10, studyHours: 3, lastStudied: "2026-02-22", status: "in-progress", essenceNotes: [] },
   { id: "aud-ch3", section: "AUD", number: 3, title: "Audit Reporting: Part I", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "aud-ch4", section: "AUD", number: 4, title: "Audit Reporting: Part II", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "aud-ch5", section: "AUD", number: 5, title: "Engagement Planning", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
@@ -380,6 +380,12 @@ export const STUDY_LOGS: StudyLog[] = [
   { id: "sl-68", date: "2026-02-15", section: "REG", chapterId: "reg-ch11", chapterTitle: "Federal Securities Act", studyHours: 3.5, mcQuestions: 20, mcCorrect: 14, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 20, correctAnswers: 14, memo: "Securities Act 1933 vs 1934. Registration exemptions, Rule 10b-5", recallRating: 1 },
   { id: "sl-69", date: "2026-02-18", section: "REG", chapterId: "reg-ch12", chapterTitle: "Introduction to Taxation", studyHours: 3, mcQuestions: 18, mcCorrect: 14, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 18, correctAnswers: 14, memo: "Tax formula, filing status, dependents. Fairly intuitive", recallRating: 3 },
   { id: "sl-70", date: "2026-02-21", section: "REG", chapterId: "reg-ch13", chapterTitle: "Individual Part 1: Overview and Gross Income", studyHours: 2, mcQuestions: 10, mcCorrect: 6, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 10, correctAnswers: 6, memo: "Gross income inclusions/exclusions. Just started, many rules to memorize", recallRating: 1 },
+  // ═══════════════════════════════════════════════════════════════
+  // AUD — Just started (Feb 19 – Feb 22)
+  // ═══════════════════════════════════════════════════════════════
+  { id: "sl-71", date: "2026-02-19", section: "AUD", chapterId: "aud-ch1", chapterTitle: "Overview of Financial Statements Audits", studyHours: 3.5, mcQuestions: 15, mcCorrect: 11, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 15, correctAnswers: 11, memo: "Types of audits, audit vs review vs compilation. Reasonable assurance concept", recallRating: 2 },
+  { id: "sl-72", date: "2026-02-21", section: "AUD", chapterId: "aud-ch1", chapterTitle: "Overview of Financial Statements Audits", studyHours: 2, mcQuestions: 10, mcCorrect: 8, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 10, correctAnswers: 8, memo: "Review. GAAS, PCAOB standards. Feeling solid on overview", recallRating: 3 },
+  { id: "sl-73", date: "2026-02-22", section: "AUD", chapterId: "aud-ch2", chapterTitle: "Important Concepts in Financial Statements Audits", studyHours: 3, mcQuestions: 15, mcCorrect: 10, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 15, correctAnswers: 10, memo: "Materiality, audit risk model (IR x CR x DR). Assertions framework. Need more practice", recallRating: 1 },
 ]
 
 export interface MockExam {
@@ -413,7 +419,7 @@ export const INITIAL_ESSENCE_NOTES: EssenceNote[] = []
 
 export const INITIAL_PROGRESS: StudyProgress[] = [
   { section: "FAR", questionsAnswered: 1056, correctAnswers: 732, totalQuestions: 400, studyHours: 163, lastStudied: "2026-02-22", streak: 12 },
-  { section: "AUD", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 300, studyHours: 0, lastStudied: "", streak: 0 },
+  { section: "AUD", questionsAnswered: 40, correctAnswers: 29, totalQuestions: 300, studyHours: 8.5, lastStudied: "2026-02-22", streak: 1 },
   { section: "REG", questionsAnswered: 245, correctAnswers: 176, totalQuestions: 350, studyHours: 41, lastStudied: "2026-02-21", streak: 3 },
   { section: "BEC", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 250, studyHours: 0, lastStudied: "", streak: 0 },
   { section: "TCP", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 200, studyHours: 0, lastStudied: "", streak: 0 },
