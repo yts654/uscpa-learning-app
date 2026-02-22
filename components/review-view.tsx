@@ -68,6 +68,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null)
   const [criteriaOpen, setCriteriaOpen] = useState(false)
   const [alertsOpen, setAlertsOpen] = useState(true)
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
   const [ratedChapters, setRatedChapters] = useState<Record<string, RecallRating>>({})
 
   const filtered = useMemo(() => {
@@ -408,10 +409,12 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                       isSelected
                         ? "border-current shadow-sm"
                         : isAlert
-                          ? "border-[hsl(0,65%,80%)] bg-[hsl(0,65%,97%)] hover:bg-[hsl(0,65%,94%)]"
+                          ? isDark
+                            ? "border-[hsl(0,65%,30%)] bg-[hsl(0,65%,12%)] hover:bg-[hsl(0,65%,18%)] text-[hsl(0,65%,75%)]"
+                            : "border-[hsl(0,65%,80%)] bg-[hsl(0,65%,97%)] hover:bg-[hsl(0,65%,94%)]"
                           : "border-border bg-muted/30 hover:bg-muted/60"
                     )}
-                    style={isSelected ? { color: info.color, backgroundColor: `${info.color}12` } : undefined}
+                    style={isSelected ? { color: isDark ? brightenForDark(info.color, true) : info.color, backgroundColor: `${info.color}${isDark ? "25" : "12"}` } : undefined}
                   >
                     <span
                       className="w-4 h-4 rounded text-[7px] font-bold text-white flex items-center justify-center flex-shrink-0"
@@ -419,9 +422,9 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     >
                       {ch.section.charAt(0)}
                     </span>
-                    <span className="truncate max-w-[120px]">Ch.{ch.chapterNumber}</span>
-                    <span className="text-[9px]" style={{ color: getRetentionColor(ch.retention) }}>{ch.retention}%</span>
-                    {isAlert && <AlertTriangle className="w-3 h-3 text-[hsl(0,65%,45%)]" />}
+                    <span className="truncate max-w-[120px] text-card-foreground">Ch.{ch.chapterNumber}</span>
+                    <span className="text-[9px] font-semibold" style={{ color: isDark ? brightenForDark(getRetentionColor(ch.retention), true) : getRetentionColor(ch.retention) }}>{ch.retention}%</span>
+                    {isAlert && <AlertTriangle className="w-3 h-3" style={{ color: isDark ? "hsl(0,65%,65%)" : "hsl(0,65%,45%)" }} />}
                   </button>
                 )
               })}
@@ -527,7 +530,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.nextReview")}</p>
-                    <p className="text-lg font-bold mt-0.5" style={{ color: selected.isOverdue || selected.isDueToday ? "hsl(0,65%,45%)" : "hsl(225,50%,35%)" }}>
+                    <p className="text-lg font-bold mt-0.5" style={{ color: selected.isOverdue || selected.isDueToday ? (isDark ? "hsl(0,65%,65%)" : "hsl(0,65%,45%)") : (isDark ? "hsl(225,50%,65%)" : "hsl(225,50%,35%)") }}>
                       {formatNextDate(selected.nextReviewDate, t)}
                     </p>
                   </div>
@@ -588,26 +591,35 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
       {groups.map((group) => {
         if (group.items.length === 0) return null
         const Icon = group.icon
+        const isGroupCollapsed = collapsedGroups.has(group.id)
+        const toggleGroup = () => setCollapsedGroups(prev => {
+          const next = new Set(prev)
+          if (next.has(group.id)) next.delete(group.id)
+          else next.add(group.id)
+          return next
+        })
         return (
           <div key={group.id}>
             {/* Group Header */}
-            <div className="flex items-center gap-2 mb-3">
+            <button onClick={toggleGroup} className="w-full flex items-center gap-2 mb-3 group/header">
               <div
                 className="w-7 h-7 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: group.bgColor }}
               >
                 <Icon className="w-4 h-4" style={{ color: group.color }} />
               </div>
-              <div>
+              <div className="flex-1 text-left">
                 <h3 className="text-sm font-semibold text-foreground">
                   {group.label}
                   <span className="ml-2 text-xs font-normal text-muted-foreground">({group.items.length})</span>
                 </h3>
                 <p className="text-xs text-muted-foreground">{group.description}</p>
               </div>
-            </div>
+              <ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform", !isGroupCollapsed && "rotate-180")} />
+            </button>
 
             {/* Chapter Rows */}
+            {!isGroupCollapsed && (
             <div className="bg-card rounded-xl border overflow-hidden" style={{ borderColor: group.borderColor }}>
               {group.items.map((item, idx) => {
                 const info = SECTION_INFO[item.section]
@@ -708,6 +720,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                 )
               })}
             </div>
+            )}
           </div>
         )
       })}

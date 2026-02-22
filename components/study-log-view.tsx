@@ -4,13 +4,14 @@ import { useState, useCallback, useMemo } from "react"
 import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle, Pencil } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
-import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, LineChart, Line } from "recharts"
+import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog, type StudyGoals } from "@/lib/study-data"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, LineChart, Line, ReferenceLine } from "recharts"
 
 interface StudyLogViewProps {
   chapters: Chapter[]
   studyLogs: StudyLog[]
   onUpdateLogs: (logs: StudyLog[]) => void
+  studyGoals: StudyGoals
 }
 
 interface WeekSummary {
@@ -78,7 +79,7 @@ function generateWeekComments(
 const ALL_SECTIONS: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
-function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
+function StudyCharts({ logs, locale, dailyGoal }: { logs: StudyLog[]; locale: string; dailyGoal: number }) {
   const [chartMode, setChartMode] = useState<"weekly" | "monthly">("weekly")
   const [showHelp, setShowHelp] = useState(false)
 
@@ -218,6 +219,15 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
                 {ALL_SECTIONS.map(s => (
                   <Bar key={s} dataKey={s} stackId="hours" fill={SECTION_INFO[s].color} radius={s === "ISC" ? [3, 3, 0, 0] : undefined} />
                 ))}
+                {dailyGoal > 0 && (
+                  <ReferenceLine
+                    y={chartMode === "weekly" ? dailyGoal : dailyGoal * 7}
+                    stroke="hsl(0 72% 51%)"
+                    strokeDasharray="6 3"
+                    strokeWidth={1.5}
+                    label={{ value: `${locale === "es" ? "Meta" : "Goal"} ${chartMode === "weekly" ? dailyGoal : dailyGoal * 7}h`, position: "right", fontSize: 10, fill: "hsl(0 72% 51%)" }}
+                  />
+                )}
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -242,6 +252,14 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
                   formatter={(value: number) => [`${value}h`, "Study Hours"]}
                 />
                 <Line type="monotone" dataKey="totalHours" stroke="hsl(175 45% 40%)" strokeWidth={2} dot={{ r: 4, fill: "hsl(175 45% 40%)" }} connectNulls />
+                {dailyGoal > 0 && (
+                  <ReferenceLine
+                    y={chartMode === "weekly" ? dailyGoal : dailyGoal * 7}
+                    stroke="hsl(0 72% 51%)"
+                    strokeDasharray="6 3"
+                    strokeWidth={1.5}
+                  />
+                )}
               </LineChart>
             </ResponsiveContainer>
           ) : (
@@ -259,13 +277,19 @@ function StudyCharts({ logs, locale }: { logs: StudyLog[]; locale: string }) {
               <span className="text-[10px] text-muted-foreground">{s}</span>
             </div>
           ))}
+          {dailyGoal > 0 && (
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-0 border-t-[2px] border-dashed" style={{ borderColor: "hsl(0 72% 51%)" }} />
+              <span className="text-[10px] text-muted-foreground">{locale === "es" ? "Meta diaria" : "Daily Goal"}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
   )
 }
 
-export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogViewProps) {
+export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals }: StudyLogViewProps) {
   const { t, locale } = useLanguage()
   const logs = studyLogs
   const setLogs = onUpdateLogs
@@ -665,7 +689,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       )}
 
       {/* Charts Section */}
-      <StudyCharts logs={logs} locale={locale} />
+      <StudyCharts logs={logs} locale={locale} dailyGoal={studyGoals.dailyStudyHours} />
 
       {/* Section Filter */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">

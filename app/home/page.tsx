@@ -152,7 +152,7 @@ export default function Home() {
                 onRemoveNote={handleRemoveNote}
               />
             )}
-            {currentView === "study-log" && <StudyLogView chapters={chapters} studyLogs={studyLogs} onUpdateLogs={setStudyLogs} />}
+            {currentView === "study-log" && <StudyLogView chapters={chapters} studyLogs={studyLogs} onUpdateLogs={setStudyLogs} studyGoals={studyGoals} />}
             {currentView === "mock-exams" && <MockExamsView mockExams={mockExams} onUpdateMockExams={setMockExams} />}
             {currentView === "analytics" && (
               <AnalyticsView
