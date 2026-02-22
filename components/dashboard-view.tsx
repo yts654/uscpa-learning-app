@@ -108,11 +108,6 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
     }
   }
 
-  // Recent activity — latest 8 study log entries
-  const recentLogs = [...studyLogs]
-    .sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id))
-    .slice(0, 8)
-
   function formatDate(dateStr: string) {
     const d = new Date(dateStr + "T00:00:00")
     const today = new Date()
@@ -506,64 +501,86 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-foreground">{t("dashboard.recentActivity.title")}</h3>
-          <button
-            onClick={() => onViewChange("study-log")}
-            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("dashboard.recentActivity.viewLog")} <ArrowUpRight className="w-3 h-3" />
-          </button>
-        </div>
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
-          {recentLogs.length === 0 ? (
-            <div className="p-8 text-center">
-              <NotebookPen className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">{t("dashboard.empty.noSessions")}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t("dashboard.empty.startStudying")}</p>
+      {/* Today's Study */}
+      {(() => {
+        const todayStr = new Date().toISOString().split("T")[0]
+        const todayLogs = studyLogs.filter(l => l.date === todayStr)
+        const todayHours = todayLogs.reduce((a, b) => a + b.studyHours, 0)
+        const todayQuestions = todayLogs.reduce((a, b) => a + b.questionsAnswered, 0)
+        const todayCorrect = todayLogs.reduce((a, b) => a + b.correctAnswers, 0)
+        const todayAcc = todayQuestions > 0 ? Math.round((todayCorrect / todayQuestions) * 100) : 0
+
+        return (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-foreground">{t("dashboard.today")}</h3>
+                {todayLogs.length > 0 && (
+                  <span className="text-xs text-muted-foreground">
+                    {todayHours.toFixed(1)}h · {todayQuestions}Q · {todayAcc}%
+                  </span>
+                )}
+              </div>
               <button
-                onClick={() => onViewChange("chapters")}
-                className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(225,50%,22%)] text-white text-xs font-medium hover:bg-[hsl(225,50%,28%)] transition-colors"
+                onClick={() => onViewChange("study-log")}
+                className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                <BookMarked className="w-3.5 h-3.5" />
-                {t("dashboard.empty.openChapters")}
+                {t("dashboard.recentActivity.viewLog")} <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
-          ) : (
-            recentLogs.map((log, idx) => {
-              const info = SECTION_INFO[log.section]
-              const acc = log.questionsAnswered > 0 ? Math.round((log.correctAnswers / log.questionsAnswered) * 100) : 0
-              return (
-                <div key={log.id} className={`px-4 py-3 flex items-center gap-3 ${idx < recentLogs.length - 1 ? "border-b border-border" : ""}`}>
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[9px] font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
-                    style={{ backgroundColor: info.color }}
+            <div className="bg-card rounded-xl border border-border overflow-hidden">
+              {todayLogs.length === 0 ? (
+                <div className="p-6 text-center">
+                  <NotebookPen className="w-7 h-7 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">{t("dashboard.empty.noSessions")}</p>
+                  <button
+                    onClick={() => onViewChange("chapters")}
+                    className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(225,50%,22%)] text-white text-xs font-medium hover:bg-[hsl(225,50%,28%)] transition-colors"
                   >
-                    {log.section}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-card-foreground truncate">{log.chapterTitle}</p>
-                    <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
-                      <span>{formatDate(log.date)}</span>
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{log.studyHours}h</span>
-                      {log.questionsAnswered > 0 && (
-                        <>
-                          <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{log.questionsAnswered}Q</span>
-                          <span className="flex items-center gap-1" style={{ color: acc >= 75 ? info.color : "hsl(0, 72%, 51%)" }}>
-                            <Target className="w-3 h-3" />{acc}%
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                    <BookMarked className="w-3.5 h-3.5" />
+                    {t("dashboard.empty.openChapters")}
+                  </button>
                 </div>
-              )
-            })
-          )}
-        </div>
-      </div>
+              ) : (
+                todayLogs.map((log, idx) => {
+                  const info = SECTION_INFO[log.section]
+                  const acc = log.questionsAnswered > 0 ? Math.round((log.correctAnswers / log.questionsAnswered) * 100) : 0
+                  return (
+                    <button
+                      key={log.id}
+                      onClick={() => onViewChange("study-log")}
+                      className={`w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-muted/30 transition-colors ${idx < todayLogs.length - 1 ? "border-b border-border" : ""}`}
+                    >
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[9px] font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
+                        style={{ backgroundColor: info.color }}
+                      >
+                        {log.section}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-card-foreground truncate">{log.chapterTitle}</p>
+                        <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{log.studyHours}h</span>
+                          {log.questionsAnswered > 0 && (
+                            <>
+                              <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{log.questionsAnswered}Q</span>
+                              <span className="flex items-center gap-1" style={{ color: acc >= 75 ? info.color : "hsl(0, 72%, 51%)" }}>
+                                <Target className="w-3 h-3" />{acc}%
+                              </span>
+                            </>
+                          )}
+                          {log.memo && <span className="truncate max-w-[150px]">{log.memo}</span>}
+                        </div>
+                      </div>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                    </button>
+                  )
+                })
+              )}
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }
