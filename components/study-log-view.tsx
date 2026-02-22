@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle } from "lucide-react"
+import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle, Pencil } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
 import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
@@ -273,6 +273,11 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
   const [showForm, setShowForm] = useState(false)
   const [expandedDate, setExpandedDate] = useState<string | null>(null)
   const [expandedWeek, setExpandedWeek] = useState<string | null>(null)
+  const [editingLogId, setEditingLogId] = useState<string | null>(null)
+  const [expandedMonth, setExpandedMonth] = useState<string | null>(() => {
+    const now = new Date()
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
+  })
 
   // Form state — MC/TBS split
   const [formSection, setFormSection] = useState<ExamSection>("FAR")
@@ -367,6 +372,20 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
     return summaries
   }, [logs, t, locale])
 
+  const resetForm = useCallback(() => {
+    setShowForm(false)
+    setEditingLogId(null)
+    setFormSection("FAR")
+    setFormChapterId("")
+    setFormDate(new Date().toISOString().split("T")[0])
+    setFormHours("")
+    setFormMcQuestions("")
+    setFormMcCorrect("")
+    setFormTbsQuestions("")
+    setFormTbsCorrect("")
+    setFormMemo("")
+  }, [])
+
   const handleAddLog = useCallback(() => {
     if (!formChapterId || !formDate || !formHours) return
     const chapter = chapters.find(c => c.id === formChapterId)
@@ -377,35 +396,64 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
     const tbsQ = parseInt(formTbsQuestions) || 0
     const tbsC = parseInt(formTbsCorrect) || 0
 
-    const newLog: StudyLog = {
-      id: `log-${Date.now()}`,
-      date: formDate,
-      section: formSection,
-      chapterId: formChapterId,
-      chapterTitle: chapter.title,
-      studyHours: parseFloat(formHours) || 0,
-      mcQuestions: mcQ,
-      mcCorrect: mcC,
-      tbsQuestions: tbsQ,
-      tbsCorrect: tbsC,
-      questionsAnswered: mcQ + tbsQ,
-      correctAnswers: mcC + tbsC,
-      memo: formMemo.trim(),
+    if (editingLogId) {
+      // Update existing log
+      setLogs(logs.map(l => l.id === editingLogId ? {
+        ...l,
+        date: formDate,
+        section: formSection,
+        chapterId: formChapterId,
+        chapterTitle: chapter.title,
+        studyHours: parseFloat(formHours) || 0,
+        mcQuestions: mcQ,
+        mcCorrect: mcC,
+        tbsQuestions: tbsQ,
+        tbsCorrect: tbsC,
+        questionsAnswered: mcQ + tbsQ,
+        correctAnswers: mcC + tbsC,
+        memo: formMemo.trim(),
+      } : l))
+    } else {
+      // Add new log
+      const newLog: StudyLog = {
+        id: `log-${Date.now()}`,
+        date: formDate,
+        section: formSection,
+        chapterId: formChapterId,
+        chapterTitle: chapter.title,
+        studyHours: parseFloat(formHours) || 0,
+        mcQuestions: mcQ,
+        mcCorrect: mcC,
+        tbsQuestions: tbsQ,
+        tbsCorrect: tbsC,
+        questionsAnswered: mcQ + tbsQ,
+        correctAnswers: mcC + tbsC,
+        memo: formMemo.trim(),
+      }
+      setLogs([newLog, ...logs])
     }
 
-    setLogs([newLog, ...logs])
-    setShowForm(false)
-    setFormHours("")
-    setFormMcQuestions("")
-    setFormMcCorrect("")
-    setFormTbsQuestions("")
-    setFormTbsCorrect("")
-    setFormMemo("")
-  }, [formSection, formChapterId, formDate, formHours, formMcQuestions, formMcCorrect, formTbsQuestions, formTbsCorrect, formMemo, chapters])
+    resetForm()
+  }, [formSection, formChapterId, formDate, formHours, formMcQuestions, formMcCorrect, formTbsQuestions, formTbsCorrect, formMemo, chapters, editingLogId, resetForm])
+
+  const handleEditLog = useCallback((log: StudyLog) => {
+    setEditingLogId(log.id)
+    setFormSection(log.section)
+    setFormChapterId(log.chapterId)
+    setFormDate(log.date)
+    setFormHours(log.studyHours.toString())
+    setFormMcQuestions(log.mcQuestions > 0 ? log.mcQuestions.toString() : "")
+    setFormMcCorrect(log.mcCorrect > 0 ? log.mcCorrect.toString() : "")
+    setFormTbsQuestions(log.tbsQuestions > 0 ? log.tbsQuestions.toString() : "")
+    setFormTbsCorrect(log.tbsCorrect > 0 ? log.tbsCorrect.toString() : "")
+    setFormMemo(log.memo || "")
+    setShowForm(true)
+  }, [])
 
   const handleDeleteLog = useCallback((id: string) => {
     setLogs(logs.filter(l => l.id !== id))
-  }, [])
+    if (editingLogId === id) resetForm()
+  }, [editingLogId, resetForm])
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00")
@@ -433,7 +481,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
           <p className="text-muted-foreground mt-1">{t("studyLog.subtitle")}</p>
         </div>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => { if (editingLogId) resetForm(); setShowForm(!showForm); setEditingLogId(null) }}
           className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -458,8 +506,10 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
       {showForm && (
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="px-5 py-4 border-b border-border bg-muted/30 flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("studyLog.newStudyEntry")}</h3>
-            <button onClick={() => setShowForm(false)} className="p-1 rounded hover:bg-muted transition-colors">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              {editingLogId ? t("studyLog.editStudyEntry") : t("studyLog.newStudyEntry")}
+            </h3>
+            <button onClick={resetForm} className="p-1 rounded hover:bg-muted transition-colors">
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
@@ -588,13 +638,28 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-vertical"
               />
             </div>
-            <button
-              onClick={handleAddLog}
-              disabled={!formChapterId || !formDate || !formHours}
-              className="w-full px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {t("studyLog.addEntry")}
-            </button>
+            <div className="flex gap-3">
+              {editingLogId && (
+                <button
+                  onClick={resetForm}
+                  className="px-4 py-2.5 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+                >
+                  {t("studyLog.cancelEdit")}
+                </button>
+              )}
+              <button
+                onClick={handleAddLog}
+                disabled={!formChapterId || !formDate || !formHours}
+                className={cn(
+                  "flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed",
+                  editingLogId
+                    ? "bg-accent text-accent-foreground hover:bg-accent/90"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90"
+                )}
+              >
+                {editingLogId ? t("studyLog.updateEntry") : t("studyLog.addEntry")}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -776,7 +841,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
         </div>
       )}
 
-      {/* Logs grouped by date */}
+      {/* Logs grouped by month → date */}
       {sortedDates.length === 0 && (
         <div className="text-center py-12">
           <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
@@ -784,106 +849,158 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs }: StudyLogView
         </div>
       )}
 
-      {sortedDates.map((date) => {
-        const dayLogs = groupedLogs[date]
-        const dayHours = dayLogs.reduce((a, b) => a + b.studyHours, 0)
-        const dayQuestions = dayLogs.reduce((a, b) => a + b.questionsAnswered, 0)
-        const isExpanded = expandedDate === null || expandedDate === date
+      {(() => {
+        // Group dates by month (YYYY-MM)
+        const monthMap: Record<string, string[]> = {}
+        for (const date of sortedDates) {
+          const monthKey = date.substring(0, 7) // "YYYY-MM"
+          if (!monthMap[monthKey]) monthMap[monthKey] = []
+          monthMap[monthKey].push(date)
+        }
+        const sortedMonths = Object.keys(monthMap).sort((a, b) => b.localeCompare(a))
 
-        return (
-          <div key={date} className="bg-card rounded-xl border border-border overflow-hidden">
-            {/* Day Header */}
-            <button
-              onClick={() => setExpandedDate(expandedDate === date ? null : date)}
-              className="w-full px-5 py-4 flex items-center justify-between hover:bg-muted/20 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+        return sortedMonths.map((monthKey) => {
+          const monthDates = monthMap[monthKey]
+          const isMonthExpanded = expandedMonth === monthKey
+          const [year, month] = monthKey.split("-")
+          const monthDate = new Date(parseInt(year), parseInt(month) - 1, 1)
+          const monthLabel = monthDate.toLocaleDateString(locale === "es" ? "es" : "en-US", { year: "numeric", month: "long" })
+          const monthLogs = monthDates.flatMap(d => groupedLogs[d])
+          const monthHours = monthLogs.reduce((a, b) => a + b.studyHours, 0)
+          const monthSessions = monthLogs.length
+
+          return (
+            <div key={monthKey} className="space-y-2">
+              {/* Month Header */}
+              <button
+                onClick={() => setExpandedMonth(isMonthExpanded ? null : monthKey)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-card rounded-xl border border-border hover:bg-muted/20 transition-colors"
+              >
+                <div className="flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm font-bold text-card-foreground capitalize">{monthLabel}</span>
                 </div>
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-card-foreground">{formatDate(date)}</p>
-                  <p className="text-xs text-muted-foreground">{dayLogs.length} {dayLogs.length > 1 ? t("studyLog.sessions") : t("studyLog.session")}</p>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span>{monthSessions} {monthSessions > 1 ? t("studyLog.sessions") : t("studyLog.session")}</span>
+                  <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{monthHours.toFixed(1)}h</span>
+                  {isMonthExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{dayHours.toFixed(1)}h</span>
-                  <span className="hidden sm:flex items-center gap-1"><BookOpen className="w-3 h-3" />{dayQuestions} Q</span>
-                </div>
-                {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-              </div>
-            </button>
+              </button>
 
-            {/* Day Logs */}
-            {isExpanded && (
-              <div className="border-t border-border">
-                {dayLogs.map((log, idx) => {
-                  const info = SECTION_INFO[log.section]
-                  return (
-                    <div
-                      key={log.id}
-                      className={cn(
-                        "px-5 py-4 flex items-start gap-4 relative group",
-                        idx < dayLogs.length - 1 && "border-b border-border"
-                      )}
+              {/* Dates within month */}
+              {isMonthExpanded && monthDates.map((date) => {
+                const dayLogs = groupedLogs[date]
+                const dayHours = dayLogs.reduce((a, b) => a + b.studyHours, 0)
+                const dayQuestions = dayLogs.reduce((a, b) => a + b.questionsAnswered, 0)
+                const isExpanded = expandedDate === date
+
+                return (
+                  <div key={date} className="bg-card rounded-xl border border-border overflow-hidden ml-4">
+                    {/* Day Header */}
+                    <button
+                      onClick={() => setExpandedDate(expandedDate === date ? null : date)}
+                      className="w-full px-5 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors"
                     >
-                      {/* Section badge */}
-                      <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
-                        style={{ backgroundColor: info.color }}
-                      >
-                        {log.section}
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-sm font-medium text-card-foreground">{log.chapterTitle}</p>
-                          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapters.find(c => c.id === log.chapterId)?.number}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                         </div>
-
-                        {/* Stats row with MC/TBS breakdown */}
-                        <div className="flex items-center gap-4 mt-1.5 flex-wrap">
-                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Clock className="w-3 h-3" />{log.studyHours}h
-                          </span>
-                          {log.mcQuestions > 0 && (
-                            <span className="text-xs text-muted-foreground">
-                              MC: {log.mcCorrect}/{log.mcQuestions}
-                            </span>
-                          )}
-                          {log.tbsQuestions > 0 && (
-                            <span className="text-xs text-muted-foreground">
-                              TBS: {log.tbsCorrect}/{log.tbsQuestions}
-                            </span>
-                          )}
+                        <div className="text-left">
+                          <p className="text-sm font-semibold text-card-foreground">{formatDate(date)}</p>
+                          <p className="text-xs text-muted-foreground">{dayLogs.length} {dayLogs.length > 1 ? t("studyLog.sessions") : t("studyLog.session")}</p>
                         </div>
-
-                        {/* Memo */}
-                        {log.memo && (
-                          <p className="text-xs text-muted-foreground mt-2 leading-relaxed bg-muted/30 rounded-lg px-3 py-2 border border-border">
-                            {log.memo}
-                          </p>
-                        )}
                       </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{dayHours.toFixed(1)}h</span>
+                          <span className="hidden sm:flex items-center gap-1"><BookOpen className="w-3 h-3" />{dayQuestions} Q</span>
+                        </div>
+                        {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                      </div>
+                    </button>
 
-                      {/* Delete button */}
-                      <button
-                        onClick={() => handleDeleteLog(log.id)}
-                        className="flex-shrink-0 p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/10 transition-all"
-                        aria-label="Delete log entry"
-                      >
-                        <X className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
-                      </button>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        )
-      })}
+                    {/* Day Logs */}
+                    {isExpanded && (
+                      <div className="border-t border-border">
+                        {dayLogs.map((log, idx) => {
+                          const info = SECTION_INFO[log.section]
+                          return (
+                            <div
+                              key={log.id}
+                              className={cn(
+                                "px-5 py-4 flex items-start gap-4 relative group",
+                                idx < dayLogs.length - 1 && "border-b border-border"
+                              )}
+                            >
+                              {/* Section badge */}
+                              <div
+                                className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold text-[hsl(0,0%,100%)] flex-shrink-0"
+                                style={{ backgroundColor: info.color }}
+                              >
+                                {log.section}
+                              </div>
+
+                              {/* Content */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <p className="text-sm font-medium text-card-foreground">{log.chapterTitle}</p>
+                                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapters.find(c => c.id === log.chapterId)?.number}</span>
+                                </div>
+
+                                {/* Stats row with MC/TBS breakdown */}
+                                <div className="flex items-center gap-4 mt-1.5 flex-wrap">
+                                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                                    <Clock className="w-3 h-3" />{log.studyHours}h
+                                  </span>
+                                  {log.mcQuestions > 0 && (
+                                    <span className="text-xs text-muted-foreground">
+                                      MC: {log.mcCorrect}/{log.mcQuestions}
+                                    </span>
+                                  )}
+                                  {log.tbsQuestions > 0 && (
+                                    <span className="text-xs text-muted-foreground">
+                                      TBS: {log.tbsCorrect}/{log.tbsQuestions}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Memo */}
+                                {log.memo && (
+                                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed bg-muted/30 rounded-lg px-3 py-2 border border-border">
+                                    {log.memo}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* Edit / Delete buttons */}
+                              <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all">
+                                <button
+                                  onClick={() => handleEditLog(log)}
+                                  className="p-1.5 rounded hover:bg-muted transition-colors"
+                                  aria-label="Edit log entry"
+                                >
+                                  <Pencil className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteLog(log.id)}
+                                  className="p-1.5 rounded hover:bg-destructive/10 transition-colors"
+                                  aria-label="Delete log entry"
+                                >
+                                  <X className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                                </button>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })
+      })()}
     </div>
   )
 }

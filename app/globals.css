@@ -21,7 +21,7 @@
     --secondary: 230 12% 92%;
     --secondary-foreground: 230 25% 8%;
     --muted: 230 10% 91%;
-    --muted-foreground: 230 8% 46%;
+    --muted-foreground: 230 10% 38%;
     --accent: 230 35% 25%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 72% 51%;
@@ -88,6 +88,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: "Times New Roman", Times, serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Constellation pattern for light mode - subtle */

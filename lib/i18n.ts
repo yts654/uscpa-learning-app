@@ -723,6 +723,10 @@ const translations = {
   "studyLog.hoursDown": { en: "Total hours down", es: "Horas totales bajaron" },
   "studyLog.hoursUp": { en: "Total hours up", es: "Horas totales subieron" },
   "studyLog.vsLastWeek": { en: "vs last week", es: "vs semana pasada" },
+  "studyLog.editEntry": { en: "Edit Entry", es: "Editar entrada" },
+  "studyLog.editStudyEntry": { en: "Edit Study Entry", es: "Editar entrada de estudio" },
+  "studyLog.updateEntry": { en: "Update Entry", es: "Actualizar entrada" },
+  "studyLog.cancelEdit": { en: "Cancel", es: "Cancelar" },
 
   // ── Essence Notes ───────────────────────────────────────────────
   "essence.coreConcept": { en: "Core Concept", es: "Concepto clave" },
