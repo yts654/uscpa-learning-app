@@ -23,16 +23,47 @@ export interface StudyGoals {
 
 export const DEFAULT_STUDY_GOALS: StudyGoals = {
   sections: {
-    FAR: { examDate: null, targetScore: 75 },
+    FAR: { examDate: "2026-03-05", targetScore: 80 },
     AUD: { examDate: null, targetScore: 75 },
-    REG: { examDate: null, targetScore: 75 },
+    REG: { examDate: "2026-05-15", targetScore: 75 },
     BEC: { examDate: null, targetScore: 75 },
     TCP: { examDate: null, targetScore: 75 },
     ISC: { examDate: null, targetScore: 75 },
   },
-  dailyStudyHours: 3,
-  questionsPerSession: 25,
+  dailyStudyHours: 4,
+  questionsPerSession: 30,
 }
+
+// Demo recall records for Retention Calibration
+export const INITIAL_RECALL_RECORDS: RecallRecord[] = [
+  { chapterId: "far-ch1", date: "2026-02-17", rating: 3, predictedRetention: 85 },
+  { chapterId: "far-ch2", date: "2026-02-17", rating: 2, predictedRetention: 72 },
+  { chapterId: "far-ch3", date: "2026-02-19", rating: 3, predictedRetention: 68 },
+  { chapterId: "far-ch4", date: "2026-02-10", rating: 3, predictedRetention: 80 },
+  { chapterId: "far-ch5", date: "2026-02-11", rating: 3, predictedRetention: 78 },
+  { chapterId: "far-ch6", date: "2026-02-11", rating: 2, predictedRetention: 65 },
+  { chapterId: "far-ch7", date: "2026-02-20", rating: 2, predictedRetention: 50 },
+  { chapterId: "far-ch8", date: "2026-02-20", rating: 2, predictedRetention: 45 },
+  { chapterId: "far-ch9", date: "2026-02-21", rating: 1, predictedRetention: 42 },
+  { chapterId: "far-ch10", date: "2026-02-12", rating: 2, predictedRetention: 60 },
+  { chapterId: "far-ch11", date: "2026-02-21", rating: 2, predictedRetention: 48 },
+  { chapterId: "far-ch12", date: "2026-02-19", rating: 1, predictedRetention: 40 },
+  { chapterId: "far-ch13", date: "2026-02-15", rating: 2, predictedRetention: 55 },
+  { chapterId: "far-ch14", date: "2026-02-22", rating: 1, predictedRetention: 35 },
+  { chapterId: "far-ch15", date: "2026-02-22", rating: 1, predictedRetention: 38 },
+  { chapterId: "far-ch16", date: "2026-02-18", rating: 3, predictedRetention: 75 },
+  { chapterId: "far-ch17", date: "2026-02-18", rating: 2, predictedRetention: 58 },
+  { chapterId: "far-ch18", date: "2026-02-14", rating: 2, predictedRetention: 55 },
+  { chapterId: "far-ch19", date: "2026-02-15", rating: 2, predictedRetention: 50 },
+  { chapterId: "far-ch20", date: "2026-02-16", rating: 1, predictedRetention: 38 },
+  { chapterId: "far-ch21", date: "2026-02-17", rating: 1, predictedRetention: 32 },
+  { chapterId: "reg-ch1", date: "2026-02-10", rating: 3, predictedRetention: 70 },
+  { chapterId: "reg-ch2", date: "2026-02-10", rating: 2, predictedRetention: 58 },
+  { chapterId: "reg-ch5", date: "2026-02-14", rating: 1, predictedRetention: 42 },
+  { chapterId: "reg-ch7", date: "2026-02-15", rating: 1, predictedRetention: 35 },
+  { chapterId: "reg-ch9", date: "2026-02-16", rating: 2, predictedRetention: 50 },
+  { chapterId: "reg-ch12", date: "2026-02-20", rating: 3, predictedRetention: 65 },
+]
 
 export interface Chapter {
   id: string

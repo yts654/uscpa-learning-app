@@ -15,7 +15,7 @@ import { MockExamsView } from "@/components/mock-exams-view"
 import { OnboardingTour } from "@/components/onboarding-tour"
 import {
   INITIAL_PROGRESS, CHAPTERS, STUDY_LOGS, INITIAL_ESSENCE_NOTES, INITIAL_MOCK_EXAMS,
-  DEFAULT_STUDY_GOALS,
+  DEFAULT_STUDY_GOALS, INITIAL_RECALL_RECORDS,
   type Chapter, type StudyLog, type ExamSection, type EssenceNote, type MockExam,
   type StudyGoals, type RecallRecord, type RecallRating,
 } from "@/lib/study-data"
@@ -58,7 +58,7 @@ export default function Home() {
   const [mockExams, setMockExams] = useState<MockExam[]>(INITIAL_MOCK_EXAMS)
   const [completedSections, setCompletedSections] = useState<ExamSection[]>([])
   const [studyGoals, setStudyGoals] = useState<StudyGoals>(DEFAULT_STUDY_GOALS)
-  const [recallRecords, setRecallRecords] = useState<RecallRecord[]>([])
+  const [recallRecords, setRecallRecords] = useState<RecallRecord[]>(INITIAL_RECALL_RECORDS)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const handleSelectChapter = useCallback((chapter: Chapter) => {

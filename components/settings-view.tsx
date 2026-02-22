@@ -109,28 +109,12 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
     setPasswordLoading(false)
   }
 
-  // Helper to parse/update exam date parts from studyGoals
-  const getDateParts = (section: ExamSection) => {
-    const examDate = studyGoals.sections[section].examDate
-    if (!examDate) return { year: "", month: "", day: "" }
-    const [y, m, d] = examDate.split("-")
-    return { year: y, month: String(parseInt(m)), day: String(parseInt(d)) }
-  }
-
-  const updateSectionDate = (section: ExamSection, part: "year" | "month" | "day", value: string) => {
-    const parts = getDateParts(section)
-    parts[part] = value
-
-    let examDate: string | null = null
-    if (parts.year && parts.month && parts.day) {
-      examDate = `${parts.year}-${parts.month.padStart(2, "0")}-${parts.day.padStart(2, "0")}`
-    }
-
+  const updateSectionDate = (section: ExamSection, value: string) => {
     onUpdateStudyGoals({
       ...studyGoals,
       sections: {
         ...studyGoals.sections,
-        [section]: { ...studyGoals.sections[section], examDate },
+        [section]: { ...studyGoals.sections[section], examDate: value || null },
       },
     })
   }
@@ -343,7 +327,6 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
         {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map((section) => {
           const info = SECTION_INFO[section]
           const isCompleted = completedSections.includes(section)
-          const dateParts = getDateParts(section)
           const toggleCompleted = () => {
             if (isCompleted) {
               onUpdateCompletedSections(completedSections.filter(s => s !== section))
@@ -376,45 +359,14 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">{t("settings.examDate")}</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <select
-                      value={dateParts.year}
-                      onChange={(e) => updateSectionDate(section, "year", e.target.value)}
-                      disabled={isCompleted}
-                      className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <option value="">{locale === "es" ? "Año" : "Year"}</option>
-                      {Array.from({ length: 7 }, (_, i) => 2025 + i).map(y => (
-                        <option key={y} value={y}>{y}</option>
-                      ))}
-                    </select>
-                    <select
-                      value={dateParts.month}
-                      onChange={(e) => updateSectionDate(section, "month", e.target.value)}
-                      disabled={isCompleted}
-                      className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <option value="">{locale === "es" ? "Mes" : "Mon"}</option>
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                        <option key={m} value={m}>
-                          {locale === "es"
-                            ? new Date(2025, m - 1).toLocaleString("es", { month: "short" })
-                            : new Date(2025, m - 1).toLocaleString("en", { month: "short" })}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={dateParts.day}
-                      onChange={(e) => updateSectionDate(section, "day", e.target.value)}
-                      disabled={isCompleted}
-                      className="w-full px-2 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <option value="">{locale === "es" ? "Día" : "Day"}</option>
-                      {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
-                        <option key={d} value={d}>{d}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <input
+                    type="date"
+                    value={studyGoals.sections[section].examDate || ""}
+                    onChange={(e) => updateSectionDate(section, e.target.value)}
+                    disabled={isCompleted}
+                    min={new Date().toISOString().split("T")[0]}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
                 </div>
                 <div>
                   <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">{t("settings.targetScore")}</label>
