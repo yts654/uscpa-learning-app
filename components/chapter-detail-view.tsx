@@ -82,7 +82,7 @@ export function ChapterDetailView({
 
   function formatDate(dateStr: string) {
     const d = new Date(dateStr + "T00:00:00")
-    return d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric", year: "numeric" })
+    return d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric", year: "numeric" })
   }
 
   const statItems = [
@@ -200,7 +200,7 @@ export function ChapterDetailView({
                 </div>
                 {logTotalQuestions > 0 && (
                   <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg px-3 py-1.5">
-                    Total: {logTotalQuestions} questions, {logTotalCorrect} correct ({logTotalQuestions > 0 ? Math.round((logTotalCorrect / logTotalQuestions) * 100) : 0}%)
+                    {t("chapterDetail.totalSummary").replace("{q}", String(logTotalQuestions)).replace("{c}", String(logTotalCorrect)).replace("{p}", String(logTotalQuestions > 0 ? Math.round((logTotalCorrect / logTotalQuestions) * 100) : 0))}
                   </div>
                 )}
                 <div>

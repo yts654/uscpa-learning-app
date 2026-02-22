@@ -229,43 +229,29 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
           <div>
             <h4 className="text-sm font-bold text-card-foreground flex items-center gap-1.5">
               <Sparkles className="w-4 h-4" style={{ color: accentColor }} />
-              {locale === "es" ? "¿Qué es Essence Notes?" : "What is Essence Notes?"}
+              {t("essence.guide.whatTitle")}
             </h4>
             <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-              {locale === "es"
-                ? "Essence Notes usa IA para analizar tus materiales de estudio (capturas de pantalla o texto) y extraer automáticamente los conceptos clave, trampas de examen y marcos de decisión que necesitas para aprobar el CPA. En lugar de tomar notas manualmente, la IA identifica exactamente qué es importante para el examen."
-                : "Essence Notes uses AI to analyze your study materials (screenshots or text) and automatically extract the key concepts, exam traps, and decision frameworks you need to pass the CPA exam. Instead of taking notes manually, AI identifies exactly what matters for exam day."}
+              {t("essence.guide.whatDesc")}
             </p>
           </div>
 
           {/* How to use - 3 steps */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-              {locale === "es" ? "Cómo usar" : "How to Use"}
+              {t("essence.guide.howTitle")}
             </h4>
             <div className="space-y-2">
               {[
-                {
-                  step: "1",
-                  en: "Upload a screenshot of your textbook, MCQ, or TBS — or paste the text directly",
-                  es: "Sube una captura de tu libro, MCQ o TBS — o pega el texto directamente",
-                },
-                {
-                  step: "2",
-                  en: "Click \"Extract Insights with AI\" — AI reads the content and identifies exam-critical insights",
-                  es: "Haz clic en \"Extraer con IA\" — la IA lee el contenido e identifica ideas críticas para el examen",
-                },
-                {
-                  step: "3",
-                  en: "Review the results and save the insights you want. They're organized by type for easy review",
-                  es: "Revisa los resultados y guarda las ideas que quieras. Se organizan por tipo para repaso fácil",
-                },
+                { step: "1", key: "essence.guide.step1" as const },
+                { step: "2", key: "essence.guide.step2" as const },
+                { step: "3", key: "essence.guide.step3" as const },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-2.5">
                   <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0 mt-0.5" style={{ backgroundColor: accentColor }}>
                     {item.step}
                   </div>
-                  <p className="text-xs text-card-foreground leading-relaxed">{locale === "es" ? item.es : item.en}</p>
+                  <p className="text-xs text-card-foreground leading-relaxed">{t(item.key)}</p>
                 </div>
               ))}
             </div>
@@ -274,23 +260,23 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
           {/* 4 Insight Types */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-              {locale === "es" ? "4 tipos de insights" : "4 Insight Types"}
+              {t("essence.guide.insightTypesTitle")}
             </h4>
             <div className="grid grid-cols-2 gap-2">
               {(Object.entries(INSIGHT_CONFIG) as [InsightType, typeof INSIGHT_CONFIG[InsightType]][]).map(([type, config]) => {
                 const Icon = config.icon
-                const descriptions: Record<InsightType, { en: string; es: string }> = {
-                  concept: { en: "The WHY behind accounting rules", es: "El PORQUÉ detrás de las reglas contables" },
-                  framework: { en: "Step-by-step decision trees", es: "Árboles de decisión paso a paso" },
-                  trap: { en: "Where candidates lose points", es: "Donde los candidatos pierden puntos" },
-                  rule: { en: "Thresholds & mnemonics", es: "Umbrales y mnemotécnicos" },
+                const descKeys: Record<InsightType, string> = {
+                  concept: "essence.guide.conceptDesc",
+                  framework: "essence.guide.frameworkDesc",
+                  trap: "essence.guide.trapDesc",
+                  rule: "essence.guide.ruleDesc",
                 }
                 return (
                   <div key={type} className="flex items-start gap-2 p-2 rounded-lg" style={{ backgroundColor: config.bgColor }}>
                     <Icon className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: config.color }} />
                     <div>
                       <p className="text-[10px] font-bold uppercase" style={{ color: config.color }}>{t(config.labelKey)}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{locale === "es" ? descriptions[type].es : descriptions[type].en}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">{t(descKeys[type] as any)}</p>
                     </div>
                   </div>
                 )
@@ -301,7 +287,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
           {/* Example Notes */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-              {locale === "es" ? "Ejemplos de notas generadas" : "Example Generated Notes"}
+              {t("essence.guide.examplesTitle")}
             </h4>
             <div className="space-y-2">
               {EXAMPLE_INSIGHTS.map((insight, i) => {
@@ -327,9 +313,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
               })}
             </div>
             <p className="text-[10px] text-muted-foreground mt-2 italic">
-              {locale === "es"
-                ? "↑ Estos son ejemplos. Tu contenido real generará insights específicos para el material que subas."
-                : "↑ These are examples. Your actual content will generate insights specific to the material you upload."}
+              {t("essence.guide.examplesFooter")}
             </p>
           </div>
         </div>
@@ -564,7 +548,7 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
                     )}
                     <div className="flex items-center gap-3 mt-2">
                       <p className="text-[10px] text-muted-foreground">
-                        {new Date(insight.createdAt).toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(insight.createdAt).toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                       </p>
                       {hasImages && (
                         <button

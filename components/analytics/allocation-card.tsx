@@ -45,15 +45,15 @@ export function AllocationCard({ allocations }: AllocationCardProps) {
       {showHelp && (
         <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
           <p className="text-xs font-semibold text-card-foreground">
-            {locale === "es" ? "Recomienda cómo distribuir tu tiempo de estudio:" : "Recommends how to distribute your study time:"}
+            {t("analytics.allocation.help.title")}
           </p>
           <div className="space-y-1.5 text-xs text-muted-foreground">
-            <p><span className="font-semibold text-card-foreground">Current</span> — {locale === "es" ? "Horas por semana que actualmente dedicas a cada sección." : "Hours per week you currently spend on each section."}</p>
-            <p><span className="font-semibold text-card-foreground">Recommended</span> — {locale === "es" ? "Horas sugeridas basadas en tu progreso y retención." : "Suggested hours based on your progress and retention."}</p>
-            <p><span className="font-semibold text-card-foreground">Change</span> — <span style={{ color: "hsl(145, 45%, 35%)" }}>Increase</span>{locale === "es" ? " = dedicar más tiempo, " : " = spend more time, "}<span style={{ color: "hsl(0, 65%, 45%)" }}>Decrease</span>{locale === "es" ? " = reducir, Maintain = mantener." : " = reduce, Maintain = keep same."}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.allocation.help.current")}</span> — {t("analytics.allocation.help.currentDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.allocation.help.recommended")}</span> — {t("analytics.allocation.help.recommendedDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.allocation.help.change")}</span> — {t("analytics.allocation.help.changeDesc")}</p>
           </div>
           <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
-            {locale === "es" ? "Las recomendaciones se basan en repasos pendientes, cobertura y ritmo del objetivo." : "Recommendations are based on overdue reviews, coverage gaps, and goal pace."}
+            {t("analytics.allocation.help.footer")}
           </p>
         </div>
       )}

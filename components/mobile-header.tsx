@@ -29,7 +29,7 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
   const { locale, setLocale, t } = useLanguage()
   const { theme, setTheme } = useTheme()
 
-  const toggleLocale = () => setLocale(locale === "es" ? "en" : "es")
+  const toggleLocale = () => setLocale(locale === "en" ? "es" : locale === "es" ? "ja" : "en")
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark")
 
   // Scroll active tab into view on mount and view change
@@ -58,7 +58,7 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
             onClick={toggleLocale}
             className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
           >
-            <span className="text-sm leading-none">{locale === "es" ? "🇺🇸" : "🇪🇸"}</span>
+            <span className="text-sm leading-none">{locale === "en" ? "🇪🇸" : locale === "es" ? "🇯🇵" : "🇺🇸"}</span>
           </button>
           <button
             onClick={toggleTheme}

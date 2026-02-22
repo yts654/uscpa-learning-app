@@ -59,15 +59,15 @@ export function PaceEngineCard({ paces }: PaceEngineCardProps) {
       {showHelp && (
         <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
           <p className="text-xs font-semibold text-card-foreground">
-            {locale === "es" ? "Goal Pace compara tu ritmo actual con el necesario para tu examen:" : "Goal Pace compares your current pace vs what's needed for your exam:"}
+            {t("analytics.pace.help.title")}
           </p>
           <div className="space-y-1.5 text-xs text-muted-foreground">
-            <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Gráfico de barras" : "Bar Chart"}</span> — {locale === "es" ? "Las barras claras son horas semanales requeridas, las oscuras son tus horas reales." : "Light bars show required weekly hours, dark bars show your actual hours."}</p>
-            <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Capítulos restantes" : "Remaining Chapters"}</span> — {locale === "es" ? "Cuántos capítulos te quedan por estudiar en cada sección." : "How many chapters you still need to study in each section."}</p>
-            <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Estado" : "Status"}</span> — {locale === "es" ? "On Track (en camino), Ahead (adelantado) o Behind (atrasado) respecto a tu fecha de examen." : "On Track, Ahead, or Behind relative to your exam date."}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.pace.help.barChart")}</span> — {t("analytics.pace.help.barChartDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.pace.help.remainingChapters")}</span> — {t("analytics.pace.help.remainingChaptersDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.pace.help.status")}</span> — {t("analytics.pace.help.statusDesc")}</p>
           </div>
           <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
-            {locale === "es" ? "Establece una fecha de examen en Settings para activar este análisis." : "Set an exam date in Settings to enable this analysis."}
+            {t("analytics.pace.help.footer")}
           </p>
         </div>
       )}

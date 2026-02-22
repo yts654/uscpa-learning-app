@@ -34,18 +34,12 @@ export function RiskRadarCard({ risks }: RiskRadarCardProps) {
   const { t, locale } = useLanguage()
   const [showHelp, setShowHelp] = useState(false)
 
-  const helpItems = locale === "es" ? [
-    { icon: AlertTriangle, color: "hsl(0, 65%, 45%)", label: "Deuda de repaso", desc: "Capítulos con retención <30% que necesitan revisión urgente." },
-    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Riesgo de atracón", desc: "Demasiado material nuevo sin suficiente repaso." },
-    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Estancamiento", desc: "Capítulos sin mejora de precisión a pesar de repasos repetidos." },
-    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Capítulos sin tocar", desc: "Porcentaje alto de capítulos aún no estudiados." },
-    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Variación de estudio", desc: "Horario de estudio inconsistente semana a semana." },
-  ] : [
-    { icon: AlertTriangle, color: "hsl(0, 65%, 45%)", label: "Review Debt", desc: "Chapters with retention below 30% that need urgent review." },
-    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Cramming Risk", desc: "Too much new material without enough review sessions." },
-    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Stagnation", desc: "Chapters with no accuracy improvement despite repeated reviews." },
-    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: "Untouched Chapters", desc: "High percentage of chapters not yet studied before exam." },
-    { icon: Info, color: "hsl(225, 50%, 45%)", label: "Study Variance", desc: "Inconsistent weekly study schedule (high hour variation)." },
+  const helpItems = [
+    { icon: AlertTriangle, color: "hsl(0, 65%, 45%)", label: t("analytics.risk.help.reviewDebt"), desc: t("analytics.risk.help.reviewDebtDesc") },
+    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: t("analytics.risk.help.cramming"), desc: t("analytics.risk.help.crammingDesc") },
+    { icon: Info, color: "hsl(225, 50%, 45%)", label: t("analytics.risk.help.stagnation"), desc: t("analytics.risk.help.stagnationDesc") },
+    { icon: AlertCircle, color: "hsl(25, 55%, 40%)", label: t("analytics.risk.help.untouched"), desc: t("analytics.risk.help.untouchedDesc") },
+    { icon: Info, color: "hsl(225, 50%, 45%)", label: t("analytics.risk.help.variance"), desc: t("analytics.risk.help.varianceDesc") },
   ]
 
   return (
@@ -59,7 +53,7 @@ export function RiskRadarCard({ risks }: RiskRadarCardProps) {
         <button
           onClick={() => setShowHelp(!showHelp)}
           className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-          title={locale === "es" ? "Ver guía" : "How to read"}
+          title={t("analytics.risk.help.title")}
         >
           {showHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
         </button>
@@ -68,7 +62,7 @@ export function RiskRadarCard({ risks }: RiskRadarCardProps) {
       {showHelp && (
         <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-3">
           <p className="text-xs font-semibold text-card-foreground">
-            {locale === "es" ? "Risk Radar analiza tus patrones de estudio y detecta 5 tipos de riesgo:" : "Risk Radar analyzes your study patterns and detects 5 risk types:"}
+            {t("analytics.risk.help.title")}
           </p>
           {helpItems.map((item) => {
             const Icon = item.icon
@@ -83,9 +77,7 @@ export function RiskRadarCard({ risks }: RiskRadarCardProps) {
             )
           })}
           <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
-            {locale === "es"
-              ? "Los niveles van de Critical (rojo) → Warning (naranja) → Info (azul). Cada riesgo incluye una acción recomendada."
-              : "Severity levels: Critical (red) → Warning (orange) → Info (blue). Each risk includes a recommended action."}
+            {t("analytics.risk.help.footer")}
           </p>
         </div>
       )}

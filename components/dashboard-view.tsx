@@ -108,7 +108,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
     const diff = Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24))
     if (diff === 0) return t("dashboard.today")
     if (diff === 1) return t("dashboard.yesterday")
-    return d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" })
+    return d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric" })
   }
 
   return (
@@ -230,7 +230,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                   const dayHours = studyLogs.filter(l => l.date === dateStr).reduce((a, b) => a + b.studyHours, 0)
                   days.push({
                     date: dateStr,
-                    label: d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" }),
+                    label: d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric" }),
                     hasStudy: studyDates.has(dateStr),
                     hours: dayHours,
                   })
@@ -467,15 +467,15 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
               <div className="px-6 py-4 border-b border-border bg-muted/20">
                 <div className="space-y-2">
                   <p className="text-xs font-semibold text-card-foreground">
-                    {locale === "es" ? "Capítulos que más necesitan repaso ahora:" : "Chapters that most need review right now:"}
+                    {t("dashboard.reviewHelp.title")}
                   </p>
                   <div className="space-y-1.5 text-xs text-muted-foreground">
-                    <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Barra de retención" : "Retention Bar"}</span> — {locale === "es" ? "Cuánto recuerdas del capítulo. Rojo = urgente, verde = bien retenido." : "How much you remember. Red = urgent, green = well retained."}</p>
-                    <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Nivel de dominio" : "Mastery Level"}</span> — {locale === "es" ? "New → Learning → Reviewing → Mastered. Basado en cuántas veces has repasado." : "New → Learning → Reviewing → Mastered. Based on how many times you've reviewed."}</p>
-                    <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Días atrás" : "Days Ago"}</span> — {locale === "es" ? "Cuánto tiempo desde tu último estudio de este capítulo." : "How long since you last studied this chapter."}</p>
+                    <p><span className="font-semibold text-card-foreground">{t("dashboard.reviewHelp.retentionBar")}</span> — {t("dashboard.reviewHelp.retentionBarDesc")}</p>
+                    <p><span className="font-semibold text-card-foreground">{t("dashboard.reviewHelp.masteryLevel")}</span> — {t("dashboard.reviewHelp.masteryLevelDesc")}</p>
+                    <p><span className="font-semibold text-card-foreground">{t("dashboard.reviewHelp.daysAgo")}</span> — {t("dashboard.reviewHelp.daysAgoDesc")}</p>
                   </div>
                   <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
-                    {locale === "es" ? "Ordenados por urgencia — repasa los de arriba primero. Haz clic en 'View Schedule' para ver el calendario completo." : "Sorted by urgency — review the top ones first. Click 'View Schedule' for the full review calendar."}
+                    {t("dashboard.reviewHelp.footer")}
                   </p>
                 </div>
               </div>

@@ -40,7 +40,7 @@ function getMonday(d: Date): Date {
 
 function formatWeekDate(dateStr: string, locale: string): string {
   const d = new Date(dateStr + "T00:00:00")
-  return d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" })
+  return d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric" })
 }
 
 function generateWeekComments(
@@ -87,6 +87,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
   const [chartMode, setChartMode] = useState<"weekly" | "monthly">("weekly")
   const [showHelp, setShowHelp] = useState(false)
   const { resolvedTheme } = useTheme()
+  const { t } = useLanguage()
   const isDark = resolvedTheme === "dark"
 
   // Weekly chart data: hours per day of the current week, stacked by section
@@ -124,7 +125,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
       monday.setDate(monday.getDate() - i * 7)
       const sunday = new Date(monday)
       sunday.setDate(sunday.getDate() + 6)
-      const fmt = (d: Date) => d.toLocaleDateString(locale === "es" ? "es" : "en-US", { month: "short", day: "numeric" })
+      const fmt = (d: Date) => d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric" })
       weeks.push({ name: `${fmt(monday)}`, dateKey: monday.toISOString().split("T")[0] })
     }
 
@@ -160,7 +161,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
         <div className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-muted-foreground" />
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            {chartMode === "weekly" ? "This Week" : "Last 8 Weeks"}
+            {chartMode === "weekly" ? t("studyLog.chart.thisWeek") : t("studyLog.chart.last8Weeks")}
           </h3>
         </div>
         <div className="flex items-center gap-2">
@@ -178,7 +179,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
               chartMode === "weekly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
             )}
           >
-            Weekly
+            {t("studyLog.chart.weekly")}
           </button>
           <button
             onClick={() => setChartMode("monthly")}
@@ -187,7 +188,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
               chartMode === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
             )}
           >
-            Monthly
+            {t("studyLog.chart.monthly")}
           </button>
         </div>
         </div>
@@ -197,12 +198,12 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
         <div className="px-5 py-4 border-b border-border bg-muted/20">
           <div className="space-y-2">
             <p className="text-xs font-semibold text-card-foreground">
-              {locale === "es" ? "Visualiza tus patrones de estudio:" : "Visualize your study patterns:"}
+              {t("studyLog.chart.helpTitle")}
             </p>
             <div className="space-y-1.5 text-xs text-muted-foreground">
-              <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Barras apiladas" : "Stacked Bars"}</span> — {locale === "es" ? "Horas de estudio por sección (FAR, AUD, REG, etc.) apiladas por día o semana." : "Study hours by section (FAR, AUD, REG, etc.) stacked per day or week."}</p>
-              <p><span className="font-semibold text-card-foreground">{locale === "es" ? "Línea de tendencia" : "Trend Line"}</span> — {locale === "es" ? "Total de horas de estudio por período para ver tu consistencia." : "Total study hours per period to track your consistency."}</p>
-              <p><span className="font-semibold text-card-foreground">Weekly / Monthly</span> — {locale === "es" ? "Cambia entre vista semanal (7 días) y mensual (8 semanas)." : "Switch between weekly (7 days) and monthly (8 weeks) view."}</p>
+              <p><span className="font-semibold text-card-foreground">{t("studyLog.chart.stackedBars")}</span> — {t("studyLog.chart.stackedBarsDesc")}</p>
+              <p><span className="font-semibold text-card-foreground">{t("studyLog.chart.trendLine")}</span> — {t("studyLog.chart.trendLineDesc")}</p>
+              <p><span className="font-semibold text-card-foreground">{t("studyLog.chart.weekly")} / {t("studyLog.chart.monthly")}</span> — {t("studyLog.chart.weeklyMonthlyDesc")}</p>
             </div>
           </div>
         </div>
@@ -211,7 +212,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
       <div className="p-5 space-y-6">
         {/* Study Hours Stacked Bar Chart */}
         <div>
-          <p className="text-xs font-medium text-muted-foreground mb-3">Study Hours by Section</p>
+          <p className="text-xs font-medium text-muted-foreground mb-3">{t("studyLog.chart.studyHoursBySection")}</p>
           {hasData ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={chartData} barCategoryGap="20%">
@@ -231,21 +232,21 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
                     stroke={isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)"}
                     strokeDasharray="6 3"
                     strokeWidth={1.5}
-                    label={{ value: `${locale === "es" ? "Meta" : "Goal"} ${chartMode === "weekly" ? dailyGoal : dailyGoal * 5 + weekendGoal * 2}h`, position: "right", fontSize: 10, fill: isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)" }}
+                    label={{ value: `${t("studyLog.chart.goal")} ${chartMode === "weekly" ? dailyGoal : dailyGoal * 5 + weekendGoal * 2}h`, position: "right", fontSize: 10, fill: isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)" }}
                   />
                 )}
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="h-[220px] flex items-center justify-center text-sm text-muted-foreground">
-              No data for this period
+              {t("studyLog.chart.noData")}
             </div>
           )}
         </div>
 
         {/* Study Hours Line Chart */}
         <div>
-          <p className="text-xs font-medium text-muted-foreground mb-3">Study Hours Trend</p>
+          <p className="text-xs font-medium text-muted-foreground mb-3">{t("studyLog.chart.studyHoursTrend")}</p>
           {hasData ? (
             <ResponsiveContainer width="100%" height={160}>
               <LineChart data={chartData}>
@@ -255,7 +256,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
                 <Tooltip
                   contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
                   labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
-                  formatter={(value: number) => [`${value}h`, "Study Hours"]}
+                  formatter={(value: number) => [`${value}h`, t("studyLog.chart.studyHours")]}
                 />
                 <Line type="monotone" dataKey="totalHours" stroke={isDark ? "hsl(175 55% 55%)" : "hsl(175 45% 40%)"} strokeWidth={2} dot={{ r: 4, fill: isDark ? "hsl(175 55% 55%)" : "hsl(175 45% 40%)" }} connectNulls />
                 {dailyGoal > 0 && (
@@ -270,7 +271,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
             </ResponsiveContainer>
           ) : (
             <div className="h-[160px] flex items-center justify-center text-sm text-muted-foreground">
-              No data for this period
+              {t("studyLog.chart.noData")}
             </div>
           )}
         </div>
@@ -287,7 +288,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-0 border-t-[2px] border-dashed" style={{ borderColor: isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)" }} />
               <span className="text-[10px] text-muted-foreground">
-                {locale === "es" ? "Meta" : "Goal"}: {dailyGoal}h / {weekendGoal}h
+                {t("studyLog.chart.goal")}: {dailyGoal}h / {weekendGoal}h
               </span>
               {onGoToSettings && (
                 <button
@@ -295,7 +296,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: {
                   className="text-[10px] text-primary hover:text-primary/80 transition-colors flex items-center gap-0.5"
                 >
                   <Settings2 className="w-3 h-3" />
-                  <span className="underline">{locale === "es" ? "Editar" : "Edit"}</span>
+                  <span className="underline">{t("studyLog.chart.edit")}</span>
                 </button>
               )}
             </div>
@@ -501,7 +502,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const diff = Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24))
-    const formatted = d.toLocaleDateString(locale === "es" ? "es" : "en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })
+    const formatted = d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })
     if (diff === 0) return `${t("studyLog.today")} - ${formatted}`
     if (diff === 1) return `${t("studyLog.yesterday")} - ${formatted}`
     return formatted
@@ -846,7 +847,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
                         const dayLogs = dayMap[date]
                         const dayHours = dayLogs.reduce((a, b) => a + b.studyHours, 0)
                         const d = new Date(date + "T00:00:00")
-                        const dayLabel = d.toLocaleDateString(locale === "es" ? "es" : "en-US", { weekday: "short", month: "short", day: "numeric" })
+                        const dayLabel = d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { weekday: "short", month: "short", day: "numeric" })
                         return (
                           <div key={date} className="px-5 py-3 border-b border-border last:border-b-0">
                             <div className="flex items-center gap-3 mb-2">
@@ -905,7 +906,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
           const isMonthExpanded = expandedMonth === monthKey
           const [year, month] = monthKey.split("-")
           const monthDate = new Date(parseInt(year), parseInt(month) - 1, 1)
-          const monthLabel = monthDate.toLocaleDateString(locale === "es" ? "es" : "en-US", { year: "numeric", month: "long" })
+          const monthLabel = monthDate.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { year: "numeric", month: "long" })
           const monthLogs = monthDates.flatMap(d => groupedLogs[d])
           const monthHours = monthLogs.reduce((a, b) => a + b.studyHours, 0)
           const monthSessions = monthLogs.length

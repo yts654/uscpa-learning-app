@@ -81,23 +81,21 @@ export function CoverageCard({ items }: CoverageCardProps) {
       {showHelp && (
         <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
           <p className="text-xs font-semibold text-card-foreground">
-            {locale === "es" ? "Identifica capítulos que necesitan atención:" : "Identifies chapters that need attention:"}
+            {t("analytics.coverage.help.title")}
           </p>
           <div className="space-y-1.5 text-xs text-muted-foreground">
-            <p><span className="font-semibold text-[hsl(0,65%,45%)]">Fragile</span> — {locale === "es" ? "Capítulos estudiados pero con retención muy baja (<30%). Necesitan repaso urgente." : "Chapters studied but with very low retention (<30%). Need urgent review."}</p>
-            <p><span className="font-semibold text-card-foreground">Untouched</span> — {locale === "es" ? "Capítulos que aún no has estudiado. Los marcados como 'Urgent' tienen examen próximo." : "Chapters you haven't studied yet. Those marked 'Urgent' have an upcoming exam."}</p>
+            <p><span className="font-semibold text-[hsl(0,65%,45%)]">{t("analytics.coverage.fragile")}</span> — {t("analytics.coverage.help.fragileDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.coverage.untouched")}</span> — {t("analytics.coverage.help.untouchedDesc")}</p>
           </div>
           <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
-            {locale === "es" ? "Organizado por sección. Usa esta información para priorizar tu estudio." : "Organized by section. Use this to prioritize your study plan."}
+            {t("analytics.coverage.help.footer")}
           </p>
         </div>
       )}
 
       {/* Inline description */}
       <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-        {locale === "es"
-          ? "Muestra capítulos que aún no has empezado o cuya retención ha caído por debajo del 30%. Los capítulos marcados \"Urgent\" tienen un examen dentro de 60 días."
-          : "Shows chapters you haven't started yet or whose retention has dropped below 30%. Chapters marked \"Urgent\" have an exam within 60 days."}
+        {t("analytics.coverage.desc")}
       </p>
 
       <div className="space-y-2 max-h-80 overflow-y-auto">

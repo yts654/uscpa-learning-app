@@ -33,16 +33,16 @@ export function RetentionCalibrationCard({ entries }: RetentionCalibrationCardPr
       {showHelp && (
         <div className="mb-4 p-4 rounded-lg bg-muted/30 border border-border space-y-2">
           <p className="text-xs font-semibold text-card-foreground">
-            {locale === "es" ? "Compara la retención predicha con tu recuerdo real:" : "Compares predicted retention with your actual recall:"}
+            {t("analytics.retention.help.title")}
           </p>
           <div className="space-y-1.5 text-xs text-muted-foreground">
-            <p><span className="font-semibold text-card-foreground">Predicted</span> — {locale === "es" ? "Retención estimada por la curva del olvido." : "Estimated retention based on the forgetting curve algorithm."}</p>
-            <p><span className="font-semibold text-card-foreground">Actual</span> — {locale === "es" ? "Tu calificación real al repasar en la pestaña Review." : "Your actual self-rating when reviewing in the Review tab."}</p>
-            <p><span className="font-semibold text-card-foreground">Gap</span> — {locale === "es" ? "Diferencia entre predicho y real. Positivo = mejor de lo esperado." : "Difference between predicted and actual. Positive = better than expected."}</p>
-            <p><span className="font-semibold text-card-foreground">Action</span> — {locale === "es" ? "Acortar intervalo (recuerdas menos), extender (recuerdas más), o en camino." : "Shorten interval (you remember less), extend (you remember more), or on track."}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.retention.help.predicted")}</span> — {t("analytics.retention.help.predictedDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.retention.help.actual")}</span> — {t("analytics.retention.help.actualDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.retention.help.gap")}</span> — {t("analytics.retention.help.gapDesc")}</p>
+            <p><span className="font-semibold text-card-foreground">{t("analytics.retention.help.action")}</span> — {t("analytics.retention.help.actionDesc")}</p>
           </div>
           <p className="text-[10px] text-muted-foreground pt-1 border-t border-border">
-            {locale === "es" ? "Califica tu recuerdo en la pestaña Review para generar estos datos." : "Rate your recall in the Review tab to generate this data."}
+            {t("analytics.retention.help.footer")}
           </p>
         </div>
       )}

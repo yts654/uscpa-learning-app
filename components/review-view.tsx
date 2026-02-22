@@ -51,7 +51,7 @@ const RECALL_BG_COLORS: Record<RecallRating, string> = {
 
 // Brighten an HSL color for dark mode by increasing lightness
 export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onViewChange, onRecallRating }: ReviewViewProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === "dark"
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
@@ -552,7 +552,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                   <div className="bg-muted/30 rounded-lg p-3">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t("review.detail.nextReview")}</p>
                     <p className="text-lg font-bold mt-0.5" style={{ color: selected.isOverdue || selected.isDueToday ? (isDark ? "hsl(0,65%,65%)" : "hsl(0,65%,45%)") : (isDark ? "hsl(225,50%,65%)" : "hsl(225,50%,35%)") }}>
-                      {formatNextDate(selected.nextReviewDate, t)}
+                      {formatNextDate(selected.nextReviewDate, t, locale)}
                     </p>
                   </div>
                 </div>
@@ -692,7 +692,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                           {item.daysSinceLastStudy >= 0 && (
                             <span>{item.daysSinceLastStudy}{t("review.dAgo")}</span>
                           )}
-                          <span className="hidden sm:inline">{t("review.next")}: {formatNextDate(item.nextReviewDate, t)}</span>
+                          <span className="hidden sm:inline">{t("review.next")}: {formatNextDate(item.nextReviewDate, t, locale)}</span>
                           <span className="hidden sm:inline">{item.reviewCount} {t("review.reviews")}</span>
                         </div>
                       </div>
@@ -749,12 +749,12 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
   )
 }
 
-function formatNextDate(dateStr: string, t?: (key: string) => string): string {
+function formatNextDate(dateStr: string, t?: (key: string) => string, locale?: string): string {
   const d = new Date(dateStr + "T00:00:00")
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const diff = Math.floor((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
   if (diff <= 0) return t ? t("review.today") : "Today"
   if (diff === 1) return t ? t("review.tomorrow") : "Tomorrow"
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+  return d.toLocaleDateString(locale === "es" ? "es" : locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric" })
 }
