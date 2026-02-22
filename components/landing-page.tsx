@@ -28,14 +28,14 @@ export function LandingPage() {
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t("lp.features")}</a>
             <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t("lp.pricing")}</Link>
-            <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t("lp.login")}</Link>
-            <Link href="/register" className="text-sm font-medium px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+            <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t("lp.login")}</Link>
+            <Link href="/home" className="text-sm font-medium px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
               {t("lp.signUp")}
             </Link>
           </nav>
           <div className="md:hidden flex items-center gap-3">
-            <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground">{t("lp.login")}</Link>
-            <Link href="/register" className="text-sm font-medium px-3 py-1.5 rounded-lg bg-primary text-primary-foreground">{t("lp.signUp")}</Link>
+            <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground">{t("lp.login")}</Link>
+            <Link href="/home" className="text-sm font-medium px-3 py-1.5 rounded-lg bg-primary text-primary-foreground">{t("lp.signUp")}</Link>
           </div>
         </div>
       </header>
@@ -54,7 +54,7 @@ export function LandingPage() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
           <Link
-            href="/register"
+            href="/home"
             className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-all flex items-center gap-2"
           >
             {t("lp.getStarted")}
@@ -116,7 +116,7 @@ export function LandingPage() {
           <h2 className="font-serif text-3xl font-bold mb-4">{t("lp.ctaTitle")}</h2>
           <p className="text-background/70 mb-8 max-w-xl mx-auto">{t("lp.ctaSubtitle")}</p>
           <Link
-            href="/register"
+            href="/home"
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-background text-foreground font-bold text-sm hover:bg-background/90 transition-all"
           >
             {t("lp.ctaButton")}

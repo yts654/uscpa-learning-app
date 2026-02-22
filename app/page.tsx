@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation"
+import { LandingPage } from "@/components/landing-page"
 
-// Staging: skip landing page, go straight to app
+// Staging: show landing page without auth check
 export default function RootPage() {
-  redirect("/home")
+  return <LandingPage />
 }
