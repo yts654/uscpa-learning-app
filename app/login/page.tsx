@@ -8,8 +8,8 @@ import Link from "next/link"
 const REMEMBERED_EMAIL_KEY = "cpa_remembered_email"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("admin@cpamastery.com")
-  const [password, setPassword] = useState("CpaMastery2026!")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
@@ -144,10 +144,14 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-xs text-[hsl(230,15%,50%)] text-center mt-4">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-white hover:underline">Create one</Link>
-          </p>
+          <div className="mt-5 pt-4 border-t border-[hsl(232,35%,20%)] text-center">
+            <p className="text-xs text-[hsl(230,15%,50%)] mb-3">
+              Don&apos;t have an account?
+            </p>
+            <Link href="/register" className="block w-full py-2.5 rounded-lg border border-[hsl(232,35%,22%)] text-white text-sm font-medium hover:bg-[hsl(232,40%,16%)] transition-all text-center">
+              Create Free Account
+            </Link>
+          </div>
         </div>
 
         <p className="text-[10px] text-[hsl(230,15%,30%)] text-center mt-6">&copy; 2026 CPA Mastery</p>
