@@ -181,7 +181,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
                   )}
                 </div>
               </div>
-              <button onClick={() => signOut({ callbackUrl: "/login" })} className="text-[hsl(230_15%_40%)] hover:text-[hsl(0_0%_100%)] transition-colors flex-shrink-0">
+              <button onClick={() => window.location.reload()} className="text-[hsl(230_15%_40%)] hover:text-[hsl(0_0%_100%)] transition-colors flex-shrink-0" title="Reload">
                 <LogOut className="w-4 h-4" />
               </button>
             </>
