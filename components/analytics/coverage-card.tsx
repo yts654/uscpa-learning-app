@@ -4,7 +4,7 @@ import { useState } from "react"
 import { type CoverageItem } from "@/lib/analytics-engine"
 import { SECTION_INFO, type ExamSection } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
-import { Eye, AlertTriangle, HelpCircle, X } from "lucide-react"
+import { Eye, AlertTriangle, HelpCircle, X, ChevronDown, ChevronRight } from "lucide-react"
 
 interface CoverageCardProps {
   items: CoverageItem[]
@@ -13,6 +13,18 @@ interface CoverageCardProps {
 export function CoverageCard({ items }: CoverageCardProps) {
   const { t, locale } = useLanguage()
   const [showHelp, setShowHelp] = useState(false)
+
+  // Track collapsed sections
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set())
+
+  const toggleSection = (key: string) => {
+    setCollapsedSections(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
 
   if (items.length === 0) {
     return (
@@ -81,32 +93,50 @@ export function CoverageCard({ items }: CoverageCardProps) {
         </div>
       )}
 
-      <div className="space-y-3 max-h-80 overflow-y-auto">
+      {/* Inline description */}
+      <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+        {locale === "es"
+          ? "Muestra capítulos que aún no has empezado o cuya retención ha caído por debajo del 30%. Los capítulos marcados \"Urgent\" tienen un examen dentro de 60 días."
+          : "Shows chapters you haven't started yet or whose retention has dropped below 30%. Chapters marked \"Urgent\" have an exam within 60 days."}
+      </p>
+
+      <div className="space-y-2 max-h-80 overflow-y-auto">
         {/* Fragile chapters first */}
         {fragile.length > 0 && (
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-wider text-[hsl(0,65%,45%)] mb-1.5">
-              {t("analytics.coverage.fragile")} ({fragile.length})
-            </h4>
-            <div className="space-y-1">
-              {fragile.map(item => (
-                <div key={item.chapterId} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-950/30">
-                  <AlertTriangle className="w-3 h-3 text-[hsl(0,65%,45%)] flex-shrink-0" />
-                  <div
-                    className="w-5 h-5 rounded flex items-center justify-center text-[7px] font-bold text-white flex-shrink-0"
-                    style={{ backgroundColor: SECTION_INFO[item.section].color }}
-                  >
-                    {item.section.charAt(0)}
+            <button
+              onClick={() => toggleSection("fragile")}
+              className="flex items-center gap-1.5 mb-1.5 w-full text-left group"
+            >
+              {collapsedSections.has("fragile")
+                ? <ChevronRight className="w-3 h-3 text-[hsl(0,65%,45%)]" />
+                : <ChevronDown className="w-3 h-3 text-[hsl(0,65%,45%)]" />
+              }
+              <h4 className="text-[10px] font-bold uppercase tracking-wider text-[hsl(0,65%,45%)] group-hover:underline">
+                {t("analytics.coverage.fragile")} ({fragile.length})
+              </h4>
+            </button>
+            {!collapsedSections.has("fragile") && (
+              <div className="space-y-1">
+                {fragile.map(item => (
+                  <div key={item.chapterId} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-950/30">
+                    <AlertTriangle className="w-3 h-3 text-[hsl(0,65%,45%)] flex-shrink-0" />
+                    <div
+                      className="w-5 h-5 rounded flex items-center justify-center text-[7px] font-bold text-white flex-shrink-0"
+                      style={{ backgroundColor: SECTION_INFO[item.section].color }}
+                    >
+                      {item.section.charAt(0)}
+                    </div>
+                    <span className="text-xs text-card-foreground truncate flex-1">
+                      Ch.{item.chapterNumber} {item.chapterTitle}
+                    </span>
+                    {item.retention !== undefined && (
+                      <span className="text-[10px] font-medium text-[hsl(0,65%,45%)]">{item.retention}%</span>
+                    )}
                   </div>
-                  <span className="text-xs text-card-foreground truncate flex-1">
-                    Ch.{item.chapterNumber} {item.chapterTitle}
-                  </span>
-                  {item.retention !== undefined && (
-                    <span className="text-[10px] font-medium text-[hsl(0,65%,45%)]">{item.retention}%</span>
-                  )}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -114,34 +144,50 @@ export function CoverageCard({ items }: CoverageCardProps) {
         {(["FAR", "AUD", "REG", "BEC", "TCP", "ISC"] as ExamSection[]).map(section => {
           const sectionItems = grouped[section].filter(i => i.type === "untouched")
           if (sectionItems.length === 0) return null
+          const sectionKey = `untouched-${section}`
+          const isCollapsed = collapsedSections.has(sectionKey)
           return (
             <div key={section}>
-              <div className="flex items-center gap-1.5 mb-1.5">
+              <button
+                onClick={() => toggleSection(sectionKey)}
+                className="flex items-center gap-1.5 mb-1.5 w-full text-left group"
+              >
+                {isCollapsed
+                  ? <ChevronRight className="w-3 h-3 text-muted-foreground" />
+                  : <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                }
                 <div
                   className="w-4 h-4 rounded flex items-center justify-center text-[6px] font-bold text-white"
                   style={{ backgroundColor: SECTION_INFO[section].color }}
                 >
                   {section.charAt(0)}
                 </div>
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground group-hover:underline">
                   {section} ({sectionItems.length})
                 </h4>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {sectionItems.map(item => (
-                  <span
-                    key={item.chapterId}
-                    className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded border border-border bg-muted/30 text-card-foreground"
-                  >
-                    Ch.{item.chapterNumber}
-                    {item.urgency === "urgent" && (
-                      <span className="text-[8px] font-bold px-1 py-0 rounded bg-[hsl(0,65%,45%)] text-white">
-                        {t("analytics.coverage.urgent")}
-                      </span>
-                    )}
+                {sectionItems.some(i => i.urgency === "urgent") && (
+                  <span className="text-[8px] font-bold px-1 py-0 rounded bg-[hsl(0,65%,45%)] text-white ml-1">
+                    {t("analytics.coverage.urgent")}
                   </span>
-                ))}
-              </div>
+                )}
+              </button>
+              {!isCollapsed && (
+                <div className="flex flex-wrap gap-1 ml-5">
+                  {sectionItems.map(item => (
+                    <span
+                      key={item.chapterId}
+                      className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded border border-border bg-muted/30 text-card-foreground"
+                    >
+                      Ch.{item.chapterNumber}
+                      {item.urgency === "urgent" && (
+                        <span className="text-[8px] font-bold px-1 py-0 rounded bg-[hsl(0,65%,45%)] text-white">
+                          {t("analytics.coverage.urgent")}
+                        </span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           )
         })}
