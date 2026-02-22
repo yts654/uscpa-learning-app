@@ -134,18 +134,18 @@ export const SECTION_INFO: Record<ExamSection, { name: string; fullName: string;
 
 export const CHAPTERS: Chapter[] = [
   // FAR Chapters
-  { id: "far-ch1", section: "FAR", number: 1, title: "Basic Concepts of Financial Accounting and Financial Statements", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch2", section: "FAR", number: 2, title: "Presentation and Disclosure of Financial Statements and Concepts of Recognition and Measurement", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch3", section: "FAR", number: 3, title: "Current Assets (Cash, Accounts Receivable, Inventory)", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch4", section: "FAR", number: 4, title: "Current Liabilities and Contingencies", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch5", section: "FAR", number: 5, title: "Property, Plant, and Equipment", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch6", section: "FAR", number: 6, title: "Intangible Assets", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch7", section: "FAR", number: 7, title: "Time Value of Money", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch8", section: "FAR", number: 8, title: "Bonds", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch9", section: "FAR", number: 9, title: "Lease Accounting for Lessee", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch10", section: "FAR", number: 10, title: "Notes Receivable and Payable", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch11", section: "FAR", number: 11, title: "Revenue from Contracts with Customers", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "far-ch12", section: "FAR", number: 12, title: "Equity Transactions and Earnings Per Share", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "far-ch1", section: "FAR", number: 1, title: "Basic Concepts of Financial Accounting and Financial Statements", totalQuestions: 25, correctAnswers: 21, studyHours: 4.5, lastStudied: "2026-02-04", status: "completed", essenceNotes: [] },
+  { id: "far-ch2", section: "FAR", number: 2, title: "Presentation and Disclosure of Financial Statements and Concepts of Recognition and Measurement", totalQuestions: 22, correctAnswers: 17, studyHours: 4, lastStudied: "2026-02-05", status: "completed", essenceNotes: [] },
+  { id: "far-ch3", section: "FAR", number: 3, title: "Current Assets (Cash, Accounts Receivable, Inventory)", totalQuestions: 30, correctAnswers: 22, studyHours: 5, lastStudied: "2026-02-07", status: "completed", essenceNotes: [] },
+  { id: "far-ch4", section: "FAR", number: 4, title: "Current Liabilities and Contingencies", totalQuestions: 20, correctAnswers: 15, studyHours: 3.5, lastStudied: "2026-02-08", status: "completed", essenceNotes: [] },
+  { id: "far-ch5", section: "FAR", number: 5, title: "Property, Plant, and Equipment", totalQuestions: 28, correctAnswers: 21, studyHours: 4.5, lastStudied: "2026-02-10", status: "completed", essenceNotes: [] },
+  { id: "far-ch6", section: "FAR", number: 6, title: "Intangible Assets", totalQuestions: 18, correctAnswers: 14, studyHours: 3, lastStudied: "2026-02-11", status: "completed", essenceNotes: [] },
+  { id: "far-ch7", section: "FAR", number: 7, title: "Time Value of Money", totalQuestions: 15, correctAnswers: 10, studyHours: 3.5, lastStudied: "2026-02-12", status: "completed", essenceNotes: [] },
+  { id: "far-ch8", section: "FAR", number: 8, title: "Bonds", totalQuestions: 20, correctAnswers: 13, studyHours: 4, lastStudied: "2026-02-14", status: "completed", essenceNotes: [] },
+  { id: "far-ch9", section: "FAR", number: 9, title: "Lease Accounting for Lessee", totalQuestions: 18, correctAnswers: 11, studyHours: 4, lastStudied: "2026-02-16", status: "in-progress", essenceNotes: [] },
+  { id: "far-ch10", section: "FAR", number: 10, title: "Notes Receivable and Payable", totalQuestions: 12, correctAnswers: 8, studyHours: 2.5, lastStudied: "2026-02-18", status: "in-progress", essenceNotes: [] },
+  { id: "far-ch11", section: "FAR", number: 11, title: "Revenue from Contracts with Customers", totalQuestions: 15, correctAnswers: 9, studyHours: 3, lastStudied: "2026-02-20", status: "in-progress", essenceNotes: [] },
+  { id: "far-ch12", section: "FAR", number: 12, title: "Equity Transactions and Earnings Per Share", totalQuestions: 10, correctAnswers: 6, studyHours: 2, lastStudied: "2026-02-22", status: "in-progress", essenceNotes: [] },
   { id: "far-ch13", section: "FAR", number: 13, title: "Investments", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "far-ch14", section: "FAR", number: 14, title: "Preparation of Consolidated Financial Statements and Adjustments Subsequent to Combination", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "far-ch15", section: "FAR", number: 15, title: "Deferred Taxes", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
@@ -180,14 +180,14 @@ export const CHAPTERS: Chapter[] = [
   { id: "aud-ch22", section: "AUD", number: 22, title: "Microeconomic Concepts", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "aud-ch23", section: "AUD", number: 23, title: "Macroeconomic Concepts", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   // REG Chapters — REG1: Business Law
-  { id: "reg-ch1", section: "REG", number: 1, title: "Overview of the Business Law", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "reg-ch2", section: "REG", number: 2, title: "Contracts", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "reg-ch3", section: "REG", number: 3, title: "Sales", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "reg-ch4", section: "REG", number: 4, title: "Agency", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "reg-ch5", section: "REG", number: 5, title: "Real Property", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "reg-ch6", section: "REG", number: 6, title: "Suretyship", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "reg-ch7", section: "REG", number: 7, title: "Secured Transaction", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
-  { id: "reg-ch8", section: "REG", number: 8, title: "Bankruptcy", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
+  { id: "reg-ch1", section: "REG", number: 1, title: "Overview of the Business Law", totalQuestions: 20, correctAnswers: 16, studyHours: 3, lastStudied: "2026-02-06", status: "completed", essenceNotes: [] },
+  { id: "reg-ch2", section: "REG", number: 2, title: "Contracts", totalQuestions: 25, correctAnswers: 18, studyHours: 4, lastStudied: "2026-02-08", status: "completed", essenceNotes: [] },
+  { id: "reg-ch3", section: "REG", number: 3, title: "Sales", totalQuestions: 18, correctAnswers: 12, studyHours: 3, lastStudied: "2026-02-10", status: "completed", essenceNotes: [] },
+  { id: "reg-ch4", section: "REG", number: 4, title: "Agency", totalQuestions: 15, correctAnswers: 11, studyHours: 2.5, lastStudied: "2026-02-12", status: "completed", essenceNotes: [] },
+  { id: "reg-ch5", section: "REG", number: 5, title: "Real Property", totalQuestions: 16, correctAnswers: 10, studyHours: 3, lastStudied: "2026-02-14", status: "completed", essenceNotes: [] },
+  { id: "reg-ch6", section: "REG", number: 6, title: "Suretyship", totalQuestions: 12, correctAnswers: 8, studyHours: 2, lastStudied: "2026-02-16", status: "completed", essenceNotes: [] },
+  { id: "reg-ch7", section: "REG", number: 7, title: "Secured Transaction", totalQuestions: 10, correctAnswers: 6, studyHours: 2.5, lastStudied: "2026-02-19", status: "in-progress", essenceNotes: [] },
+  { id: "reg-ch8", section: "REG", number: 8, title: "Bankruptcy", totalQuestions: 8, correctAnswers: 5, studyHours: 2, lastStudied: "2026-02-21", status: "in-progress", essenceNotes: [] },
   { id: "reg-ch9", section: "REG", number: 9, title: "Business Structure", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "reg-ch10", section: "REG", number: 10, title: "Governmental Regulations and Professional Responsibilities", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
   { id: "reg-ch11", section: "REG", number: 11, title: "Federal Securities Act", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
@@ -261,7 +261,30 @@ export const CHAPTERS: Chapter[] = [
   { id: "isc-ch12", section: "ISC", number: 12, title: "SOC Reports", totalQuestions: 0, correctAnswers: 0, studyHours: 0, lastStudied: "", status: "not-started", essenceNotes: [] },
 ]
 
-export const STUDY_LOGS: StudyLog[] = []
+export const STUDY_LOGS: StudyLog[] = [
+  // FAR study logs
+  { id: "sl-1", date: "2026-02-04", section: "FAR", chapterId: "far-ch1", chapterTitle: "Basic Concepts of Financial Accounting and Financial Statements", studyHours: 4.5, mcQuestions: 25, mcCorrect: 21, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 25, correctAnswers: 21, memo: "Reviewed conceptual framework and GAAP hierarchy", recallRating: 3 },
+  { id: "sl-2", date: "2026-02-05", section: "FAR", chapterId: "far-ch2", chapterTitle: "Presentation and Disclosure of Financial Statements and Concepts of Recognition and Measurement", studyHours: 4, mcQuestions: 22, mcCorrect: 17, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 22, correctAnswers: 17, memo: "Need to review fair value measurement", recallRating: 2 },
+  { id: "sl-3", date: "2026-02-07", section: "FAR", chapterId: "far-ch3", chapterTitle: "Current Assets (Cash, Accounts Receivable, Inventory)", studyHours: 5, mcQuestions: 25, mcCorrect: 19, tbsQuestions: 5, tbsCorrect: 3, questionsAnswered: 30, correctAnswers: 22, memo: "LIFO/FIFO and LCM tricky. TBS on bank reconciliation was good practice", recallRating: 2 },
+  { id: "sl-4", date: "2026-02-08", section: "FAR", chapterId: "far-ch4", chapterTitle: "Current Liabilities and Contingencies", studyHours: 3.5, mcQuestions: 20, mcCorrect: 15, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 20, correctAnswers: 15, memo: "Contingent liabilities disclosure rules reviewed", recallRating: 2 },
+  { id: "sl-5", date: "2026-02-10", section: "FAR", chapterId: "far-ch5", chapterTitle: "Property, Plant, and Equipment", studyHours: 4.5, mcQuestions: 23, mcCorrect: 18, tbsQuestions: 5, tbsCorrect: 3, questionsAnswered: 28, correctAnswers: 21, memo: "Depreciation methods and asset impairment", recallRating: 3 },
+  { id: "sl-6", date: "2026-02-11", section: "FAR", chapterId: "far-ch6", chapterTitle: "Intangible Assets", studyHours: 3, mcQuestions: 18, mcCorrect: 14, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 18, correctAnswers: 14, memo: "Goodwill impairment and R&D costs", recallRating: 2 },
+  { id: "sl-7", date: "2026-02-12", section: "FAR", chapterId: "far-ch7", chapterTitle: "Time Value of Money", studyHours: 3.5, mcQuestions: 15, mcCorrect: 10, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 15, correctAnswers: 10, memo: "Annuity calculations need more practice", recallRating: 1 },
+  { id: "sl-8", date: "2026-02-14", section: "FAR", chapterId: "far-ch8", chapterTitle: "Bonds", studyHours: 4, mcQuestions: 15, mcCorrect: 10, tbsQuestions: 5, tbsCorrect: 3, questionsAnswered: 20, correctAnswers: 13, memo: "Bond premium/discount amortization with effective interest method", recallRating: 1 },
+  { id: "sl-9", date: "2026-02-16", section: "FAR", chapterId: "far-ch9", chapterTitle: "Lease Accounting for Lessee", studyHours: 4, mcQuestions: 15, mcCorrect: 9, tbsQuestions: 3, tbsCorrect: 2, questionsAnswered: 18, correctAnswers: 11, memo: "ASC 842 right-of-use asset calculations still confusing", recallRating: 1 },
+  { id: "sl-10", date: "2026-02-18", section: "FAR", chapterId: "far-ch10", chapterTitle: "Notes Receivable and Payable", studyHours: 2.5, mcQuestions: 12, mcCorrect: 8, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 12, correctAnswers: 8, memo: "Note discount and imputation of interest", recallRating: 2 },
+  { id: "sl-11", date: "2026-02-20", section: "FAR", chapterId: "far-ch11", chapterTitle: "Revenue from Contracts with Customers", studyHours: 3, mcQuestions: 12, mcCorrect: 7, tbsQuestions: 3, tbsCorrect: 2, questionsAnswered: 15, correctAnswers: 9, memo: "5-step model for ASC 606. Variable consideration tricky", recallRating: 1 },
+  { id: "sl-12", date: "2026-02-22", section: "FAR", chapterId: "far-ch12", chapterTitle: "Equity Transactions and Earnings Per Share", studyHours: 2, mcQuestions: 10, mcCorrect: 6, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 10, correctAnswers: 6, memo: "Started EPS calculations. Diluted EPS needs more work", recallRating: 1 },
+  // REG study logs
+  { id: "sl-13", date: "2026-02-06", section: "REG", chapterId: "reg-ch1", chapterTitle: "Overview of the Business Law", studyHours: 3, mcQuestions: 20, mcCorrect: 16, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 20, correctAnswers: 16, memo: "Sources of law, constitutional fundamentals", recallRating: 3 },
+  { id: "sl-14", date: "2026-02-08", section: "REG", chapterId: "reg-ch2", chapterTitle: "Contracts", studyHours: 4, mcQuestions: 20, mcCorrect: 14, tbsQuestions: 5, tbsCorrect: 4, questionsAnswered: 25, correctAnswers: 18, memo: "Offer/acceptance, consideration, Statute of Frauds. UCC vs Common Law distinctions", recallRating: 2 },
+  { id: "sl-15", date: "2026-02-10", section: "REG", chapterId: "reg-ch3", chapterTitle: "Sales", studyHours: 3, mcQuestions: 18, mcCorrect: 12, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 18, correctAnswers: 12, memo: "UCC Article 2, risk of loss, warranties", recallRating: 2 },
+  { id: "sl-16", date: "2026-02-12", section: "REG", chapterId: "reg-ch4", chapterTitle: "Agency", studyHours: 2.5, mcQuestions: 15, mcCorrect: 11, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 15, correctAnswers: 11, memo: "Agent authority types: actual, apparent, ratification", recallRating: 2 },
+  { id: "sl-17", date: "2026-02-14", section: "REG", chapterId: "reg-ch5", chapterTitle: "Real Property", studyHours: 3, mcQuestions: 16, mcCorrect: 10, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 16, correctAnswers: 10, memo: "Types of deeds, mortgages, landlord-tenant relationships", recallRating: 1 },
+  { id: "sl-18", date: "2026-02-16", section: "REG", chapterId: "reg-ch6", chapterTitle: "Suretyship", studyHours: 2, mcQuestions: 12, mcCorrect: 8, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 12, correctAnswers: 8, memo: "Surety vs guarantor, defenses available", recallRating: 2 },
+  { id: "sl-19", date: "2026-02-19", section: "REG", chapterId: "reg-ch7", chapterTitle: "Secured Transaction", studyHours: 2.5, mcQuestions: 10, mcCorrect: 6, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 10, correctAnswers: 6, memo: "UCC Article 9. Attachment and perfection rules. Priority disputes complex", recallRating: 1 },
+  { id: "sl-20", date: "2026-02-21", section: "REG", chapterId: "reg-ch8", chapterTitle: "Bankruptcy", studyHours: 2, mcQuestions: 8, mcCorrect: 5, tbsQuestions: 0, tbsCorrect: 0, questionsAnswered: 8, correctAnswers: 5, memo: "Chapter 7 vs 11 vs 13. Priority of claims in liquidation", recallRating: 1 },
+]
 
 export interface MockExam {
   id: string
@@ -278,14 +301,18 @@ export interface MockExam {
   memo: string
 }
 
-export const INITIAL_MOCK_EXAMS: MockExam[] = []
+export const INITIAL_MOCK_EXAMS: MockExam[] = [
+  { id: "me-1", date: "2026-02-15", section: "FAR", source: "Becker", mcQuestions: 33, mcCorrect: 22, tbsQuestions: 8, tbsCorrect: 5, totalQuestions: 41, totalCorrect: 27, accuracy: 65.9, memo: "First mini exam. Bonds and TVM weak" },
+  { id: "me-2", date: "2026-02-22", section: "FAR", source: "Becker", mcQuestions: 36, mcCorrect: 26, tbsQuestions: 8, tbsCorrect: 6, totalQuestions: 44, totalCorrect: 32, accuracy: 72.7, memo: "Improved from last time. Revenue recognition still shaky" },
+  { id: "me-3", date: "2026-02-20", section: "REG", source: "Wiley", mcQuestions: 30, mcCorrect: 19, tbsQuestions: 5, tbsCorrect: 3, totalQuestions: 35, totalCorrect: 22, accuracy: 62.9, memo: "Business law fundamentals. Secured transactions and bankruptcy need review" },
+]
 
 export const INITIAL_ESSENCE_NOTES: EssenceNote[] = []
 
 export const INITIAL_PROGRESS: StudyProgress[] = [
-  { section: "FAR", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 400, studyHours: 0, lastStudied: "", streak: 0 },
+  { section: "FAR", questionsAnswered: 233, correctAnswers: 167, totalQuestions: 400, studyHours: 43.5, lastStudied: "2026-02-22", streak: 3 },
   { section: "AUD", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 300, studyHours: 0, lastStudied: "", streak: 0 },
-  { section: "REG", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 350, studyHours: 0, lastStudied: "", streak: 0 },
+  { section: "REG", questionsAnswered: 124, correctAnswers: 86, totalQuestions: 350, studyHours: 22, lastStudied: "2026-02-21", streak: 2 },
   { section: "BEC", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 250, studyHours: 0, lastStudied: "", streak: 0 },
   { section: "TCP", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 200, studyHours: 0, lastStudied: "", streak: 0 },
   { section: "ISC", questionsAnswered: 0, correctAnswers: 0, totalQuestions: 250, studyHours: 0, lastStudied: "", streak: 0 },
