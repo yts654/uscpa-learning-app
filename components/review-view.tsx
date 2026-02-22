@@ -442,10 +442,10 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: isDark ? "hsl(232, 30%, 15%)" : "hsl(232, 47%, 8%)",
-                        border: isDark ? "1px solid hsl(232, 20%, 30%)" : "none",
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
                         borderRadius: "8px",
-                        color: "white",
+                        color: "hsl(var(--card-foreground))",
                         fontSize: "12px",
                       }}
                       formatter={(value: number, name: string) => {

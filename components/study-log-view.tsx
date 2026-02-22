@@ -1,18 +1,21 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle, Pencil } from "lucide-react"
+import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle, Pencil, Settings2 } from "lucide-react"
 import { cn, brightenForDark } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
 import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog, type StudyGoals } from "@/lib/study-data"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, LineChart, Line, ReferenceLine } from "recharts"
 import { useTheme } from "next-themes"
 
+type View = "dashboard" | "chapters" | "study-log" | "analytics" | "settings" | "review" | "mock-exams"
+
 interface StudyLogViewProps {
   chapters: Chapter[]
   studyLogs: StudyLog[]
   onUpdateLogs: (logs: StudyLog[]) => void
   studyGoals: StudyGoals
+  onViewChange?: (view: View) => void
 }
 
 interface WeekSummary {
@@ -80,7 +83,7 @@ function generateWeekComments(
 const ALL_SECTIONS: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
-function StudyCharts({ logs, locale, dailyGoal, weekendGoal }: { logs: StudyLog[]; locale: string; dailyGoal: number; weekendGoal: number }) {
+function StudyCharts({ logs, locale, dailyGoal, weekendGoal, onGoToSettings }: { logs: StudyLog[]; locale: string; dailyGoal: number; weekendGoal: number; onGoToSettings?: () => void }) {
   const [chartMode, setChartMode] = useState<"weekly" | "monthly">("weekly")
   const [showHelp, setShowHelp] = useState(false)
   const { resolvedTheme } = useTheme()
@@ -282,8 +285,19 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal }: { logs: StudyLog[
           ))}
           {dailyGoal > 0 && (
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-0 border-t-[2px] border-dashed" style={{ borderColor: "hsl(0 72% 51%)" }} />
-              <span className="text-[10px] text-muted-foreground">{locale === "es" ? "Meta diaria" : "Daily Goal"}</span>
+              <div className="w-4 h-0 border-t-[2px] border-dashed" style={{ borderColor: isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)" }} />
+              <span className="text-[10px] text-muted-foreground">
+                {locale === "es" ? "Meta" : "Goal"}: {dailyGoal}h / {weekendGoal}h
+              </span>
+              {onGoToSettings && (
+                <button
+                  onClick={onGoToSettings}
+                  className="text-[10px] text-primary hover:text-primary/80 transition-colors flex items-center gap-0.5"
+                >
+                  <Settings2 className="w-3 h-3" />
+                  <span className="underline">{locale === "es" ? "Editar" : "Edit"}</span>
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -292,7 +306,7 @@ function StudyCharts({ logs, locale, dailyGoal, weekendGoal }: { logs: StudyLog[
   )
 }
 
-export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals }: StudyLogViewProps) {
+export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, onViewChange }: StudyLogViewProps) {
   const { t, locale } = useLanguage()
   const logs = studyLogs
   const setLogs = onUpdateLogs
@@ -692,7 +706,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals }: 
       )}
 
       {/* Charts Section */}
-      <StudyCharts logs={logs} locale={locale} dailyGoal={studyGoals.dailyStudyHours} weekendGoal={studyGoals.weekendStudyHours ?? studyGoals.dailyStudyHours} />
+      <StudyCharts logs={logs} locale={locale} dailyGoal={studyGoals.dailyStudyHours} weekendGoal={studyGoals.weekendStudyHours ?? studyGoals.dailyStudyHours} onGoToSettings={onViewChange ? () => onViewChange("settings") : undefined} />
 
       {/* Section Filter */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
