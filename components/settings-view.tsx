@@ -403,7 +403,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                 onChange={(e) => onUpdateStudyGoals({ ...studyGoals, dailyStudyHours: parseFloat(e.target.value) })}
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               >
-                {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 8].map(v => (
+                {Array.from({ length: 20 }, (_, i) => (i + 1) * 0.5).map(v => (
                   <option key={v} value={v}>{v} {v === 1 ? t("settings.hour") : t("settings.hours")}</option>
                 ))}
               </select>
@@ -415,7 +415,7 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                 onChange={(e) => onUpdateStudyGoals({ ...studyGoals, weekendStudyHours: parseFloat(e.target.value) })}
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               >
-                {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 8, 10].map(v => (
+                {Array.from({ length: 20 }, (_, i) => (i + 1) * 0.5).map(v => (
                   <option key={v} value={v}>{v} {v === 1 ? t("settings.hour") : t("settings.hours")}</option>
                 ))}
               </select>
