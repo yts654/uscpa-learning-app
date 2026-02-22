@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useTheme } from "next-themes"
-import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Lock, AlertTriangle } from "lucide-react"
+import { User, Bell, Target, Calendar, Camera, CheckCircle2, Sun, Moon, Lock, AlertTriangle, CreditCard, Sparkles } from "lucide-react"
 import { SECTION_INFO, type ExamSection, type StudyGoals } from "@/lib/study-data"
 import { useLanguage, type Locale } from "@/lib/i18n"
 import { getNotifPrefs, setNotifPrefs, ensureNotificationPermission, type NotificationPrefs } from "@/lib/notifications"
+import { useSession } from "next-auth/react"
 
 interface UserProfile {
   name: string
@@ -25,6 +26,7 @@ interface SettingsViewProps {
 export function SettingsView({ profile, onUpdateProfile, completedSections, onUpdateCompletedSections, studyGoals, onUpdateStudyGoals }: SettingsViewProps) {
   const { theme, setTheme } = useTheme()
   const { locale, setLocale, t } = useLanguage()
+  const { data: session } = useSession()
   const [name, setName] = useState(profile.name)
   const [email, setEmail] = useState(profile.email)
   const [photoUrl, setPhotoUrl] = useState<string | null>(profile.photoUrl)
@@ -36,6 +38,15 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [notifPrefs, setNotifPrefsState] = useState<NotificationPrefs>(getNotifPrefs)
   const [notifBlocked, setNotifBlocked] = useState(false)
+  const [usageData, setUsageData] = useState<{ used: number; limit: number; plan: string } | null>(null)
+  const [portalLoading, setPortalLoading] = useState(false)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+
+  const currentPlan = (session?.user as { plan?: string })?.plan || "free"
+
+  useEffect(() => {
+    fetch("/api/usage").then(r => r.json()).then(setUsageData).catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (typeof Notification !== "undefined" && Notification.permission === "denied") {
@@ -313,6 +324,64 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
                 </button>
               )
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* Subscription */}
+      <div className="bg-card rounded-xl border border-border p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <CreditCard className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.subscription")}</h3>
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                {t("settings.currentPlan")}: {" "}
+                <span className={currentPlan === "pro" ? "text-amber-600 dark:text-amber-400 font-bold" : ""}>
+                  {currentPlan === "pro" ? "Pro" : "Free"}
+                </span>
+              </p>
+              {usageData && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("settings.usageThisMonth")}: {usageData.used}/{usageData.limit} Essence Notes
+                </p>
+              )}
+            </div>
+            {currentPlan === "pro" ? (
+              <button
+                onClick={async () => {
+                  setPortalLoading(true)
+                  try {
+                    const res = await fetch("/api/stripe/portal", { method: "POST" })
+                    const data = await res.json()
+                    if (data.url) window.location.href = data.url
+                  } catch {}
+                  setPortalLoading(false)
+                }}
+                disabled={portalLoading}
+                className="px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors disabled:opacity-50"
+              >
+                {portalLoading ? "..." : t("settings.manageSub")}
+              </button>
+            ) : (
+              <button
+                onClick={async () => {
+                  setCheckoutLoading(true)
+                  try {
+                    const res = await fetch("/api/stripe/checkout", { method: "POST" })
+                    const data = await res.json()
+                    if (data.url) window.location.href = data.url
+                  } catch {}
+                  setCheckoutLoading(false)
+                }}
+                disabled={checkoutLoading}
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {checkoutLoading ? "..." : <><Sparkles className="w-4 h-4" /> {t("settings.upgrade")}</>}
+              </button>
+            )}
           </div>
         </div>
       </div>

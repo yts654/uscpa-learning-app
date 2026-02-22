@@ -1,21 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { VISION_MODELS, ANALYSIS_MODELS, PLAN_LIMITS } from "@/lib/ai-models"
+import { getUsage, incrementUsage, checkRateLimit } from "@/lib/usage"
+import type { Plan } from "@/lib/ai-models"
 
 // Allow long-running analysis (Hobby plan max: 60s)
 export const maxDuration = 60
-
-// High-quality models for reliable results
-const VISION_MODELS = [
-  "google/gemini-2.0-flash-001",
-  "google/gemini-2.5-flash-preview",
-  "anthropic/claude-sonnet-4-20250514",
-]
-
-const ANALYSIS_MODELS = [
-  "anthropic/claude-sonnet-4-20250514",
-  "google/gemini-2.0-flash-001",
-  "deepseek/deepseek-chat-v3-0324",
-]
 
 const OCR_PROMPT = `You are an expert OCR assistant specializing in USCPA (US CPA exam) study materials.
 Extract ALL text content from the provided screenshot(s) with perfect accuracy.
@@ -130,6 +122,38 @@ async function callModel(client: OpenAI, models: string[], messages: any[], maxT
 }
 
 export async function POST(req: NextRequest) {
+  // 1. Auth check
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const email = session.user.email
+  const plan: Plan = (session.user.plan as Plan) || "free"
+
+  // 2. Rate limit check
+  try {
+    const allowed = await checkRateLimit(email, "analyze")
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 })
+    }
+  } catch {
+    // If Redis is not configured, skip rate limiting
+  }
+
+  // 3. Monthly usage check
+  try {
+    const usage = await getUsage(email, plan)
+    if (usage.remaining <= 0) {
+      return NextResponse.json({
+        error: "LIMIT_REACHED",
+        usage,
+      }, { status: 403 })
+    }
+  } catch {
+    // If Redis is not configured, skip usage check
+  }
+
   const apiKey = process.env.OPENROUTER_API_KEY
 
   let images: string[] | undefined
@@ -157,6 +181,10 @@ export async function POST(req: NextRequest) {
 
   const client = new OpenAI({ baseURL: "https://openrouter.ai/api/v1", apiKey })
 
+  // 4. Select models based on plan
+  const visionModels = VISION_MODELS[plan]
+  const analysisModels = ANALYSIS_MODELS[plan]
+
   let extractedText: string
 
   if (hasText) {
@@ -170,7 +198,7 @@ export async function POST(req: NextRequest) {
       image_url: { url: dataUrl },
     }))
 
-    const ocrResult = await callModel(client, VISION_MODELS, [
+    const ocrResult = await callModel(client, visionModels, [
       { role: "user", content: [{ type: "text", text: OCR_PROMPT }, ...imageContents] },
     ], 4000)
 
@@ -184,13 +212,22 @@ export async function POST(req: NextRequest) {
 
   // Stage 2: Analysis
   console.log("=== Stage 2: Analysis ===")
-  const analysisResult = await callModel(client, ANALYSIS_MODELS, [
+  const analysisResult = await callModel(client, analysisModels, [
     { role: "system", content: "You are a USCPA exam expert. Always respond with valid JSON only." },
     { role: "user", content: ANALYSIS_PROMPT + extractedText },
   ], 4000)
 
   if (!analysisResult) {
     return NextResponse.json({ error: "Analysis failed. Please try again." }, { status: 500 })
+  }
+
+  // 5. Increment usage only on success
+  let usageInfo = { used: 0, limit: PLAN_LIMITS[plan], remaining: PLAN_LIMITS[plan] }
+  try {
+    const newCount = await incrementUsage(email)
+    usageInfo = { used: newCount, limit: PLAN_LIMITS[plan], remaining: Math.max(0, PLAN_LIMITS[plan] - newCount) }
+  } catch {
+    // If Redis is not configured, skip
   }
 
   // Parse JSON from analysis result
@@ -224,5 +261,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     contentType: parsed.contentType || "other",
     insights: insights.length > 0 ? insights : parsed.insights || [],
+    usage: usageInfo,
   })
 }

@@ -13,7 +13,6 @@ export default function Test2Page() {
   )
 
   return (
-    <LanguageProvider>
     <div className="p-8 max-w-6xl mx-auto">
       <h1 className="text-xl font-bold mb-4 text-red-600">TEST 2: ChapterDetailView</h1>
       <ChapterDetailView
@@ -26,6 +25,5 @@ export default function Test2Page() {
         onRemoveNote={(id) => setEssenceNotes(prev => prev.filter(n => n.id !== id))}
       />
     </div>
-    </LanguageProvider>
   )
 }

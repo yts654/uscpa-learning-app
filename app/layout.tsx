@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from '@/components/session-provider'
+import { LanguageProvider } from '@/lib/i18n'
 
 import './globals.css'
 
@@ -27,7 +28,9 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-            {children}
+            <LanguageProvider>
+              {children}
+            </LanguageProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>

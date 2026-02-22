@@ -1,10 +1,10 @@
 "use client"
 
-import { LayoutDashboard, BookOpen, BarChart3, ClipboardList, Settings, LogOut, Flame, BookMarked, RefreshCw, FileText, Sun, Moon, Languages, PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { LayoutDashboard, BookOpen, BarChart3, ClipboardList, Settings, LogOut, Flame, BookMarked, RefreshCw, FileText, Sun, Moon, Languages, PanelLeftClose, PanelLeftOpen, Crown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage, type TranslationKey } from "@/lib/i18n"
 import { useTheme } from "next-themes"
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 
 type View = "dashboard" | "chapters" | "study-log" | "mock-exams" | "analytics" | "settings" | "review"
 
@@ -30,6 +30,8 @@ const NAV_ITEMS: { id: View; labelKey: TranslationKey; icon: React.ElementType; 
 export function AppSidebar({ currentView, onViewChange, streak, profile, collapsed, onToggleCollapse }: AppSidebarProps) {
   const { t, locale, setLocale } = useLanguage()
   const { theme, setTheme } = useTheme()
+  const { data: session } = useSession()
+  const isPro = (session?.user as { plan?: string })?.plan === "pro"
   const initials = profile.name
     .split(" ")
     .map(w => w[0])
@@ -170,7 +172,14 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
           {!collapsed && (
             <>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-[hsl(0_0%_100%)] truncate">{profile.name}</p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-xs font-medium text-[hsl(0_0%_100%)] truncate">{profile.name}</p>
+                  {isPro && (
+                    <span className="flex-shrink-0 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                      PRO
+                    </span>
+                  )}
+                </div>
               </div>
               <button onClick={() => signOut({ callbackUrl: "/login" })} className="text-[hsl(230_15%_40%)] hover:text-[hsl(0_0%_100%)] transition-colors flex-shrink-0">
                 <LogOut className="w-4 h-4" />

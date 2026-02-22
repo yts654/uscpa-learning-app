@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
-import { verifyUser } from "./users"
+import { verifyUser, getUserByEmail } from "./users"
 
 const secret = process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production"
 
@@ -27,14 +27,14 @@ export const authOptions: NextAuthOptions = {
           credentials.email.toLowerCase() === DEMO_EMAIL &&
           credentials.password === DEMO_PASSWORD
         ) {
-          return { id: "admin", email: DEMO_EMAIL, name: "admin", rememberMe }
+          return { id: "admin", email: DEMO_EMAIL, name: "admin", rememberMe, plan: "free" as const }
         }
 
-        // 1. Try in-memory user database
+        // 1. Try user database (Redis or in-memory)
         try {
           const user = await verifyUser(credentials.email, credentials.password)
           if (user) {
-            return { id: user.id, email: user.email, name: user.name, rememberMe }
+            return { id: user.id, email: user.email, name: user.name, rememberMe, plan: user.plan }
           }
         } catch (e) {
           console.error("[auth] verifyUser error:", e)
@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
               const hash = Buffer.from(adminPasswordHashB64, "base64").toString("utf-8")
               const isValid = await bcrypt.compare(credentials.password, hash)
               if (isValid) {
-                return { id: "admin", email: adminEmail, name: adminEmail.split("@")[0], rememberMe }
+                return { id: "admin", email: adminEmail, name: adminEmail.split("@")[0], rememberMe, plan: "free" as const }
               }
             } catch (e) {
               console.error("[auth] admin bcrypt error:", e)
@@ -80,17 +80,34 @@ export const authOptions: NextAuthOptions = {
     },
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
-        token.id = user.id
+        token.id = user.id!
         token.loginAt = Date.now()
         token.rememberMe = (user as { rememberMe?: boolean }).rememberMe ?? false
+        token.plan = (user as { plan?: "free" | "pro" }).plan ?? "free"
+      }
+      // Refresh plan from DB periodically (every 5 minutes)
+      if (trigger !== "signIn" && token.email) {
+        const lastRefresh = (token as { planRefreshedAt?: number }).planRefreshedAt || 0
+        if (Date.now() - lastRefresh > 5 * 60 * 1000) {
+          try {
+            const dbUser = await getUserByEmail(token.email)
+            if (dbUser) {
+              token.plan = dbUser.plan
+            }
+          } catch {
+            // Keep existing plan on error
+          }
+          ;(token as { planRefreshedAt?: number }).planRefreshedAt = Date.now()
+        }
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as { id?: string }).id = token.id as string
+        session.user.id = token.id as string
+        session.user.plan = (token.plan as "free" | "pro") || "free"
       }
       return session
     },

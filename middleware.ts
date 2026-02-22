@@ -11,9 +11,13 @@ export async function middleware(request: NextRequest) {
 
   // Allow public paths
   if (
+    pathname === "/" ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/register") ||
+    pathname.startsWith("/pricing") ||
+    pathname.startsWith("/legal") ||
     pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api/stripe/webhook") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.startsWith("/icons") ||

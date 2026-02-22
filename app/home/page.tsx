@@ -128,7 +128,7 @@ export default function Home() {
   }, [studyLogs])
 
   return (
-    <LanguageProvider>
+    <>
       <div className="flex h-screen overflow-hidden">
         <AppSidebar currentView={currentView} onViewChange={handleViewChange} streak={streak} profile={profile} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(prev => !prev)} />
         <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
@@ -192,6 +192,6 @@ export default function Home() {
       </div>
       <OnboardingTour onViewChange={handleViewChange} externalStart={tourActive} onTourEnd={() => setTourActive(false)} />
       <NotificationRunner chapterRetentions={chapterRetentions} streak={streak} studyLogs={studyLogs} />
-    </LanguageProvider>
+    </>
   )
 }

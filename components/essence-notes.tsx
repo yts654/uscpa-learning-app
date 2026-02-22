@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   Plus, X, Image as ImageIcon, Lightbulb, ChevronDown, ChevronUp,
   Sparkles, Loader2, Trash2, Brain, AlertTriangle, BookOpen, Bookmark, Type,
@@ -8,6 +8,8 @@ import {
 } from "lucide-react"
 import { type EssenceNote, type Insight, type InsightType } from "@/lib/study-data"
 import { useLanguage, type TranslationKey } from "@/lib/i18n"
+import { UsageBadge } from "./usage-badge"
+import { PaywallDialog } from "./paywall-dialog"
 
 const INSIGHT_CONFIG: Record<InsightType, { labelKey: TranslationKey; color: string; bgColor: string; icon: any }> = {
   concept: { labelKey: "essence.coreConcept", color: "hsl(220, 70%, 50%)", bgColor: "hsl(220, 70%, 95%)", icon: Lightbulb },
@@ -59,6 +61,15 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
   const [expandedNoteId, setExpandedNoteId] = useState<string | null>(null)
   const [filterType, setFilterType] = useState<InsightType | "all">("all")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [usageData, setUsageData] = useState<{ used: number; limit: number; remaining: number; plan: "free" | "pro" } | null>(null)
+  const [showPaywall, setShowPaywall] = useState(false)
+
+  useEffect(() => {
+    fetch("/api/usage")
+      .then(r => r.json())
+      .then(data => setUsageData(data))
+      .catch(() => {})
+  }, [])
 
   function addImageFromFile(file: File) {
     const reader = new FileReader()
@@ -105,6 +116,13 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
   async function handleAnalyze() {
     const hasInput = inputMode === "image" ? images.length > 0 : pastedText.trim().length > 0
     if (!hasInput) return
+
+    // Check usage limit before calling API
+    if (usageData && usageData.remaining <= 0) {
+      setShowPaywall(true)
+      return
+    }
+
     setIsAnalyzing(true)
     setError(null)
     setAnalysisResult(null)
@@ -135,8 +153,18 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
       const data = await res.json()
 
       if (!res.ok) {
+        if (data.error === "LIMIT_REACHED") {
+          setShowPaywall(true)
+          if (data.usage) setUsageData({ ...data.usage, plan: usageData?.plan || "free" })
+          return
+        }
         setError(data.error || "Analysis failed")
         return
+      }
+
+      // Update local usage data
+      if (data.usage) {
+        setUsageData(prev => prev ? { ...prev, ...data.usage } : data.usage)
       }
 
       setAnalysisResult({
@@ -217,7 +245,12 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
         >
           {showGuide ? <X className="w-3.5 h-3.5" /> : <HelpCircle className="w-3.5 h-3.5" />}
         </button>
-        <span className="ml-auto text-[10px] font-bold text-[hsl(0,0%,100%)] px-2 py-0.5 rounded-full" style={{ backgroundColor: accentColor }}>
+        {usageData && (
+          <div className="ml-auto mr-2">
+            <UsageBadge used={usageData.used} limit={usageData.limit} plan={usageData.plan} />
+          </div>
+        )}
+        <span className="text-[10px] font-bold text-[hsl(0,0%,100%)] px-2 py-0.5 rounded-full" style={{ backgroundColor: accentColor }}>
           {allInsights.length}
         </span>
       </div>
@@ -586,6 +619,13 @@ export function EssenceNotes({ chapterId, notes, onAddNote, onRemoveNote, accent
           )
         })}
       </div>
+
+      {/* Paywall Dialog */}
+      <PaywallDialog
+        open={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        reason="limit_reached"
+      />
     </div>
   )
 }
