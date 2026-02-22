@@ -17,6 +17,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/pricing") ||
     pathname.startsWith("/legal") ||
     pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api/health") ||
     pathname.startsWith("/api/stripe/webhook") ||
     pathname.startsWith("/api/lemonsqueezy/webhook") ||
     pathname.startsWith("/_next") ||
@@ -48,6 +49,7 @@ export async function middleware(request: NextRequest) {
     const loginUrl = new URL("/login", request.url)
     const response = NextResponse.redirect(loginUrl)
     response.cookies.delete("next-auth.session-token")
+    response.cookies.delete("__Secure-next-auth.session-token")
     return response
   }
 
