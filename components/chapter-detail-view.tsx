@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ArrowLeft, Clock, Target, BookOpen, Plus, Calendar, ClipboardList } from "lucide-react"
-import { SECTION_INFO, type Chapter, type StudyLog, type EssenceNote } from "@/lib/study-data"
+import { SECTION_INFO, CHAPTER_TITLES_JA, type Chapter, type StudyLog, type EssenceNote } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import { EssenceNotes } from "@/components/essence-notes"
 
@@ -113,7 +113,14 @@ export function ChapterDetailView({
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("chapterDetail.chapter")} {chapter.number}</p>
-            <h2 className="font-serif text-2xl font-bold text-foreground text-balance">{chapter.title}</h2>
+            {locale === "ja" && CHAPTER_TITLES_JA[chapter.id] ? (
+              <>
+                <h2 className="font-serif text-2xl font-bold text-foreground text-balance">{CHAPTER_TITLES_JA[chapter.id]}</h2>
+                <p className="text-sm font-medium mt-0.5" style={{ color: info.color }}>{chapter.title}</p>
+              </>
+            ) : (
+              <h2 className="font-serif text-2xl font-bold text-foreground text-balance">{chapter.title}</h2>
+            )}
             <p className="text-sm text-muted-foreground mt-0.5">{info.fullName}</p>
           </div>
         </div>

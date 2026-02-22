@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import { Filter, ChevronRight, BookOpen, Clock, Target, CheckCircle2, Circle, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
-import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
+import { SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
 import { type ChapterRetention, getMasteryLevelInfo, getRetentionColor } from "@/lib/spaced-repetition"
 
 interface ChaptersViewProps {
@@ -23,7 +23,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
   }, [chapterRetentions])
 
   const [selectedSection, setSelectedSection] = useState<ExamSection | "ALL">("ALL")
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
 
   const filteredChapters = selectedSection === "ALL"
     ? chapters
@@ -184,8 +184,11 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapter.number}</span>
-                        <h4 className="text-sm font-medium text-card-foreground truncate">{chapter.title}</h4>
+                        <h4 className="text-sm font-medium text-card-foreground truncate">{locale === "ja" && CHAPTER_TITLES_JA[chapter.id] ? CHAPTER_TITLES_JA[chapter.id] : chapter.title}</h4>
                       </div>
+                      {locale === "ja" && CHAPTER_TITLES_JA[chapter.id] && (
+                        <p className="text-xs truncate mt-0.5" style={{ color: info.color }}>{chapter.title}</p>
+                      )}
                       {hasStudied && (
                         <div className="flex items-center gap-2 sm:gap-4 mt-1.5 flex-wrap">
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -282,7 +285,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                   <div key={ch.id} className="px-6 py-2.5 flex items-center gap-4 hover:bg-muted/20 transition-colors">
                     <span className="text-xs font-bold text-muted-foreground w-10 flex-shrink-0">Ch.{ch.number}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-card-foreground truncate">{ch.title}</p>
+                      <p className="text-xs text-card-foreground truncate">{locale === "ja" && CHAPTER_TITLES_JA[ch.id] ? CHAPTER_TITLES_JA[ch.id] : ch.title}</p>
                       <div className="mt-1 h-1.5 bg-muted rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all"

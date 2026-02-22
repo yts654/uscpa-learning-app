@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { type CalibrationEntry } from "@/lib/analytics-engine"
-import { SECTION_INFO } from "@/lib/study-data"
+import { SECTION_INFO, CHAPTER_TITLES_JA } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import { Brain, HelpCircle, X } from "lucide-react"
 
@@ -84,7 +84,7 @@ export function RetentionCalibrationCard({ entries }: RetentionCalibrationCardPr
                     {entry.section.charAt(0)}
                   </div>
                   <span className="text-xs text-card-foreground truncate">
-                    Ch.{entry.chapterNumber} {entry.chapterTitle}
+                    Ch.{entry.chapterNumber} {locale === "ja" ? CHAPTER_TITLES_JA[entry.chapterId] || entry.chapterTitle : entry.chapterTitle}
                   </span>
                 </div>
                 <div className="text-center text-xs text-muted-foreground">{entry.predictedRetention}%</div>

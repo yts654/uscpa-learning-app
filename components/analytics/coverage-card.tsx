@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { type CoverageItem } from "@/lib/analytics-engine"
-import { SECTION_INFO, type ExamSection } from "@/lib/study-data"
+import { SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import { Eye, AlertTriangle, HelpCircle, X, ChevronDown, ChevronRight } from "lucide-react"
 
@@ -126,7 +126,7 @@ export function CoverageCard({ items }: CoverageCardProps) {
                       {item.section.charAt(0)}
                     </div>
                     <span className="text-xs text-card-foreground truncate flex-1">
-                      Ch.{item.chapterNumber} {item.chapterTitle}
+                      Ch.{item.chapterNumber} {locale === "ja" ? CHAPTER_TITLES_JA[item.chapterId] || item.chapterTitle : item.chapterTitle}
                     </span>
                     {item.retention !== undefined && (
                       <span className="text-[10px] font-medium text-[hsl(0,65%,45%)]">{item.retention}%</span>

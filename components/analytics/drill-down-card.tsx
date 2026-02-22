@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { type StudyLog, type ExamSection, SECTION_INFO } from "@/lib/study-data"
+import { type StudyLog, type ExamSection, SECTION_INFO, CHAPTER_TITLES_JA } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import { ChevronDown, BarChart3 } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
@@ -12,7 +12,7 @@ interface DrillDownCardProps {
 }
 
 export function DrillDownCard({ studyLogs }: DrillDownCardProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
   const [open, setOpen] = useState(false)
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null)
 
@@ -81,7 +81,7 @@ export function DrillDownCard({ studyLogs }: DrillDownCardProps) {
           {selectedChapterId && chartData.length > 0 ? (
             <div>
               <p className="text-xs text-muted-foreground mb-2">
-                {selectedInfo?.title}
+                {locale === "ja" && selectedInfo ? CHAPTER_TITLES_JA[selectedInfo.id] || selectedInfo.title : selectedInfo?.title}
               </p>
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">

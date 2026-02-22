@@ -4,7 +4,7 @@ import { useState, useCallback, useMemo } from "react"
 import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle, Pencil, Settings2 } from "lucide-react"
 import { cn, brightenForDark } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
-import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog, type StudyGoals } from "@/lib/study-data"
+import { SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection, type Chapter, type StudyLog, type StudyGoals } from "@/lib/study-data"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, LineChart, Line, ReferenceLine } from "recharts"
 import { useTheme } from "next-themes"
 
@@ -588,7 +588,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
               >
                 <option value="">{t("studyLog.selectChapter")}</option>
                 {availableChapters.map(c => (
-                  <option key={c.id} value={c.id}>Ch.{c.number} - {c.title}</option>
+                  <option key={c.id} value={c.id}>Ch.{c.number} - {locale === "ja" && CHAPTER_TITLES_JA[c.id] ? CHAPTER_TITLES_JA[c.id] : c.title}</option>
                 ))}
               </select>
             </div>
@@ -863,7 +863,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
                                   >
                                     {log.section.charAt(0)}
                                   </div>
-                                  <span className="text-card-foreground truncate">{log.chapterTitle}</span>
+                                  <span className="text-card-foreground truncate">{locale === "ja" ? CHAPTER_TITLES_JA[log.chapterId] || log.chapterTitle : log.chapterTitle}</span>
                                   <span className="text-muted-foreground ml-auto flex-shrink-0">{log.studyHours}h</span>
                                   {log.questionsAnswered > 0 && (
                                     <span className="text-muted-foreground flex-shrink-0">{log.correctAnswers}/{log.questionsAnswered}Q</span>
@@ -985,7 +985,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
                               {/* Content */}
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <p className="text-sm font-medium text-card-foreground">{log.chapterTitle}</p>
+                                  <p className="text-sm font-medium text-card-foreground">{locale === "ja" ? CHAPTER_TITLES_JA[log.chapterId] || log.chapterTitle : log.chapterTitle}</p>
                                   <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{chapters.find(c => c.id === log.chapterId)?.number}</span>
                                 </div>
 

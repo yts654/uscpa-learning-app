@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from "react"
 import { Filter, Brain, AlertTriangle, Clock, CalendarCheck, Shield, BookOpen, ChevronRight, Bell, Info, ChevronDown, HelpCircle, X } from "lucide-react"
 import { cn, brightenForDark } from "@/lib/utils"
-import { SECTION_INFO, type ExamSection, type Chapter, type RecallRating } from "@/lib/study-data"
+import { SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection, type Chapter, type RecallRating } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import { useTheme } from "next-themes"
 import {
@@ -327,7 +327,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                       {item.section}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-foreground truncate">Ch.{item.chapterNumber} {item.chapterTitle}</p>
+                      <p className="text-xs font-medium text-foreground truncate">Ch.{item.chapterNumber} {locale === "ja" ? CHAPTER_TITLES_JA[item.chapterId] || item.chapterTitle : item.chapterTitle}</p>
                       <div className="flex items-center gap-2 mt-0.5">
                         <span className="text-xs font-medium" style={{ color: retColor }}>{t("review.alert.retention")} {item.retention}%</span>
                         <span className="text-xs text-muted-foreground">{item.daysSinceLastStudy} {t("review.alert.daysAgo")}</span>
@@ -383,7 +383,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                 <div className="flex-1">
                   <h3 className="font-semibold text-card-foreground">{t("review.chart.title")}</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {selected ? `Ch.${selected.chapterNumber} ${selected.chapterTitle}${t("review.chart.selectedDesc")}` : t("review.chart.defaultDesc")}
+                    {selected ? `Ch.${selected.chapterNumber} ${locale === "ja" ? CHAPTER_TITLES_JA[selected.chapterId] || selected.chapterTitle : selected.chapterTitle}${t("review.chart.selectedDesc")}` : t("review.chart.defaultDesc")}
                   </p>
                 </div>
                 <button
@@ -483,7 +483,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                         if (name === "retention") return [`${value}%`, t("review.chart.currentCurve")]
                         if (name === "nextRetention") return [`${value}%`, t("review.chart.nextCurve")]
                         const ch = studiedChapters.find((c) => c.chapterId === name)
-                        return [`${value}%`, ch ? `Ch.${ch.chapterNumber} ${ch.chapterTitle}` : name]
+                        return [`${value}%`, ch ? `Ch.${ch.chapterNumber} ${locale === "ja" ? CHAPTER_TITLES_JA[ch.chapterId] || ch.chapterTitle : ch.chapterTitle}` : name]
                       }}
                       labelFormatter={(day) => `${day}${t("review.chart.daysSuffix")}`}
                     />
@@ -665,7 +665,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ch.{item.chapterNumber}</span>
-                        <span className="text-sm font-medium text-card-foreground truncate">{item.chapterTitle}</span>
+                        <span className="text-sm font-medium text-card-foreground truncate">{locale === "ja" ? CHAPTER_TITLES_JA[item.chapterId] || item.chapterTitle : item.chapterTitle}</span>
                       </div>
                       {/* Retention bar + stats row */}
                       <div className="flex items-center gap-3 mt-1.5">

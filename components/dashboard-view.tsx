@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { ArrowUpRight, Clock, Flame, Lightbulb, NotebookPen, ChevronDown, BookOpen, Target, Brain, X, BookMarked, ClipboardList, RefreshCw, Play, HelpCircle } from "lucide-react"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
-import { type StudyProgress, type Chapter, type StudyLog, type EssenceNote, SECTION_INFO, type ExamSection } from "@/lib/study-data"
+import { type StudyProgress, type Chapter, type StudyLog, type EssenceNote, SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import { useTheme } from "next-themes"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
@@ -341,7 +341,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                                 return (
                                   <div key={log.id} className="flex items-center gap-3 py-1.5">
                                     <span className="text-xs text-muted-foreground w-16 flex-shrink-0">{formatDate(log.date)}</span>
-                                    <span className="text-xs text-card-foreground truncate flex-1">{log.chapterTitle}</span>
+                                    <span className="text-xs text-card-foreground truncate flex-1">{locale === "ja" ? CHAPTER_TITLES_JA[log.chapterId] || log.chapterTitle : log.chapterTitle}</span>
                                     <span className="text-xs text-muted-foreground flex-shrink-0">{log.studyHours}h</span>
                                     {log.questionsAnswered > 0 && (
                                       <span className="text-xs flex-shrink-0" style={{ color: acc >= 75 ? (isDark ? getLightColor(data.info.color) : data.info.color) : "hsl(0, 72%, 51%)" }}>{acc}%</span>
@@ -493,7 +493,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                     {item.section}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-card-foreground truncate">{item.chapterTitle}</p>
+                    <p className="text-sm font-medium text-card-foreground truncate">{locale === "ja" ? CHAPTER_TITLES_JA[item.chapterId] || item.chapterTitle : item.chapterTitle}</p>
                     <div className="flex items-center gap-3 mt-1">
                       <div className="flex items-center gap-1.5 w-24">
                         <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -576,7 +576,7 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
                         {log.section}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-card-foreground truncate">{log.chapterTitle}</p>
+                        <p className="text-sm font-medium text-card-foreground truncate">{locale === "ja" ? CHAPTER_TITLES_JA[log.chapterId] || log.chapterTitle : log.chapterTitle}</p>
                         <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{log.studyHours}h</span>
                           {log.questionsAnswered > 0 && (
