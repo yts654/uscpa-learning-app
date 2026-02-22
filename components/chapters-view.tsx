@@ -8,6 +8,15 @@ import { useTheme } from "next-themes"
 import { SECTION_INFO, CHAPTER_TITLES_JA, type ExamSection, type Chapter, type StudyLog } from "@/lib/study-data"
 import { type ChapterRetention, getMasteryLevelInfo, getRetentionColor } from "@/lib/spaced-repetition"
 
+// Lighten an HSL color for dark-mode text readability
+function getLightColor(hslColor: string): string {
+  const match = hslColor.match(/hsl\((\d+)[,\s]+(\d+)%[,\s]+(\d+)%\)/)
+  if (!match) return hslColor
+  const [, h, s, l] = match
+  const newL = Math.max(Number(l), 55)
+  return `hsl(${h}, ${s}%, ${newL}%)`
+}
+
 interface ChaptersViewProps {
   chapters: Chapter[]
   onSelectChapter: (chapter: Chapter) => void
@@ -190,7 +199,7 @@ export function ChaptersView({ chapters, onSelectChapter, studyLogs, completedSe
                         <h4 className="text-sm font-medium text-card-foreground truncate">{locale === "ja" && CHAPTER_TITLES_JA[chapter.id] ? CHAPTER_TITLES_JA[chapter.id] : chapter.title}</h4>
                       </div>
                       {locale === "ja" && CHAPTER_TITLES_JA[chapter.id] && (
-                        <p className="text-xs truncate mt-0.5" style={{ color: info.color }}>{chapter.title}</p>
+                        <p className="text-xs truncate mt-0.5" style={{ color: isDark ? getLightColor(info.color) : info.color }}>{chapter.title}</p>
                       )}
                       {hasStudied && (
                         <div className="flex items-center gap-2 sm:gap-4 mt-1.5 flex-wrap">

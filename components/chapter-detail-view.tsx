@@ -7,6 +7,15 @@ import { useLanguage } from "@/lib/i18n"
 import { useTheme } from "next-themes"
 import { EssenceNotes } from "@/components/essence-notes"
 
+// Lighten an HSL color for dark-mode text readability
+function getLightColor(hslColor: string): string {
+  const match = hslColor.match(/hsl\((\d+)[,\s]+(\d+)%[,\s]+(\d+)%\)/)
+  if (!match) return hslColor
+  const [, h, s, l] = match
+  const newL = Math.max(Number(l), 55)
+  return `hsl(${h}, ${s}%, ${newL}%)`
+}
+
 interface ChapterDetailViewProps {
   chapter: Chapter
   onBack: () => void
@@ -119,7 +128,7 @@ export function ChapterDetailView({
             {locale === "ja" && CHAPTER_TITLES_JA[chapter.id] ? (
               <>
                 <h2 className="font-serif text-2xl font-bold text-foreground text-balance">{CHAPTER_TITLES_JA[chapter.id]}</h2>
-                <p className="text-sm font-medium mt-0.5" style={{ color: info.color }}>{chapter.title}</p>
+                <p className="text-sm font-medium mt-0.5" style={{ color: isDark ? getLightColor(info.color) : info.color }}>{chapter.title}</p>
               </>
             ) : (
               <h2 className="font-serif text-2xl font-bold text-foreground text-balance">{chapter.title}</h2>
