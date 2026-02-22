@@ -395,19 +395,31 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{t("settings.studyPreferences")}</h3>
         </div>
         <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.dailyGoal")}</label>
-            <select
-              value={studyGoals.dailyStudyHours}
-              onChange={(e) => onUpdateStudyGoals({ ...studyGoals, dailyStudyHours: parseInt(e.target.value) })}
-              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
-            >
-              <option value="1">1 {t("settings.hour")}</option>
-              <option value="2">2 {t("settings.hours")}</option>
-              <option value="3">3 {t("settings.hours")}</option>
-              <option value="4">4 {t("settings.hours")}</option>
-              <option value="5">5+ {t("settings.hours")}</option>
-            </select>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.weekdayGoal")}</label>
+              <select
+                value={studyGoals.dailyStudyHours}
+                onChange={(e) => onUpdateStudyGoals({ ...studyGoals, dailyStudyHours: parseFloat(e.target.value) })}
+                className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+              >
+                {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 8].map(v => (
+                  <option key={v} value={v}>{v} {v === 1 ? t("settings.hour") : t("settings.hours")}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.weekendGoal")}</label>
+              <select
+                value={studyGoals.weekendStudyHours ?? studyGoals.dailyStudyHours}
+                onChange={(e) => onUpdateStudyGoals({ ...studyGoals, weekendStudyHours: parseFloat(e.target.value) })}
+                className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+              >
+                {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 8, 10].map(v => (
+                  <option key={v} value={v}>{v} {v === 1 ? t("settings.hour") : t("settings.hours")}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div>
             <label className="text-sm font-medium text-card-foreground block mb-1.5">{t("settings.questionsPerSession")}</label>

@@ -2,10 +2,11 @@
 
 import { useState, useCallback, useMemo } from "react"
 import { Plus, Filter, Calendar, Clock, BookOpen, ChevronDown, ChevronUp, X, AlertTriangle, TrendingDown, TrendingUp, CheckCircle2, BarChart3, HelpCircle, Pencil } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, brightenForDark } from "@/lib/utils"
 import { useLanguage } from "@/lib/i18n"
 import { SECTION_INFO, type ExamSection, type Chapter, type StudyLog, type StudyGoals } from "@/lib/study-data"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, LineChart, Line, ReferenceLine } from "recharts"
+import { useTheme } from "next-themes"
 
 interface StudyLogViewProps {
   chapters: Chapter[]
@@ -79,9 +80,11 @@ function generateWeekComments(
 const ALL_SECTIONS: ExamSection[] = ["FAR", "AUD", "REG", "BEC", "TCP", "ISC"]
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
-function StudyCharts({ logs, locale, dailyGoal }: { logs: StudyLog[]; locale: string; dailyGoal: number }) {
+function StudyCharts({ logs, locale, dailyGoal, weekendGoal }: { logs: StudyLog[]; locale: string; dailyGoal: number; weekendGoal: number }) {
   const [chartMode, setChartMode] = useState<"weekly" | "monthly">("weekly")
   const [showHelp, setShowHelp] = useState(false)
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
   // Weekly chart data: hours per day of the current week, stacked by section
   const weeklyData = useMemo(() => {
@@ -217,15 +220,15 @@ function StudyCharts({ logs, locale, dailyGoal }: { logs: StudyLog[]; locale: st
                   labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
                 />
                 {ALL_SECTIONS.map(s => (
-                  <Bar key={s} dataKey={s} stackId="hours" fill={SECTION_INFO[s].color} radius={s === "ISC" ? [3, 3, 0, 0] : undefined} />
+                  <Bar key={s} dataKey={s} stackId="hours" fill={brightenForDark(SECTION_INFO[s].color, isDark)} radius={s === "ISC" ? [3, 3, 0, 0] : undefined} />
                 ))}
                 {dailyGoal > 0 && (
                   <ReferenceLine
-                    y={chartMode === "weekly" ? dailyGoal : dailyGoal * 7}
-                    stroke="hsl(0 72% 51%)"
+                    y={chartMode === "weekly" ? dailyGoal : dailyGoal * 5 + weekendGoal * 2}
+                    stroke={isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)"}
                     strokeDasharray="6 3"
                     strokeWidth={1.5}
-                    label={{ value: `${locale === "es" ? "Meta" : "Goal"} ${chartMode === "weekly" ? dailyGoal : dailyGoal * 7}h`, position: "right", fontSize: 10, fill: "hsl(0 72% 51%)" }}
+                    label={{ value: `${locale === "es" ? "Meta" : "Goal"} ${chartMode === "weekly" ? dailyGoal : dailyGoal * 5 + weekendGoal * 2}h`, position: "right", fontSize: 10, fill: isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)" }}
                   />
                 )}
               </BarChart>
@@ -251,11 +254,11 @@ function StudyCharts({ logs, locale, dailyGoal }: { logs: StudyLog[]; locale: st
                   labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
                   formatter={(value: number) => [`${value}h`, "Study Hours"]}
                 />
-                <Line type="monotone" dataKey="totalHours" stroke="hsl(175 45% 40%)" strokeWidth={2} dot={{ r: 4, fill: "hsl(175 45% 40%)" }} connectNulls />
+                <Line type="monotone" dataKey="totalHours" stroke={isDark ? "hsl(175 55% 55%)" : "hsl(175 45% 40%)"} strokeWidth={2} dot={{ r: 4, fill: isDark ? "hsl(175 55% 55%)" : "hsl(175 45% 40%)" }} connectNulls />
                 {dailyGoal > 0 && (
                   <ReferenceLine
-                    y={chartMode === "weekly" ? dailyGoal : dailyGoal * 7}
-                    stroke="hsl(0 72% 51%)"
+                    y={chartMode === "weekly" ? dailyGoal : dailyGoal * 5 + weekendGoal * 2}
+                    stroke={isDark ? "hsl(0 72% 65%)" : "hsl(0 72% 51%)"}
                     strokeDasharray="6 3"
                     strokeWidth={1.5}
                   />
@@ -273,7 +276,7 @@ function StudyCharts({ logs, locale, dailyGoal }: { logs: StudyLog[]; locale: st
         <div className="flex flex-wrap gap-3 justify-center">
           {ALL_SECTIONS.map(s => (
             <div key={s} className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: SECTION_INFO[s].color }} />
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: brightenForDark(SECTION_INFO[s].color, isDark) }} />
               <span className="text-[10px] text-muted-foreground">{s}</span>
             </div>
           ))}
@@ -689,7 +692,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals }: 
       )}
 
       {/* Charts Section */}
-      <StudyCharts logs={logs} locale={locale} dailyGoal={studyGoals.dailyStudyHours} />
+      <StudyCharts logs={logs} locale={locale} dailyGoal={studyGoals.dailyStudyHours} weekendGoal={studyGoals.weekendStudyHours ?? studyGoals.dailyStudyHours} />
 
       {/* Section Filter */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">

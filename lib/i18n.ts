@@ -793,6 +793,8 @@ const translations = {
   "settings.passing": { en: "Passing", es: "Aprobado" },
   "settings.studyPreferences": { en: "Study Preferences", es: "Preferencias de estudio" },
   "settings.dailyGoal": { en: "Daily Study Goal (hours)", es: "Meta diaria (horas)" },
+  "settings.weekdayGoal": { en: "Weekday Goal", es: "Meta (Lun-Vie)" },
+  "settings.weekendGoal": { en: "Weekend Goal", es: "Meta (Sáb-Dom)" },
   "settings.hour": { en: "hour", es: "hora" },
   "settings.hours": { en: "hours", es: "horas" },
   "settings.questionsPerSession": { en: "Questions per Session", es: "Preguntas por sesión" },

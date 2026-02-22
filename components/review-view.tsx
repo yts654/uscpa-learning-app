@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react"
 import { Filter, Brain, AlertTriangle, Clock, CalendarCheck, Shield, BookOpen, ChevronRight, Bell, Info, ChevronDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, brightenForDark } from "@/lib/utils"
 import { SECTION_INFO, type ExamSection, type Chapter, type RecallRating } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
 import { useTheme } from "next-themes"
@@ -50,16 +50,6 @@ const RECALL_BG_COLORS: Record<RecallRating, string> = {
 }
 
 // Brighten an HSL color for dark mode by increasing lightness
-function brightenForDark(hslColor: string, isDark: boolean): string {
-  if (!isDark) return hslColor
-  // Match both "hsl(225, 50%, 22%)" and "hsl(225 50% 22%)" formats
-  const match = hslColor.match(/hsl\((\d+)[,\s]+(\d+)%?[,\s]+(\d+)%?\)/)
-  if (!match) return hslColor
-  const [, h, s, l] = match
-  const newL = Math.min(75, parseInt(l) + 35)
-  return `hsl(${h}, ${s}%, ${newL}%)`
-}
-
 export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onViewChange, onRecallRating }: ReviewViewProps) {
   const { t } = useLanguage()
   const { resolvedTheme } = useTheme()

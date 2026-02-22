@@ -4,78 +4,77 @@ import OpenAI from "openai"
 // Allow long-running analysis (Hobby plan max: 60s)
 export const maxDuration = 60
 
-// Stage 1: Vision model extracts text from images
+// High-quality models for reliable results
 const VISION_MODELS = [
-  "nvidia/nemotron-nano-12b-v2-vl:free",
-  "google/gemma-3-27b-it:free",
-  "mistralai/mistral-small-3.1-24b-instruct:free",
-  "google/gemma-3-12b-it:free",
+  "google/gemini-2.0-flash-001",
+  "google/gemini-2.5-flash-preview",
+  "anthropic/claude-sonnet-4-20250514",
 ]
 
-// Stage 2: Reasoning model analyzes the extracted text
-const REASONING_MODELS = [
-  "deepseek/deepseek-r1-0528:free",
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "nousresearch/hermes-3-llama-3.1-405b:free",
+const ANALYSIS_MODELS = [
+  "anthropic/claude-sonnet-4-20250514",
+  "google/gemini-2.0-flash-001",
+  "deepseek/deepseek-chat-v3-0324",
 ]
 
-const OCR_PROMPT = `You are an expert OCR assistant. Extract ALL text content from the provided screenshot(s) as accurately as possible.
+const OCR_PROMPT = `You are an expert OCR assistant specializing in USCPA (US CPA exam) study materials.
+Extract ALL text content from the provided screenshot(s) with perfect accuracy.
 
 Rules:
-- Preserve the original structure (headings, bullet points, numbered lists, tables)
-- Include ALL text visible in the image(s)
-- If it's a multiple choice question, clearly mark the question, each option (A, B, C, D), and any explanation
-- If it's a textbook page, preserve section headers and paragraph structure
-- Output the extracted text in its original language (English or Japanese)
-- If there are multiple images, separate each with "---"
-- Do NOT add any commentary, just extract the text faithfully`
+- Preserve the original structure: headings, bullet points, numbered lists, tables, formulas
+- Include ALL text visible in the image(s) — miss nothing
+- For multiple choice questions: clearly mark Question, each option (A, B, C, D), and explanation
+- For textbook pages: preserve section headers, paragraph structure, and any diagrams described in text
+- For TBS (Task-Based Simulations): preserve the scenario, exhibits, and required fields
+- Preserve any numbers, percentages, dollar amounts, and dates exactly as shown
+- Output in the original language (English or Japanese)
+- If multiple images, separate each with "---"
+- Do NOT add commentary — extract text faithfully`
 
-const ANALYSIS_PROMPT = `You are an expert USCPA (US Certified Public Accountant) exam tutor with 15+ years of teaching experience.
-Extract the "essential insights" from the following USCPA study content that directly help pass the exam.
+const ANALYSIS_PROMPT = `You are a top-tier USCPA exam tutor who has helped thousands of candidates pass all 4 sections.
+Your specialty: distilling complex accounting content into exam-winning insights.
 
-## Your Role
-Not just summarizing the text, but teaching practical thinking: "How do I use this knowledge to solve exam questions?"
+## Task
+Analyze the following USCPA study content and extract 3-5 high-quality insights that directly help pass the exam.
 
-## 4 Types of Insights to Extract
+## The 4 Insight Types
 
 ### concept (Core Concept)
-Clarify the underlying principles behind an accounting treatment.
-Good example: "The essence of depreciation is the matching principle. Allocate costs to match the pattern of economic benefit consumption. Straight-line = even consumption, declining balance = front-loaded consumption."
-Bad example: "There are straight-line and declining balance methods." (This is just listing facts.)
+Explain the "WHY" behind an accounting treatment — not just what to do, but why it works that way.
+Example: "Revenue recognition under ASC 606 follows a 5-step model because it separates the PROMISE (performance obligation) from the PAYMENT (transaction price). Think: What did we promise? → When did we deliver? → How much do we get?"
 
-### framework (Thinking Framework)
-Show step-by-step decision process when approaching a problem.
-Good example: "Lease classification steps: (1) Transfer of ownership? → (2) Bargain purchase option? → (3) Lease term >= 75% of economic life? → (4) PV >= 90% of fair value? → Any Yes = Finance Lease"
-Bad example: "There are Operating Leases and Finance Leases."
+### framework (Decision Framework)
+Give a step-by-step decision tree for solving exam questions. Must be actionable.
+Example: "Inventory write-down decision: (1) Compare cost vs. NRV → (2) If NRV < cost, write down to NRV → (3) Under GAAP: NO reversal allowed → (4) Under IFRS: reversal allowed up to original cost. Exam trap: GAAP vs IFRS reversal is a favorite MCQ topic."
 
-### trap (Common Pitfall)
-Point out where exam takers commonly make mistakes and how to avoid them.
-Good example: "Unrealized gains/losses on AFS securities go to OCI, not P&L. Remember: 'Available' = not sold yet = OCI."
-Bad example: "Be careful with AFS securities."
+### trap (Exam Pitfall)
+Identify where candidates commonly lose points and give a clear way to avoid the mistake.
+Example: "TRAP: Goodwill impairment under ASC 350 does NOT use a 2-step test anymore (that was old GAAP). Now it's a 1-step quantitative test: compare carrying amount vs. fair value of reporting unit. Many prep materials still show the old 2-step — don't fall for it."
 
 ### rule (Memory Rule)
-Present numerical thresholds or requirements with memorization tips.
-Good example: "Materiality: Deferred tax asset recoverability → 'more likely than not' (>50%). SEC Small Reporting Company → public float < $250M."
-Bad example: "There are several numerical standards."
+Present numerical thresholds, key dates, or classification rules with a memorization technique.
+Example: "Lease classification thresholds (OWNES): O=Ownership transfer, W=Written bargain purchase option, N=Ninety percent (PV ≥ 90% of FV), E=Economic life (term ≥ 75%), S=Specialized asset. Any one = Finance Lease."
 
-## Output Format (Strict — JSON only)
+## Output Format (STRICT JSON — nothing else)
 {
   "contentType": "textbook" | "mcq" | "tbs" | "other",
   "insights": [
     {
       "type": "concept" | "framework" | "trap" | "rule",
-      "title": "Short title (max 8 words)",
-      "body": "Essential insight (1-4 sentences)",
-      "example": "Concrete example or memorization tip (optional)"
+      "title": "Concise title (max 8 words)",
+      "body": "The insight explained clearly in 2-4 sentences. Be specific and actionable.",
+      "example": "A concrete example, mnemonic, or exam tip (optional but highly recommended)"
     }
   ]
 }
 
-## Important Rules
-- Always extract 2-5 insights
-- Never just summarize the text superficially
-- Always think: "So what? How does this help on the exam?"
-- Output ONLY JSON, no other text
+## Quality Rules
+- Extract 3-5 insights (prefer quality over quantity)
+- NEVER just summarize or paraphrase — add exam-solving value
+- Every insight must answer: "How does this help me pick the right answer on exam day?"
+- Use concrete numbers, standards (ASC/IFRS), and real exam scenarios
+- If the content is in Japanese, write insights in English (the exam is in English)
+- Output ONLY valid JSON, no markdown, no commentary
 
 ---
 
@@ -89,14 +88,9 @@ function getDemoResponse() {
     insights: [
       {
         type: "concept",
-        title: "Demo: Core Concept",
-        body: "This is demo mode. To use actual AI analysis, set OPENROUTER_API_KEY in your .env.local file.",
-        example: "OPENROUTER_API_KEY=sk-or-v1-xxxxx",
-      },
-      {
-        type: "framework",
-        title: "Demo: Framework",
-        body: "Once the API key is configured, uploaded images will be automatically analyzed by AI to extract insights directly relevant to the USCPA exam.",
+        title: "Demo Mode — API Key Required",
+        body: "Essence Notes requires an OPENROUTER_API_KEY to analyze your study materials with AI. Set this in your Vercel environment variables or .env.local file to enable real analysis.",
+        example: "Go to Vercel Dashboard → Settings → Environment Variables → Add OPENROUTER_API_KEY",
       },
     ],
   }
@@ -104,33 +98,31 @@ function getDemoResponse() {
 
 function wait(ms: number) { return new Promise(r => setTimeout(r, ms)) }
 
-async function callModel(client: OpenAI, models: string[], messages: any[]): Promise<string | null> {
+async function callModel(client: OpenAI, models: string[], messages: any[], maxTokens = 4000): Promise<string | null> {
   for (const model of models) {
-    // Try each model up to 2 times (retry once on timeout/429)
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         if (attempt > 0) {
-          console.log(`Retrying ${model} after 5s delay...`)
-          await wait(5000)
+          console.log(`Retrying ${model} after 3s delay...`)
+          await wait(3000)
         }
         console.log(`Trying model: ${model} (attempt ${attempt + 1})`)
         const response = await client.chat.completions.create({
           model,
-          max_tokens: 3000,
-          timeout: 180000, // 3 minutes
+          max_tokens: maxTokens,
+          temperature: 0.3,
           messages,
         } as any)
         const content = response.choices[0]?.message?.content?.trim()
         if (content) {
-          console.log(`Success with model: ${model}`)
+          console.log(`Success with model: ${model} (${content.length} chars)`)
           return content
         }
       } catch (err: any) {
         const msg = String(err?.message || "")
-        console.log(`Model ${model} attempt ${attempt + 1} failed: ${msg.substring(0, 100)}`)
-        // Only retry on timeout or 429
-        if (msg.includes("timed out") || msg.includes("429")) continue
-        break // Other errors: skip to next model
+        console.log(`Model ${model} attempt ${attempt + 1} failed: ${msg.substring(0, 150)}`)
+        if (msg.includes("timed out") || msg.includes("429") || msg.includes("rate")) continue
+        break
       }
     }
   }
@@ -168,11 +160,10 @@ export async function POST(req: NextRequest) {
   let extractedText: string
 
   if (hasText) {
-    // === Text mode: Skip OCR, go directly to analysis ===
     console.log("=== Text mode: Skipping OCR ===")
     extractedText = text!.trim()
   } else {
-    // === Image mode: Stage 1 OCR ===
+    // Image mode: Stage 1 OCR
     console.log("=== Stage 1: OCR ===")
     const imageContents: OpenAI.ChatCompletionContentPart[] = images!.map((dataUrl) => ({
       type: "image_url" as const,
@@ -181,37 +172,36 @@ export async function POST(req: NextRequest) {
 
     const ocrResult = await callModel(client, VISION_MODELS, [
       { role: "user", content: [{ type: "text", text: OCR_PROMPT }, ...imageContents] },
-    ])
+    ], 4000)
 
     if (!ocrResult) {
-      return NextResponse.json({ error: "Failed to extract text from images" }, { status: 500 })
+      return NextResponse.json({ error: "Failed to extract text from images. Please try again or use text mode." }, { status: 500 })
     }
     extractedText = ocrResult
   }
 
   console.log(`Text length for analysis: ${extractedText.length}`)
 
-  // === Stage 2: Analysis — Deep reasoning ===
+  // Stage 2: Analysis
   console.log("=== Stage 2: Analysis ===")
-  const analysisResult = await callModel(client, REASONING_MODELS, [
+  const analysisResult = await callModel(client, ANALYSIS_MODELS, [
+    { role: "system", content: "You are a USCPA exam expert. Always respond with valid JSON only." },
     { role: "user", content: ANALYSIS_PROMPT + extractedText },
-  ])
+  ], 4000)
 
   if (!analysisResult) {
-    return NextResponse.json({ error: "Failed to analyze content" }, { status: 500 })
+    return NextResponse.json({ error: "Analysis failed. Please try again." }, { status: 500 })
   }
 
   // Parse JSON from analysis result
   let parsed: any
   try {
-    // Remove markdown code blocks and any thinking tags
     let cleaned = analysisResult
       .replace(/<think>[\s\S]*?<\/think>/g, "")
-      .replace(/^```json\s*/m, "")
-      .replace(/\s*```$/m, "")
+      .replace(/```json\s*/g, "")
+      .replace(/```\s*/g, "")
       .trim()
 
-    // Find the JSON object in the response
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
       parsed = JSON.parse(jsonMatch[0])
@@ -219,15 +209,20 @@ export async function POST(req: NextRequest) {
       throw new Error("No JSON found")
     }
   } catch {
-    // Fallback: wrap raw text as single insight
     parsed = {
       contentType: "other",
       insights: [{ type: "concept", title: "Analysis Result", body: analysisResult.substring(0, 500) }],
     }
   }
 
+  // Validate insights structure
+  const validTypes = ["concept", "framework", "trap", "rule"]
+  const insights = (parsed.insights || []).filter((i: any) =>
+    i && typeof i.title === "string" && typeof i.body === "string" && validTypes.includes(i.type)
+  )
+
   return NextResponse.json({
     contentType: parsed.contentType || "other",
-    insights: parsed.insights || [],
+    insights: insights.length > 0 ? insights : parsed.insights || [],
   })
 }

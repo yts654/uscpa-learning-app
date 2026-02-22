@@ -472,7 +472,7 @@ export function generateAllocations(
   studyGoals: StudyGoals,
   t?: (key: string) => string,
 ): AllocationRecommendation[] {
-  const weeklyBudget = studyGoals.dailyStudyHours * 7
+  const weeklyBudget = studyGoals.dailyStudyHours * 5 + (studyGoals.weekendStudyHours ?? studyGoals.dailyStudyHours) * 2
 
   // Current distribution from last 4 weeks
   const today = new Date()

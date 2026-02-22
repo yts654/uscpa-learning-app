@@ -414,21 +414,21 @@ export function DashboardView({ chapters, onViewChange, completedSections = [], 
         <div className="h-52">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyData} barSize={28}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(230, 12%, 90%)" />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(230, 8%, 46%)" }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(230, 8%, 46%)" }} unit="h" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} unit="h" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(232, 47%, 8%)",
-                  border: "none",
+                  backgroundColor: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
                   borderRadius: "8px",
-                  color: "white",
+                  color: "hsl(var(--card-foreground))",
                   fontSize: "12px",
                 }}
                 formatter={(value: number) => [`${value}h`, t("dashboard.studyHours")]}
-                cursor={{ fill: "hsl(230, 10%, 93%, 0.7)" }}
+                cursor={{ fill: "hsl(var(--muted) / 0.5)" }}
               />
-              <Bar dataKey="hours" radius={[4, 4, 0, 0]} fill="hsl(225, 50%, 22%)" />
+              <Bar dataKey="hours" radius={[4, 4, 0, 0]} fill="hsl(var(--primary))" />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -18,6 +18,7 @@ export interface SectionGoal {
 export interface StudyGoals {
   sections: Record<ExamSection, SectionGoal>
   dailyStudyHours: number
+  weekendStudyHours: number
   questionsPerSession: number
 }
 
@@ -31,6 +32,7 @@ export const DEFAULT_STUDY_GOALS: StudyGoals = {
     ISC: { examDate: null, targetScore: 75 },
   },
   dailyStudyHours: 4,
+  weekendStudyHours: 6,
   questionsPerSession: 30,
 }
 
