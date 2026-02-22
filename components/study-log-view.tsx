@@ -359,11 +359,11 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
 
   // Weekly summaries
   const weeklySummaries = useMemo((): WeekSummary[] => {
-    if (logs.length === 0) return []
+    if (filteredLogs.length === 0) return []
 
     // Group logs by week (Mon-Sun)
     const weekMap = new Map<string, StudyLog[]>()
-    for (const log of logs) {
+    for (const log of filteredLogs) {
       const d = new Date(log.date + "T00:00:00")
       const monday = getMonday(d)
       const key = monday.toISOString().split("T")[0]
@@ -412,7 +412,7 @@ export function StudyLogView({ chapters, studyLogs, onUpdateLogs, studyGoals, on
     }
 
     return summaries
-  }, [logs, t, locale])
+  }, [filteredLogs, t, locale])
 
   const resetForm = useCallback(() => {
     setShowForm(false)
