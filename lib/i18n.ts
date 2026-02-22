@@ -331,6 +331,10 @@ const translations = {
     en: "e.g. Becker, Wiley, Roger CPA...",
     es: "ej. Becker, Wiley, Roger CPA...",
   },
+  "mockExams.form.selectSource": {
+    en: "Select provider...",
+    es: "Seleccionar proveedor...",
+  },
   "mockExams.form.mcQuestions": {
     en: "MC Questions",
     es: "Preguntas MC",

@@ -339,13 +339,16 @@ export function MockExamsView({ mockExams, onUpdateMockExams }: MockExamsViewPro
             {/* Source */}
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1">{t("mockExams.form.source")}</label>
-              <input
-                type="text"
+              <select
                 value={formSource}
                 onChange={e => setFormSource(e.target.value)}
-                placeholder={t("mockExams.form.sourcePlaceholder")}
-                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm placeholder:text-muted-foreground"
-              />
+                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm"
+              >
+                <option value="">{t("mockExams.form.selectSource")}</option>
+                {["Abitus", "Becker", "Wiley", "Roger CPA", "Surgent", "Gleim", "UWorld"].map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
             </div>
           </div>
 
