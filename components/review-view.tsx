@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useCallback } from "react"
-import { Filter, Brain, AlertTriangle, Clock, CalendarCheck, Shield, BookOpen, ChevronRight, Bell, Info, ChevronDown } from "lucide-react"
+import { Filter, Brain, AlertTriangle, Clock, CalendarCheck, Shield, BookOpen, ChevronRight, Bell, Info, ChevronDown, HelpCircle, X } from "lucide-react"
 import { cn, brightenForDark } from "@/lib/utils"
 import { SECTION_INFO, type ExamSection, type Chapter, type RecallRating } from "@/lib/study-data"
 import { useLanguage } from "@/lib/i18n"
@@ -60,6 +60,7 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
   const [alertsOpen, setAlertsOpen] = useState(true)
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
   const [ratedChapters, setRatedChapters] = useState<Record<string, RecallRating>>({})
+  const [showCurveHelp, setShowCurveHelp] = useState(false)
 
   const filtered = useMemo(() => {
     if (selectedSection === "ALL") return chapterRetentions
@@ -378,10 +379,40 @@ export function ReviewView({ chapterRetentions, chapters, onSelectChapter, onVie
         return (
           <div className="bg-card rounded-xl border border-border overflow-hidden">
             <div className="p-6 pb-0">
-              <h3 className="font-semibold text-card-foreground">{t("review.chart.title")}</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {selected ? `Ch.${selected.chapterNumber} ${selected.chapterTitle}${t("review.chart.selectedDesc")}` : t("review.chart.defaultDesc")}
-              </p>
+              <div className="flex items-start gap-3">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-card-foreground">{t("review.chart.title")}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {selected ? `Ch.${selected.chapterNumber} ${selected.chapterTitle}${t("review.chart.selectedDesc")}` : t("review.chart.defaultDesc")}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowCurveHelp(!showCurveHelp)}
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors flex-shrink-0"
+                >
+                  {showCurveHelp ? <X className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
+                </button>
+              </div>
+              {showCurveHelp && (
+                <div className="mt-3 p-4 rounded-lg bg-muted/30 border border-border space-y-3">
+                  <div>
+                    <p className="text-xs font-semibold text-card-foreground">{t("review.curveHelp.whatTitle")}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t("review.curveHelp.whatDesc")}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-card-foreground">{t("review.curveHelp.howTitle")}</p>
+                    <div className="text-xs text-muted-foreground mt-0.5 space-y-1">
+                      <p>{t("review.curveHelp.how1")}</p>
+                      <p>{t("review.curveHelp.how2")}</p>
+                      <p>{t("review.curveHelp.how3")}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-card-foreground">{t("review.curveHelp.actionTitle")}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t("review.curveHelp.actionDesc")}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Chapter selector */}

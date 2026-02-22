@@ -92,28 +92,16 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Soft gradient background for light mode */
+  /* Clean grid background for light mode */
   body {
     background-image:
-      /* Warm blue glow - top right */
-      radial-gradient(
-        ellipse 70% 60% at 85% 0%,
-        hsla(220, 60%, 82%, 0.7) 0%,
-        transparent 70%
-      ),
-      /* Cool indigo accent - bottom left */
-      radial-gradient(
-        ellipse 65% 55% at 5% 100%,
-        hsla(245, 50%, 85%, 0.6) 0%,
-        transparent 70%
-      ),
-      /* Soft lavender wash - center */
-      radial-gradient(
-        ellipse 50% 40% at 50% 45%,
-        hsla(230, 40%, 90%, 0.45) 0%,
-        transparent 70%
-      );
-    background-size: 100% 100%;
+      /* Major grid lines */
+      linear-gradient(hsla(225, 30%, 78%, 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, hsla(225, 30%, 78%, 0.18) 1px, transparent 1px),
+      /* Minor grid lines */
+      linear-gradient(hsla(225, 25%, 82%, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, hsla(225, 25%, 82%, 0.09) 1px, transparent 1px);
+    background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
     background-attachment: fixed;
   }
 

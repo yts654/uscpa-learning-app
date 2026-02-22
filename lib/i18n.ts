@@ -236,6 +236,40 @@ const translations = {
     es: "Posición actual",
   },
 
+  // Forgetting Curve help
+  "review.curveHelp.whatTitle": {
+    en: "What is this chart?",
+    es: "¿Qué es este gráfico?",
+  },
+  "review.curveHelp.whatDesc": {
+    en: "This shows how your memory of each chapter fades over time (the \"forgetting curve\"). The Y-axis is retention %, and the X-axis is days since your last study session. Each line represents one chapter.",
+    es: "Muestra cómo tu memoria de cada capítulo se desvanece con el tiempo (la \"curva del olvido\"). El eje Y es el % de retención y el eje X son los días desde tu última sesión de estudio. Cada línea representa un capítulo.",
+  },
+  "review.curveHelp.howTitle": {
+    en: "How to read it",
+    es: "Cómo interpretarlo",
+  },
+  "review.curveHelp.how1": {
+    en: "• Click a chapter chip below to see its individual curve. The solid line shows your current decay rate; the dashed line shows how it would improve after one more review.",
+    es: "• Haz clic en un chip de capítulo para ver su curva individual. La línea sólida muestra tu tasa de decaimiento actual; la línea punteada muestra cómo mejoraría después de un repaso más.",
+  },
+  "review.curveHelp.how2": {
+    en: "• The colored dot marks where you are today — your current retention level and how many days have passed since you last studied that chapter.",
+    es: "• El punto de color marca dónde estás hoy: tu nivel de retención actual y cuántos días han pasado desde que estudiaste ese capítulo.",
+  },
+  "review.curveHelp.how3": {
+    en: "• Chapters with more reviews have flatter curves (slower forgetting). Each review strengthens memory and extends the time before the next review is needed.",
+    es: "• Los capítulos con más repasos tienen curvas más planas (olvido más lento). Cada repaso fortalece la memoria y extiende el tiempo antes de que se necesite el siguiente repaso.",
+  },
+  "review.curveHelp.actionTitle": {
+    en: "What should I do?",
+    es: "¿Qué debo hacer?",
+  },
+  "review.curveHelp.actionDesc": {
+    en: "Review chapters before they drop below 30% retention (the danger zone). Chapters marked with a warning icon are overdue or due today — prioritize those first. Use the Recall Rating buttons to log how well you remember each chapter.",
+    es: "Repasa los capítulos antes de que caigan por debajo del 30% de retención (zona de peligro). Los capítulos marcados con icono de advertencia están vencidos o vencen hoy — prioriza esos primero. Usa los botones de Recall Rating para registrar qué tan bien recuerdas cada capítulo.",
+  },
+
   // Review detail labels
   "review.detail.retention": {
     en: "Retention",
