@@ -63,7 +63,7 @@ export function AppSidebar({ currentView, onViewChange, streak, profile, collaps
                 className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
                 title={locale === "es" ? t("sidebar.switchToEnglish") : t("sidebar.switchToSpanish")}
               >
-                <span className="text-[9px] font-bold text-[hsl(230_15%_72%)]">{locale === "es" ? "EN" : "ES"}</span>
+                <span className="text-sm leading-none">{locale === "es" ? "🇺🇸" : "🇪🇸"}</span>
               </button>
               <button
                 onClick={toggleTheme}

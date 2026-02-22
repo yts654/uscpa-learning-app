@@ -294,8 +294,8 @@ export function SettingsView({ profile, onUpdateProfile, completedSections, onUp
           <label className="text-sm font-medium text-card-foreground block mb-3">{t("settings.language")}</label>
           <div className="grid grid-cols-2 gap-3">
             {([
-              { value: "en" as Locale, label: "English", flag: "EN" },
-              { value: "es" as Locale, label: "Español", flag: "ES" },
+              { value: "en" as Locale, label: "English", flag: "🇺🇸" },
+              { value: "es" as Locale, label: "Español", flag: "🇪🇸" },
             ]).map((opt) => {
               const isActive = locale === opt.value
               return (

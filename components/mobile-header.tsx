@@ -58,7 +58,7 @@ export function MobileHeader({ currentView, onViewChange }: MobileHeaderProps) {
             onClick={toggleLocale}
             className="w-7 h-7 rounded-md bg-[hsl(232_40%_14%)] hover:bg-[hsl(232_40%_20%)] flex items-center justify-center transition-colors"
           >
-            <span className="text-[9px] font-bold text-[hsl(230_15%_72%)]">{locale === "es" ? "EN" : "ES"}</span>
+            <span className="text-sm leading-none">{locale === "es" ? "🇺🇸" : "🇪🇸"}</span>
           </button>
           <button
             onClick={toggleTheme}
