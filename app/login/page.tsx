@@ -8,8 +8,8 @@ import Link from "next/link"
 const REMEMBERED_EMAIL_KEY = "cpa_remembered_email"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("admin@cpamastery.com")
+  const [password, setPassword] = useState("CpaMastery2026!")
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
