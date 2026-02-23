@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { verifyWebhookSignature } from "@/lib/lemonsqueezy"
 import { updateUserPlan } from "@/lib/users"
+import { getUserRepository } from "@/lib/infrastructure/redis"
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -18,12 +19,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
   }
 
+  // Idempotency check
+  const eventId = String(payload?.meta?.webhook_id || payload?.data?.id || "")
+  if (eventId) {
+    const repo = getUserRepository()
+    if (await repo.isEventProcessed(`ls_${eventId}`)) {
+      console.log(`[ls-webhook] Skipping duplicate event: ${eventId}`)
+      return NextResponse.json({ received: true })
+    }
+  }
+
   const eventName = payload?.meta?.event_name
   const attrs = payload?.data?.attributes
   const customData = payload?.meta?.custom_data
   const email = customData?.user_email || attrs?.user_email
 
-  console.log(`[ls-webhook] Event: ${eventName}, email: ${email}`)
+  console.log(`[ls-webhook] Event: ${eventName}`)
 
   if (!email) {
     console.error("[ls-webhook] No email found in webhook payload")
@@ -38,7 +49,7 @@ export async function POST(req: NextRequest) {
     case "subscription_resumed":
     case "subscription_unpaused": {
       await updateUserPlan(email, "pro", customerId, subscriptionId)
-      console.log(`[ls-webhook] Upgraded ${email} to pro`)
+      console.log("[ls-webhook] User upgraded to pro")
       break
     }
 
@@ -46,28 +57,34 @@ export async function POST(req: NextRequest) {
       const status = attrs?.status
       const isActive = status === "active" || status === "on_trial"
       await updateUserPlan(email, isActive ? "pro" : "free", customerId, subscriptionId)
-      console.log(`[ls-webhook] Updated ${email}: ${status}`)
+      console.log(`[ls-webhook] Subscription updated: ${status}`)
       break
     }
 
     case "subscription_cancelled":
     case "subscription_expired": {
       await updateUserPlan(email, "free", customerId, subscriptionId)
-      console.log(`[ls-webhook] Downgraded ${email} to free`)
+      console.log("[ls-webhook] User downgraded to free")
       break
     }
 
     case "subscription_payment_failed": {
       await updateUserPlan(email, "free", customerId, subscriptionId)
-      console.log(`[ls-webhook] Payment failed for ${email}, downgraded to free`)
+      console.log("[ls-webhook] Payment failed, downgraded to free")
       break
     }
 
     case "subscription_payment_success": {
       await updateUserPlan(email, "pro", customerId, subscriptionId)
-      console.log(`[ls-webhook] Payment success for ${email}`)
+      console.log("[ls-webhook] Payment success, upgraded to pro")
       break
     }
+  }
+
+  // Mark event as processed
+  if (eventId) {
+    const repo = getUserRepository()
+    await repo.markEventProcessed(`ls_${eventId}`)
   }
 
   return NextResponse.json({ received: true })

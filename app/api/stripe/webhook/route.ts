@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getStripe } from "@/lib/stripe"
 import { getUserByStripeCustomerId, updateUserPlan } from "@/lib/users"
+import { getUserRepository } from "@/lib/infrastructure/redis"
 import type Stripe from "stripe"
 
 export async function POST(req: NextRequest) {
@@ -27,6 +28,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 })
   }
 
+  // Idempotency check — skip already-processed events
+  const repo = getUserRepository()
+  if (await repo.isEventProcessed(event.id)) {
+    console.log(`[webhook] Skipping duplicate event: ${event.id}`)
+    return NextResponse.json({ received: true })
+  }
+
   console.log(`[webhook] Received event: ${event.type}`)
 
   switch (event.type) {
@@ -40,13 +48,13 @@ export async function POST(req: NextRequest) {
         const email = session.metadata?.email || session.customer_email
         if (email) {
           await updateUserPlan(email, "pro", customerId, subscriptionId || undefined)
-          console.log(`[webhook] Upgraded ${email} to pro`)
+          console.log("[webhook] User upgraded to pro")
         } else {
           // Fallback: look up by customer ID
           const user = await getUserByStripeCustomerId(customerId)
           if (user) {
             await updateUserPlan(user.email, "pro", customerId, subscriptionId || undefined)
-            console.log(`[webhook] Upgraded ${user.email} to pro (via customer lookup)`)
+            console.log("[webhook] User upgraded to pro (via customer lookup)")
           }
         }
       }
@@ -66,7 +74,7 @@ export async function POST(req: NextRequest) {
           subscription.id,
           isActive ? (subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : undefined) : undefined,
         )
-        console.log(`[webhook] Subscription updated for ${user.email}: ${subscription.status}`)
+        console.log(`[webhook] Subscription updated: ${subscription.status}`)
       }
       break
     }
@@ -77,7 +85,7 @@ export async function POST(req: NextRequest) {
       const user = await getUserByStripeCustomerId(customerId)
       if (user) {
         await updateUserPlan(user.email, "free", customerId)
-        console.log(`[webhook] Subscription deleted for ${user.email}, downgraded to free`)
+        console.log("[webhook] Subscription deleted, downgraded to free")
       }
       break
     }
@@ -89,12 +97,15 @@ export async function POST(req: NextRequest) {
         const user = await getUserByStripeCustomerId(customerId)
         if (user) {
           await updateUserPlan(user.email, "free", customerId)
-          console.log(`[webhook] Payment failed for ${user.email}, downgraded to free`)
+          console.log("[webhook] Payment failed, downgraded to free")
         }
       }
       break
     }
   }
+
+  // Mark event as processed
+  await repo.markEventProcessed(event.id)
 
   return NextResponse.json({ received: true })
 }

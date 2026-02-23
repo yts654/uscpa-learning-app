@@ -2,11 +2,10 @@ import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { verifyUser, getUserByEmail } from "./users"
-
-const secret = process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production"
+import { env } from "./config"
 
 export const authOptions: NextAuthOptions = {
-  secret,
+  secret: env().NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -20,37 +19,36 @@ export const authOptions: NextAuthOptions = {
 
         const rememberMe = credentials.rememberMe === "true"
 
-        // 0. Fast path: demo credentials (already visible in client code)
-        const DEMO_EMAIL = "admin@cpamastery.com"
-        const DEMO_PASSWORD = "CpaMastery2026!"
-        if (
-          credentials.email.toLowerCase() === DEMO_EMAIL &&
-          credentials.password === DEMO_PASSWORD
-        ) {
-          return { id: "admin", email: DEMO_EMAIL, name: "admin", rememberMe, plan: "free" as const }
-        }
-
-        // 1. Try user database (Redis or in-memory)
+        // 1. Try user database (Redis)
         try {
           const user = await verifyUser(credentials.email, credentials.password)
           if (user) {
             return { id: user.id, email: user.email, name: user.name, rememberMe, plan: user.plan }
           }
         } catch (e) {
-          console.error("[auth] verifyUser error:", e)
+          if (e instanceof Error && e.message === "ACCOUNT_LOCKED") {
+            console.error("[auth] Account locked:", credentials.email)
+          } else {
+            console.error("[auth] verifyUser error:", e)
+          }
+          return null
         }
 
-        // 2. Fallback: env var admin account
-        const adminEmail = process.env.ADMIN_EMAIL
-        const adminPasswordHashB64 = process.env.ADMIN_PASSWORD_HASH_B64
-
-        if (adminEmail && adminPasswordHashB64) {
-          if (credentials.email.toLowerCase() === adminEmail.toLowerCase()) {
+        // 2. Env-based admin account (bcrypt hash in base64)
+        const config = env()
+        if (config.ADMIN_EMAIL && config.ADMIN_PASSWORD_HASH_B64) {
+          if (credentials.email.toLowerCase() === config.ADMIN_EMAIL.toLowerCase()) {
             try {
-              const hash = Buffer.from(adminPasswordHashB64, "base64").toString("utf-8")
+              const hash = Buffer.from(config.ADMIN_PASSWORD_HASH_B64, "base64").toString("utf-8")
               const isValid = await bcrypt.compare(credentials.password, hash)
               if (isValid) {
-                return { id: "admin", email: adminEmail, name: adminEmail.split("@")[0], rememberMe, plan: "free" as const }
+                return {
+                  id: "admin",
+                  email: config.ADMIN_EMAIL,
+                  name: config.ADMIN_EMAIL.split("@")[0],
+                  rememberMe,
+                  plan: "free" as const,
+                }
               }
             } catch (e) {
               console.error("[auth] admin bcrypt error:", e)
@@ -58,6 +56,28 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
+        // 3. Env-based demo account (optional, bcrypt hash in base64)
+        if (config.DEMO_EMAIL && config.DEMO_PASSWORD_HASH_B64) {
+          if (credentials.email.toLowerCase() === config.DEMO_EMAIL.toLowerCase()) {
+            try {
+              const hash = Buffer.from(config.DEMO_PASSWORD_HASH_B64, "base64").toString("utf-8")
+              const isValid = await bcrypt.compare(credentials.password, hash)
+              if (isValid) {
+                return {
+                  id: "demo",
+                  email: config.DEMO_EMAIL,
+                  name: "Demo User",
+                  rememberMe,
+                  plan: "free" as const,
+                }
+              }
+            } catch (e) {
+              console.error("[auth] demo bcrypt error:", e)
+            }
+          }
+        }
+
+        // All paths failed — return generic null (no info leak)
         return null
       },
     }),
@@ -67,7 +87,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days (max; middleware enforces shorter for non-rememberMe)
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user, trigger }) {
@@ -77,7 +97,6 @@ export const authOptions: NextAuthOptions = {
         token.rememberMe = (user as { rememberMe?: boolean }).rememberMe ?? false
         token.plan = (user as { plan?: "free" | "pro" }).plan ?? "free"
       }
-      // Refresh plan from DB periodically (every 5 minutes)
       if (trigger !== "signIn" && token.email) {
         const lastRefresh = (token as { planRefreshedAt?: number }).planRefreshedAt || 0
         if (Date.now() - lastRefresh > 5 * 60 * 1000) {

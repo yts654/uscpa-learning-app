@@ -29,10 +29,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET || "fallback-dev-secret-change-in-production",
-  })
+  const secret = process.env.NEXTAUTH_SECRET
+  if (!secret) {
+    console.error("[middleware] NEXTAUTH_SECRET is not set")
+    const loginUrl = new URL("/login", request.url)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  const token = await getToken({ req: request, secret })
 
   if (!token) {
     const loginUrl = new URL("/login", request.url)
@@ -45,7 +49,6 @@ export async function middleware(request: NextRequest) {
   const maxAge = rememberMe ? LONG_SESSION_MS : SHORT_SESSION_MS
 
   if (loginAt && Date.now() - loginAt > maxAge) {
-    // Session expired — clear cookie and redirect to login
     const loginUrl = new URL("/login", request.url)
     const response = NextResponse.redirect(loginUrl)
     response.cookies.delete("next-auth.session-token")
